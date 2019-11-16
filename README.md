@@ -22,7 +22,7 @@ active development and its API might change.
 Here's a simple counter example app.
 
 ```rust
-use druid::widget::{Align, Button, Column, Label, Padding};
+use druid::widget::{Align, Button, Flex, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
 
 fn main() {
@@ -41,7 +41,7 @@ fn ui_builder() -> impl Widget<u32> {
     let label = Label::new(text);
     let button = Button::new("increment", |_ctx, data, _env| *data += 1);
 
-    let mut col = Column::new();
+    let mut col = Flex::column();
     col.add_child(Align::centered(Padding::new(5.0, label)), 1.0);
     col.add_child(Padding::new(5.0, button), 1.0);
     col
@@ -147,7 +147,7 @@ implement your own. You can also compose widgets into new widgets:
 
 ```rust
 fn build_widget() -> impl Widget<u32> {
-    let mut col = Column::new();
+    let mut col = Flex::column();
     for i in 0..30 {
         let button = Button::new(format!("Button {}", i), Button::noop);
         col.add_child(Padding::new(3.0, button), 0.0);
