@@ -26,8 +26,8 @@ mod app_delegate;
 mod command;
 */
 mod data;
-/*
 mod env;
+/*
 mod event;
 mod lens;
 */
@@ -47,8 +47,11 @@ use std::ops::{Deref, DerefMut};
 use std::time::Instant;
 
 use log::{error, warn};
+*/
 
-use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
+use kurbo::{/* Affine, Point, */ Rect, /* Shape, Size, Vec2 */}; ////
+////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
+/*
 use piet::{Piet, RenderContext};
 
 // these are the types from shell that we expose; others we only use internally.
@@ -61,8 +64,11 @@ pub use shell::{
 pub use app::{AppLauncher, WindowDesc};
 pub use app_delegate::{AppDelegate, DelegateCtx};
 pub use command::{sys as commands, Command, Selector};
+*/
 pub use data::Data;
-pub use env::{Env, Key, Value};
+pub use env::{Env, /* Key, Value */}; ////
+////pub use env::{Env, Key, Value};
+/*
 pub use event::{Event, WheelEvent};
 pub use lens::{Lens, LensWrap};
 pub use localization::LocalizedString;
@@ -70,6 +76,7 @@ pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
 pub use win_handler::DruidHandler;
 pub use window::{Window, WindowId};
+*/
 
 /// A container for one widget in the hierarchy.
 ///
@@ -90,8 +97,10 @@ pub struct WidgetPod<T: Data, W: Widget<T>> {
     inner: W,
 }
 
+/*
 /// Convenience type for dynamic boxed widget.
 pub type BoxedWidget<T> = WidgetPod<T, Box<dyn Widget<T>>>;
+*/
 
 /// Generic state for all widgets in the hierarchy.
 ///
@@ -243,6 +252,7 @@ pub trait Widget<T> {
     fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
 }
 
+/*
 // TODO: explore getting rid of this (ie be consistent about using
 // `dyn Widget` only).
 impl<T> Widget<T> for Box<dyn Widget<T>> {

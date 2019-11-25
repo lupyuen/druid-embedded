@@ -14,10 +14,8 @@
 
 //! Common widgets.
 
-/*
 mod align;
 pub use crate::widget::align::Align;
-*/
 
 mod button;
 pub use crate::widget::button::Button;
