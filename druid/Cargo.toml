@@ -1,13 +1,13 @@
 [package]
-name = "druid"
+name = "druid-embedded"
 version = "0.4.0"
 license = "Apache-2.0"
 authors = ["Raph Levien <raph.levien@gmail.com>"]
-description = "Data-oriented Rust UI design toolkit."
-repository = "https://github.com/xi-editor/druid"
+description = "Data-oriented Rust UI design toolkit. Experimental embedded version."
+repository = "https://github.com/lupyuen/druid-embedded"
 categories = ["gui"]
 readme = "README.md"
-keywords = ["gui", "ui", "toolkit"]
+keywords = ["gui", "ui", "toolkit", "no-std"]
 edition = "2018"
 
 #[package.metadata.docs.rs]
