@@ -27,8 +27,8 @@ mod command;
 */
 mod data;
 mod env;
-/*
 mod event;
+/*
 mod lens;
 */
 mod localization;
@@ -40,8 +40,10 @@ pub mod theme;
 pub mod widget;
 /*
 mod win_handler;
+*/
 mod window;
 
+/*
 use std::collections::VecDeque;
 use std::ops::{Deref, DerefMut};
 use std::time::Instant;
@@ -49,7 +51,7 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use kurbo::{/* Affine, Point, */ Rect, /* Shape, Size, Vec2 */}; ////
+use kurbo::{/* Affine, Point, */ Rect, /* Shape, */ Size, /* Vec2 */}; ////
 ////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
 /*
 use piet::{Piet, RenderContext};
@@ -68,15 +70,17 @@ pub use command::{sys as commands, Command, Selector};
 pub use data::Data;
 pub use env::{Env, /* Key, Value */}; ////
 ////pub use env::{Env, Key, Value};
+pub use event::{Event, /* WheelEvent */}; ////
+////pub use event::{Event, WheelEvent};
 /*
-pub use event::{Event, WheelEvent};
 pub use lens::{Lens, LensWrap};
 pub use localization::LocalizedString;
 pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
 pub use win_handler::DruidHandler;
-pub use window::{Window, WindowId};
 */
+pub use window::{/* Window, */ WindowId}; ////
+////pub use window::{Window, WindowId};
 
 /// A container for one widget in the hierarchy.
 ///
@@ -272,6 +276,7 @@ impl<T> Widget<T> for Box<dyn Widget<T>> {
         self.deref_mut().update(ctx, old_data, data, env);
     }
 }
+*/
 
 /// A context passed to paint methods of widgets.
 ///
@@ -292,6 +297,7 @@ pub struct PaintCtx<'a, 'b: 'a> {
 #[derive(Debug, Clone)]
 pub struct Region(Rect);
 
+/*
 impl Region {
     /// Returns the smallest `Rect` that encloses the entire region.
     pub fn to_rect(&self) -> Rect {
@@ -353,6 +359,7 @@ impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
         f(&mut child_ctx)
     }
 }
+*/
 
 /// A context provided to layout handling methods of widgets.
 ///
@@ -423,6 +430,7 @@ pub struct BoxConstraints {
     max: Size,
 }
 
+/*
 impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
     /// Create a new widget pod.
     ///
