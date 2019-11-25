@@ -34,7 +34,9 @@ mod lens;
 mod localization;
 /*
 mod menu;
+*/
 mod mouse;
+/*
 pub mod theme;
 */
 pub mod widget;
