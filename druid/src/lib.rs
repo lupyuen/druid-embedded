@@ -17,6 +17,7 @@
 #![deny(intra_doc_link_resolution_failure, unsafe_code)]
 #![allow(clippy::new_ret_no_self)]
 
+/*
 use druid_shell as shell;
 pub use druid_shell::{kurbo, piet};
 
@@ -31,7 +32,9 @@ mod localization;
 mod menu;
 mod mouse;
 pub mod theme;
+*/
 pub mod widget;
+/*
 mod win_handler;
 mod window;
 
@@ -1009,3 +1012,4 @@ impl<'a, 'b> UpdateCtx<'a, 'b> {
         self.window_id
     }
 }
+*/

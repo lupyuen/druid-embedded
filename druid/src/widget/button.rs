@@ -14,6 +14,7 @@
 
 //! A button widget.
 
+/*
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
     Widget,
@@ -25,14 +26,16 @@ use crate::piet::{LinearGradient, UnitPoint};
 use crate::theme;
 use crate::widget::{Align, Label, LabelText, SizedBox};
 use crate::{Point, RenderContext};
+*/
 
 /// A button with a text label.
 pub struct Button<T> {
     label: Label<T>,
-    /// A closure that will be invoked when the button is clicked.
-    action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
+    /////// A closure that will be invoked when the button is clicked.
+    ////action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
 }
 
+/*
 impl<T: Data + 'static> Button<T> {
     /// Create a new button. The closure provided will be called when the button
     /// is clicked.
@@ -148,3 +151,4 @@ impl<T: Data> Widget<T> for Button<T> {
         self.label.update(ctx, old_data, data, env)
     }
 }
+*/
