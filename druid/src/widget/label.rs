@@ -26,7 +26,9 @@ use crate::kurbo::Rect;
 use crate::piet::{
     FontBuilder, PietText, PietTextLayout, Text, TextLayout, TextLayoutBuilder, UnitPoint,
 };
+*/
 
+/*
 use crate::localization::LocalizedString;
 use crate::theme;
 use crate::{Point, RenderContext};
@@ -34,14 +36,15 @@ use crate::{Point, RenderContext};
 
 /// The text for the label; either a localized or a specific string.
 pub enum LabelText<T> {
-    Localized(LocalizedString<T>),
+    TODO_Localized_LocalizedString(T),
+    ////Localized(LocalizedString<T>),
     Specific(String),
 }
 
 /// A label that displays some text.
 pub struct Label<T> {
     text: LabelText<T>,
-    align: UnitPoint,
+    ////align: UnitPoint,
 }
 
 /*

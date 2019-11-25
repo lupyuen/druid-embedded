@@ -24,11 +24,15 @@ pub use druid_shell::{kurbo, piet};
 mod app;
 mod app_delegate;
 mod command;
+*/
 mod data;
+/*
 mod env;
 mod event;
 mod lens;
+*/
 mod localization;
+/*
 mod menu;
 mod mouse;
 pub mod theme;
