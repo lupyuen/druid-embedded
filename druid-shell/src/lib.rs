@@ -18,6 +18,7 @@
 //! framework. It provides common types, which then defer to a platform-defined
 //! implementation.
 
+#![no_std] ////
 #![deny(intra_doc_link_resolution_failure)]
 #![allow(clippy::new_without_default)]
 
