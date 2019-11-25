@@ -6,7 +6,9 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "cargo build -v --target thumbv7em-none-eabihf --example hello",
+            //  Normal Build: "command": "cargo build -v --target thumbv7em-none-eabihf --example hello",
+            //  Do not build in parallel: 
+            "command": "cargo build -v --jobs 1 --target thumbv7em-none-eabihf --example hello",
             "problemMatcher": [
                 "$rustc"
             ],
