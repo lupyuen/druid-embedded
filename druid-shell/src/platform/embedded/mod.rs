@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Platform specific implementations.
+//! embedded-graphics-based platform support
 
-cfg_if::cfg_if! {
-    if #[cfg(all(target_os = "windows", not(feature = "use_gtk")))] {
-        mod windows;
-        pub use windows::*;
-    } else if #[cfg(all(target_os = "macos", not(feature = "use_gtk")))] {
-        mod mac;
-        pub use mac::*;
-    } else if #[cfg(any(feature = "use_gtk", target_os = "linux"))] {
-        mod gtk;
-        pub use self::gtk::*;
-    } else if #[cfg(all(target_arch = "arm", target_os = "none"))] {
-        mod embedded;
-        pub use self::embedded::*;
-    }
-}
+pub mod application;
+pub mod clipboard;
+pub mod dialog;
+pub mod error;
+pub mod keycodes;
+pub mod menu;
+pub mod runloop;
+pub mod util;
+pub mod window;
