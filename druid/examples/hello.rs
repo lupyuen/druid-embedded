@@ -17,21 +17,29 @@ use druid::widget::{Align, Button, Column, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
 
 fn main() {
+    //  Build a new window
     let main_window = WindowDesc::new(ui_builder);
     let data = 0_u32;
+    //  Launch the window
     AppLauncher::with_window(main_window)
         .use_simple_logger()
         .launch(data)
         .expect("launch failed");
 }
 
+/// Build the UI for the window
 fn ui_builder() -> impl Widget<u32> {
+    //  Create a line of text based on a counter value
     let text =
         LocalizedString::new("hello-counter").with_arg("count", |data: &u32, _env| (*data).into());
+    //  Create a label widget to display the text
     let label = Label::new(text);
+    //  Create a button widget to increment the counter
     let button = Button::new("increment", |_ctx, data, _env| *data += 1);
 
+    //  Create a column for the UI
     let mut col = Column::new();
+    //  Add the label and button widgets to the column
     col.add_child(Align::centered(Padding::new(5.0, label)), 1.0);
     col.add_child(Padding::new(5.0, button), 1.0);
     col
