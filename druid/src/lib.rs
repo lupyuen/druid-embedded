@@ -55,16 +55,23 @@ use log::{error, warn};
 
 use kurbo::{/* Affine, Point, */ Rect, /* Shape, */ Size, /* Vec2 */}; ////
 ////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
-/*
 use piet::{Piet, RenderContext};
 
 // these are the types from shell that we expose; others we only use internally.
+pub use shell::{ ////
+    /* Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
+    FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods, */
+    Text, /* TimerToken, */ WinCtx, WindowHandle,
+}; ////
+/* ////
 pub use shell::{
     Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
     FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods,
     Text, TimerToken, WinCtx, WindowHandle,
 };
+*/ ////
 
+/*
 pub use app::{AppLauncher, WindowDesc};
 pub use app_delegate::{AppDelegate, DelegateCtx};
 pub use command::{sys as commands, Command, Selector};
@@ -383,9 +390,9 @@ pub struct EventCtx<'a, 'b> {
     // Note: there's a bunch of state that's just passed down, might
     // want to group that into a single struct.
     win_ctx: &'a mut dyn WinCtx<'b>,
-    cursor: &'a mut Option<Cursor>,
+    /////cursor: &'a mut Option<Cursor>,
     /// Commands submitted to be run after this event.
-    command_queue: &'a mut VecDeque<(WindowId, Command)>,
+    ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     window_id: WindowId,
     // TODO: migrate most usage of `WindowHandle` to `WinCtx` instead.
     window: &'a WindowHandle,

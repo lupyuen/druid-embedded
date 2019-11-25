@@ -36,7 +36,7 @@ use crate::{Point, RenderContext};
 
 /// The text for the label; either a localized or a specific string.
 pub enum LabelText<T> {
-    TODO_Localized_LocalizedString(T),
+    _TodoLocalizedLocalizedString(T),
     ////Localized(LocalizedString<T>),
     Specific(String),
 }
