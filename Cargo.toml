@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "druid",
-    #"druid-shell",
-    #"druid-derive",
+    "druid-shell",
+    "druid-derive",
 ]

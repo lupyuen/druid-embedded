@@ -6,7 +6,7 @@
         {
             "label": "Build",
             "type": "shell",
-            "command": "cargo build --example hello",
+            "command": "cargo build -v --target thumbv7em-none-eabihf --example hello",
             "problemMatcher": [
                 "$rustc"
             ],
