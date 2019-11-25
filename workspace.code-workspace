@@ -6,6 +6,10 @@
 		{
 			"name": "piet-embedded",
 			"path": "/Users/Luppy/mynewt/piet-embedded"
+		},
+		{
+			"name": "kurbo-embedded",
+			"path": "/Users/Luppy/mynewt/kurbo-embedded"
 		}
 	],
 	"settings": {}

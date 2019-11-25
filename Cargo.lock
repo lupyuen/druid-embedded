@@ -46,8 +46,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "kurbo"
-version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+version = "0.5.5"
 dependencies = [
  "arrayvec 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -61,7 +60,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "piet"
 version = "0.0.7"
 dependencies = [
- "kurbo 0.5.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "kurbo 0.5.5",
 ]
 
 [[package]]
@@ -122,7 +121,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum arrayvec 0.4.12 (registry+https://github.com/rust-lang/crates.io-index)" = "cd9fd44efafa8690358b7408d253adf110036b88f55672a933f01d616ad9b1b9"
 "checksum cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)" = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 "checksum embedded-graphics 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "704679bfcb66cc748ec185ae62ccd5b03311a53793372e2abf1ff9a7e9875ff7"
-"checksum kurbo 0.5.4 (registry+https://github.com/rust-lang/crates.io-index)" = "e02e913423d086453a80e16ad9dfe8f7999b8ccfffa91c8e4a97e66bbdcaaaa7"
 "checksum nodrop 0.1.14 (registry+https://github.com/rust-lang/crates.io-index)" = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
 "checksum proc-macro2 1.0.6 (registry+https://github.com/rust-lang/crates.io-index)" = "9c9e470a8dc4aeae2dee2f335e8f533e2d4b347e1434e5671afc49b054592f27"
 "checksum quote 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)" = "053a8c8bcc71fcce321828dc897a98ab9760bef03a4fc36693c231e5b3216cfe"
