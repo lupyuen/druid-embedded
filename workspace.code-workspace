@@ -10,6 +10,12 @@
 		{
 			"name": "kurbo-embedded",
 			"path": "/Users/Luppy/mynewt/kurbo-embedded"
+		},
+		{
+			"path": "C:/piet-embedded"
+		},
+		{
+			"path": "C:/kurbo-embedded"
 		}
 	],
 	"settings": {}
