@@ -15,11 +15,11 @@
 //! embedded-graphics-based platform support
 
 pub mod application;
-pub mod clipboard;
-pub mod dialog;
+////pub mod clipboard;
+////pub mod dialog;
 pub mod error;
-pub mod keycodes;
-pub mod menu;
+////pub mod keycodes;
+////pub mod menu;
 pub mod runloop;
 pub mod util;
 pub mod window;

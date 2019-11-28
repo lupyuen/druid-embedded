@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! GTK window creation and management.
+//! embedded-graphics window creation and management.
 
+/*
 use std::any::Any;
 use std::cell::{Cell, RefCell};
 use std::ffi::c_void;
@@ -743,3 +744,4 @@ fn hardware_keycode_to_keyval(keycode: u16) -> Option<u32> {
         }
     }
 }
+*/

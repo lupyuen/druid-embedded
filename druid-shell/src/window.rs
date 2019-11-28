@@ -18,11 +18,11 @@
 
 use std::any::Any;
 
-use crate::dialog::{FileDialogOptions, FileInfo};
+////use crate::dialog::{FileDialogOptions, FileInfo};
 use crate::error::Error;
-use crate::keyboard::{KeyEvent, KeyModifiers};
+////use crate::keyboard::{KeyEvent, KeyModifiers};
 use crate::kurbo::{Point, Size, Vec2};
-use crate::menu::Menu;
+////use crate::menu::Menu;
 use crate::mouse::{Cursor, MouseEvent};
 use crate::platform::window as platform;
 
@@ -102,6 +102,7 @@ impl WindowHandle {
         self.0.set_title(title)
     }
 
+    /* ////
     /// Set the top-level menu for this window.
     pub fn set_menu(&self, menu: Menu) {
         self.0.set_menu(menu.into_inner())
@@ -113,6 +114,7 @@ impl WindowHandle {
     pub fn show_context_menu(&self, menu: Menu, pos: Point) {
         self.0.show_context_menu(menu.into_inner(), pos)
     }
+    */ ////
 
     /// Get a handle that can be used to schedule an idle task.
     pub fn get_idle_handle(&self) -> Option<IdleHandle> {
@@ -195,10 +197,12 @@ pub trait WinCtx<'a> {
     /// [`WinHandler::timer()`]: trait.WinHandler.html#tymethod.timer
     fn request_timer(&mut self, deadline: std::time::Instant) -> TimerToken;
 
+    /* ////
     /// Prompt the user to chose a file to open.
     ///
     /// Blocks while the user picks the file.
     fn open_file_sync(&mut self, options: FileDialogOptions) -> Option<FileInfo>;
+    */ ////
 }
 
 /// App behavior, supplied by the app.
@@ -234,6 +238,7 @@ pub trait WinHandler {
     #[allow(unused_variables)]
     fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {}
 
+    /* ////
     /// Called on a key down event.
     ///
     /// Return `true` if the event is handled.
@@ -257,6 +262,7 @@ pub trait WinHandler {
     /// [WheelEvent]: https://w3c.github.io/uievents/#event-type-wheel
     #[allow(unused_variables)]
     fn wheel(&mut self, delta: Vec2, mods: KeyModifiers, ctx: &mut dyn WinCtx) {}
+    */ ////
 
     /// Called when the mouse moves.
     #[allow(unused_variables)]

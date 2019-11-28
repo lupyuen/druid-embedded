@@ -35,17 +35,17 @@ extern crate objc;
 
 #[cfg(not(any(feature = "use_gtk", target_os = "linux")))]
 #[macro_use]
-extern crate lazy_static;
+////extern crate lazy_static;
 
 mod application;
-mod clipboard;
+////mod clipboard;
 mod common_util;
-mod dialog;
+////mod dialog;
 mod error;
-mod hotkey;
-mod keyboard;
-mod keycodes;
-mod menu;
+////mod hotkey;
+////mod keyboard;
+////mod keycodes;
+////mod menu;
 mod mouse;
 //TODO: don't expose this directly? currently making this private causes
 //a bunch of compiler warnings, so let's revisit that later.
@@ -54,13 +54,13 @@ mod runloop;
 mod window;
 
 pub use application::Application;
-pub use clipboard::{Clipboard, ClipboardFormat, FormatId};
-pub use dialog::{FileDialogOptions, FileDialogType, FileInfo, FileSpec};
+////pub use clipboard::{Clipboard, ClipboardFormat, FormatId};
+////pub use dialog::{FileDialogOptions, FileDialogType, FileInfo, FileSpec};
 pub use error::Error;
-pub use hotkey::{HotKey, KeyCompare, RawMods, SysMods};
-pub use keyboard::{KeyEvent, KeyModifiers};
-pub use keycodes::KeyCode;
-pub use menu::Menu;
+////pub use hotkey::{HotKey, KeyCompare, RawMods, SysMods};
+////pub use keyboard::{KeyEvent, KeyModifiers};
+////pub use keycodes::KeyCode;
+////pub use menu::Menu;
 pub use mouse::{Cursor, MouseButton, MouseEvent};
 pub use runloop::RunLoop;
 pub use window::{Text, TimerToken, WinCtx, WinHandler, WindowBuilder, WindowHandle};

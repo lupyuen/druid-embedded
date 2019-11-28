@@ -13,7 +13,7 @@
 // limitations under the License.
 
 //! Common functions used by the backends
-
+/* ////
 use std::any::Any;
 
 /// Strip the access keys from the menu string.
@@ -48,3 +48,4 @@ impl<F: FnOnce(&dyn Any) + Send> IdleCallback for F {
         (*self)(a)
     }
 }
+*/ ////

@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! GTK implementation of runloop.
+//! embedded-graphics implementation of runloop.
 
+/* ////
 use std::cell::RefCell;
 
 use gio::{ApplicationExt, ApplicationExtManual, ApplicationFlags, Cancellable};
@@ -82,3 +83,4 @@ where
         f(app)
     })
 }
+*/ ////

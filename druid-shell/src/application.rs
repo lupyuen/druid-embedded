@@ -14,7 +14,7 @@
 
 //! The top-level application type.
 
-use crate::clipboard::Clipboard;
+////use crate::clipboard::Clipboard;
 use crate::platform::application as platform;
 
 //TODO: we may want to make the user create an instance of this (Application::global()?)
@@ -46,10 +46,12 @@ impl Application {
         platform::Application::hide_others()
     }
 
+    /* ////
     /// Returns a handle to the system clipboard.
     pub fn clipboard() -> Clipboard {
         platform::Application::clipboard().into()
     }
+    */ ////
 
     /// Returns the current locale string.
     ///

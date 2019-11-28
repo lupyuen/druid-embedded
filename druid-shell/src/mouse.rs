@@ -16,7 +16,7 @@
 
 use crate::kurbo::Point;
 
-use crate::keyboard::KeyModifiers;
+////use crate::keyboard::KeyModifiers;
 
 /// The state of the mouse for a click, mouse-up, or move event.
 #[derive(Debug, Clone, PartialEq)]
@@ -25,8 +25,8 @@ pub struct MouseEvent {
     ///
     /// This is in px units, that is, adjusted for hi-dpi.
     pub pos: Point,
-    /// Keyboard modifiers at the time of the mouse event.
-    pub mods: KeyModifiers,
+    /////// Keyboard modifiers at the time of the mouse event.
+    ////pub mods: KeyModifiers,
     /// The number of mouse clicks associated with this event. This will always
     /// be `0` for a mouse-up event.
     pub count: u32,

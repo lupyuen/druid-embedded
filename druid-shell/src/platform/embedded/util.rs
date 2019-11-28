@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! Utilities, GTK specific.
+//! Utilities, embedded-graphics specific.
 
+/* ////
 pub(crate) fn assert_main_thread() {
     assert!(gtk::is_initialized_main_thread());
 }
+*/ ////

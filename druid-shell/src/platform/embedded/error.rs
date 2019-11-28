@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! GTK platform errors.
+//! embedded-graphics platform errors.
 
 //TODO: add a platform error for GTK
 
+/* ////
 #[derive(Debug, Clone)]
 pub struct Error;
 
@@ -26,3 +27,4 @@ impl std::fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
+*/ ////

@@ -12,11 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//! GTK implementation of features at the application scope.
+//! embedded-graphics implementation of features at the application scope.
 
-use gtk::GtkApplicationExt;
-
-use super::clipboard::Clipboard;
 use super::runloop;
 use super::util;
 
@@ -24,10 +21,11 @@ pub struct Application;
 
 impl Application {
     pub fn init() {
-        gtk::init().expect("GTK initialization failed");
+        ////gtk::init().expect("GTK initialization failed");
     }
 
     pub fn quit() {
+        /*
         util::assert_main_thread();
         runloop::with_application(|app| {
             match app.get_active_window() {
@@ -40,8 +38,10 @@ impl Application {
                 }
             }
         });
+        */
     }
 
+    /*
     pub fn clipboard() -> Clipboard {
         Clipboard
     }
@@ -50,4 +50,5 @@ impl Application {
         //TODO ahem
         "en-US".into()
     }
+    */
 }
