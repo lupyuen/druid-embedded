@@ -14,8 +14,7 @@
 
 //! Errors at the application shell level.
 
-/* ////
-use std::fmt;
+////use std::fmt;
 
 use crate::platform::error as platform;
 
@@ -27,6 +26,7 @@ pub enum Error {
     Platform(platform::Error),
 }
 
+/* ////
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
         match self {
@@ -37,10 +37,10 @@ impl fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
+*/ ////
 
 impl From<platform::Error> for Error {
     fn from(src: platform::Error) -> Error {
         Error::Platform(src)
     }
 }
-*/ ////

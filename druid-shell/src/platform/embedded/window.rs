@@ -14,6 +14,9 @@
 
 //! embedded-graphics window creation and management.
 
+pub struct WindowHandle;
+pub struct WindowBuilder;
+
 /*
 use std::any::Any;
 use std::cell::{Cell, RefCell};

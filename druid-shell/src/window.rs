@@ -99,12 +99,12 @@ impl WindowHandle {
         self.0.invalidate()
     }
 
+    /* ////
     /// Set the title for this menu.
     pub fn set_title(&self, title: &str) {
         self.0.set_title(title)
     }
 
-    /* ////
     /// Set the top-level menu for this window.
     pub fn set_menu(&self, menu: Menu) {
         self.0.set_menu(menu.into_inner())
@@ -302,8 +302,10 @@ pub trait WinHandler {
     #[allow(unused_variables)]
     fn destroy(&mut self, ctx: &mut dyn WinCtx) {}
 
+    /* ////
     /// Get a reference to the handler state. Used mostly by idle handlers.
     fn as_any(&mut self) -> &mut dyn Any;
+    */ ////
 }
 
 impl From<platform::WindowHandle> for WindowHandle {

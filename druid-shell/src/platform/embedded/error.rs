@@ -16,10 +16,10 @@
 
 //TODO: add a platform error for GTK
 
-/* ////
 #[derive(Debug, Clone)]
 pub struct Error;
 
+/* ////
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "GTK Error")
