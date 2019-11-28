@@ -16,7 +16,7 @@
 
 #![allow(deprecated)] // for the three items that have moved
 
-use std::any::Any;
+////use std::any::Any;
 
 ////use crate::dialog::{FileDialogOptions, FileInfo};
 use crate::error::Error;
@@ -49,6 +49,7 @@ impl TimerToken {
     }
 }
 
+/* ////
 //NOTE: this has a From<platform::Handle> impl for construction
 /// A handle that can enqueue tasks on the window loop.
 #[derive(Clone)]
@@ -68,6 +69,7 @@ impl IdleHandle {
         self.0.add_idle(callback)
     }
 }
+*/ ////
 
 /// A handle to a platform window object.
 #[derive(Clone, Default)]
@@ -114,12 +116,12 @@ impl WindowHandle {
     pub fn show_context_menu(&self, menu: Menu, pos: Point) {
         self.0.show_context_menu(menu.into_inner(), pos)
     }
-    */ ////
 
     /// Get a handle that can be used to schedule an idle task.
     pub fn get_idle_handle(&self) -> Option<IdleHandle> {
         self.0.get_idle_handle().map(IdleHandle)
     }
+    */ ////
 
     /// Get the dpi of the window.
     ///
@@ -139,6 +141,7 @@ impl WindowBuilder {
         WindowBuilder(platform::WindowBuilder::new())
     }
 
+    /* ////
     /// Set the [`WinHandler`]. This is the object that will receive
     /// callbacks from this window.
     ///
@@ -146,12 +149,14 @@ impl WindowBuilder {
     pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.0.set_handler(handler)
     }
+    */ ////
 
     /// Set the window's initial size.
     pub fn set_size(&mut self, size: Size) {
         self.0.set_size(size)
     }
 
+    /* ////
     /// Set the window's initial title.
     pub fn set_title(&mut self, title: impl Into<String>) {
         self.0.set_title(title)
@@ -161,6 +166,7 @@ impl WindowBuilder {
     pub fn set_menu(&mut self, menu: Menu) {
         self.0.set_menu(menu.into_inner())
     }
+    */ ////
 
     /// Attempt to construct the platform window.
     ///
@@ -183,6 +189,7 @@ pub trait WinCtx<'a> {
     /// Set the cursor icon.
     fn set_cursor(&mut self, cursor: &Cursor);
 
+    /* ////
     /// Schedule a timer.
     ///
     /// This causes a [`WinHandler::timer()`] call at the deadline. The
@@ -197,7 +204,6 @@ pub trait WinCtx<'a> {
     /// [`WinHandler::timer()`]: trait.WinHandler.html#tymethod.timer
     fn request_timer(&mut self, deadline: std::time::Instant) -> TimerToken;
 
-    /* ////
     /// Prompt the user to chose a file to open.
     ///
     /// Blocks while the user picks the file.
@@ -226,6 +232,7 @@ pub trait WinHandler {
     /// should be scheduled for the next animation frame.
     fn paint(&mut self, piet: &mut piet_common::Piet, ctx: &mut dyn WinCtx) -> bool;
 
+    /* ////
     /// Called when the resources need to be rebuilt.
     ///
     /// Discussion: this function is mostly motivated by using
@@ -238,7 +245,6 @@ pub trait WinHandler {
     #[allow(unused_variables)]
     fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {}
 
-    /* ////
     /// Called on a key down event.
     ///
     /// Return `true` if the event is handled.

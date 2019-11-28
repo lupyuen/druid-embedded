@@ -14,6 +14,7 @@
 
 //! Errors at the application shell level.
 
+/* ////
 use std::fmt;
 
 use crate::platform::error as platform;
@@ -42,3 +43,4 @@ impl From<platform::Error> for Error {
         Error::Platform(src)
     }
 }
+*/ ////

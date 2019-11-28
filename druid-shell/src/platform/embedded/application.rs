@@ -14,8 +14,8 @@
 
 //! embedded-graphics implementation of features at the application scope.
 
-use super::runloop;
-use super::util;
+////use super::runloop;
+////use super::util;
 
 pub struct Application;
 

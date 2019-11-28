@@ -51,7 +51,6 @@ impl Application {
     pub fn clipboard() -> Clipboard {
         platform::Application::clipboard().into()
     }
-    */ ////
 
     /// Returns the current locale string.
     ///
@@ -61,4 +60,5 @@ impl Application {
     pub fn get_locale() -> String {
         platform::Application::get_locale()
     }
+    */ ////
 }
