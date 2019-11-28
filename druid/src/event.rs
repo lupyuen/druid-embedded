@@ -14,7 +14,7 @@
 
 //! Events.
 
-use crate::kurbo::{Rect, Shape, Size, Vec2}; ////
+use druid_shell::kurbo::{Rect, Shape, Size, Vec2}; ////
 ////use crate::kurbo::{Rect, Shape, Size, Vec2};
 
 /*

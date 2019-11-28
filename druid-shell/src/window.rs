@@ -121,7 +121,6 @@ impl WindowHandle {
     pub fn get_idle_handle(&self) -> Option<IdleHandle> {
         self.0.get_idle_handle().map(IdleHandle)
     }
-    */ ////
 
     /// Get the dpi of the window.
     ///
@@ -130,6 +129,7 @@ impl WindowHandle {
     pub fn get_dpi(&self) -> f32 {
         self.0.get_dpi()
     }
+    */ ////
 }
 
 /// A builder type for creating new windows.
@@ -149,14 +149,12 @@ impl WindowBuilder {
     pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.0.set_handler(handler)
     }
-    */ ////
 
     /// Set the window's initial size.
     pub fn set_size(&mut self, size: Size) {
         self.0.set_size(size)
     }
 
-    /* ////
     /// Set the window's initial title.
     pub fn set_title(&mut self, title: impl Into<String>) {
         self.0.set_title(title)

@@ -14,110 +14,116 @@
 
 //! embedded-graphics window creation and management.
 
+#[derive(Clone, Default)]
 pub struct WindowHandle;
+
 pub struct WindowBuilder;
 
 /*
-use std::any::Any;
-use std::cell::{Cell, RefCell};
-use std::ffi::c_void;
-use std::ffi::OsString;
-use std::os::raw::{c_int, c_uint};
-use std::ptr;
-use std::slice;
-use std::sync::{Arc, Mutex, Weak};
+    use std::any::Any;
+    use std::cell::{Cell, RefCell};
+    use std::ffi::c_void;
+    use std::ffi::OsString;
+    use std::os::raw::{c_int, c_uint};
+    use std::ptr;
+    use std::slice;
+    use std::sync::{Arc, Mutex, Weak};
 
-use gdk::{EventKey, EventMask, ModifierType, ScrollDirection, WindowExt};
-use gio::ApplicationExt;
-use gtk::prelude::*;
-use gtk::{AccelGroup, ApplicationWindow};
+    use gdk::{EventKey, EventMask, ModifierType, ScrollDirection, WindowExt};
+    use gio::ApplicationExt;
+    use gtk::prelude::*;
+    use gtk::{AccelGroup, ApplicationWindow};
 
-use crate::kurbo::{Point, Size, Vec2};
-use crate::piet::{Piet, RenderContext};
+    use crate::kurbo::{Point, Size, Vec2};
+    use crate::piet::{Piet, RenderContext};
 
-use super::dialog::{self, FileDialogType};
-use super::menu::Menu;
-use super::runloop::with_application;
-use super::util::assert_main_thread;
+    use super::dialog::{self, FileDialogType};
+    use super::menu::Menu;
+    use super::runloop::with_application;
+    use super::util::assert_main_thread;
 
-use crate::common_util::IdleCallback;
-use crate::dialog::{FileDialogOptions, FileInfo};
-use crate::keyboard;
-use crate::mouse::{Cursor, MouseButton, MouseEvent};
-use crate::window::{Text, TimerToken, WinCtx, WinHandler};
+    use crate::common_util::IdleCallback;
+    use crate::dialog::{FileDialogOptions, FileInfo};
+    use crate::keyboard;
+    use crate::mouse::{Cursor, MouseButton, MouseEvent};
+    use crate::window::{Text, TimerToken, WinCtx, WinHandler};
+*/
 use crate::Error;
 
-/// Taken from https://gtk-rs.org/docs-src/tutorial/closures
-/// It is used to reduce the boilerplate of setting up gtk callbacks
-/// Example:
-/// ```
-/// button.connect_clicked(clone!(handle => move |_| { ... }))
-/// ```
-/// is equivalent to:
-/// ```
-/// {
-///     let handle = handle.clone();
-///     button.connect_clicked(move |_| { ... })
-/// }
-/// ```
-macro_rules! clone {
-    (@param _) => ( _ );
-    (@param $x:ident) => ( $x );
-    ($($n:ident),+ => move || $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move || $body
-        }
-    );
-    ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
-        {
-            $( let $n = $n.clone(); )+
-            move |$(clone!(@param $p),)+| $body
-        }
-    );
-}
+/*
+    /// Taken from https://gtk-rs.org/docs-src/tutorial/closures
+    /// It is used to reduce the boilerplate of setting up gtk callbacks
+    /// Example:
+    /// ```
+    /// button.connect_clicked(clone!(handle => move |_| { ... }))
+    /// ```
+    /// is equivalent to:
+    /// ```
+    /// {
+    ///     let handle = handle.clone();
+    ///     button.connect_clicked(move |_| { ... })
+    /// }
+    /// ```
+    macro_rules! clone {
+        (@param _) => ( _ );
+        (@param $x:ident) => ( $x );
+        ($($n:ident),+ => move || $body:expr) => (
+            {
+                $( let $n = $n.clone(); )+
+                move || $body
+            }
+        );
+        ($($n:ident),+ => move |$($p:tt),+| $body:expr) => (
+            {
+                $( let $n = $n.clone(); )+
+                move |$(clone!(@param $p),)+| $body
+            }
+        );
+    }
 
-#[derive(Clone, Default)]
-pub struct WindowHandle {
-    pub(crate) state: Weak<WindowState>,
-}
+    #[derive(Clone, Default)]
+    pub struct WindowHandle {
+        pub(crate) state: Weak<WindowState>,
+    }
 
-/// Builder abstraction for creating new windows
-pub struct WindowBuilder {
-    handler: Option<Box<dyn WinHandler>>,
-    title: String,
-    menu: Option<Menu>,
-    size: Size,
-}
+    /// Builder abstraction for creating new windows
+    pub struct WindowBuilder {
+        handler: Option<Box<dyn WinHandler>>,
+        title: String,
+        menu: Option<Menu>,
+        size: Size,
+    }
 
-#[derive(Clone)]
-pub struct IdleHandle {
-    idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
-    state: Weak<WindowState>,
-}
+    #[derive(Clone)]
+    pub struct IdleHandle {
+        idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
+        state: Weak<WindowState>,
+    }
 
-pub(crate) struct WindowState {
-    window: ApplicationWindow,
-    pub(crate) handler: RefCell<Box<dyn WinHandler>>,
-    idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
-    current_keyval: RefCell<Option<u32>>,
-}
+    pub(crate) struct WindowState {
+        window: ApplicationWindow,
+        pub(crate) handler: RefCell<Box<dyn WinHandler>>,
+        idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
+        current_keyval: RefCell<Option<u32>>,
+    }
 
-pub(crate) struct WinCtxImpl<'a> {
-    handle: &'a WindowHandle,
-    text: Text<'static>,
-}
+    pub(crate) struct WinCtxImpl<'a> {
+        handle: &'a WindowHandle,
+        text: Text<'static>,
+    }
+*/ ////
 
 impl WindowBuilder {
     pub fn new() -> WindowBuilder {
-        WindowBuilder {
+        WindowBuilder  /* {
             handler: None,
             title: String::new(),
             menu: None,
             size: Size::new(500.0, 400.0),
-        }
+        } */
     }
 
+    /*
     pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.handler = Some(handler);
     }
@@ -133,8 +139,11 @@ impl WindowBuilder {
     pub fn set_menu(&mut self, menu: Menu) {
         self.menu = Some(menu);
     }
+    */
 
     pub fn build(self) -> Result<WindowHandle, Error> {
+        Ok(WindowHandle)
+        /*
         assert_main_thread();
 
         let handler = self
@@ -386,37 +395,45 @@ impl WindowBuilder {
             .connect(&handle.clone().into());
 
         Ok(handle)
+        */
     }
 }
 
 impl WindowHandle {
     pub fn show(&self) {
+        /*
         if let Some(state) = self.state.upgrade() {
             state.window.show_all();
         }
+        */
     }
 
     /// Close the window.
     pub fn close(&self) {
+        /*
         if let Some(state) = self.state.upgrade() {
             with_application(|app| {
                 app.remove_window(&state.window);
             });
         }
+        */
     }
 
     /// Bring this window to the front of the window stack and give it focus.
     pub fn bring_to_front_and_focus(&self) {
         //FIXME: implementation goes here
-        log::warn!("bring_to_front_and_focus not yet implemented for gtk");
+        ////log::warn!("bring_to_front_and_focus not yet implemented for gtk");
     }
 
     // Request invalidation of the entire window contents.
     pub fn invalidate(&self) {
+        /*
         if let Some(state) = self.state.upgrade() {
             state.window.queue_draw();
         }
+        */
     }
+    /*
     /// Get a handle that can be used to schedule an idle task.
     pub fn get_idle_handle(&self) -> Option<IdleHandle> {
         self.state.upgrade().map(|s| IdleHandle {
@@ -517,8 +534,10 @@ impl WindowHandle {
             ))
         }
     }
+    */
 }
 
+/* ////
 unsafe impl Send for IdleHandle {}
 // WindowState needs to be Send + Sync so it can be passed into glib closures
 unsafe impl Send for WindowState {}

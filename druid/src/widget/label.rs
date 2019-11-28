@@ -14,6 +14,11 @@
 
 //! A label widget.
 
+use heapless::{
+    String,
+    consts::*,
+};
+
 /*
 use std::marker::PhantomData;
 
@@ -38,7 +43,7 @@ use crate::{Point, RenderContext};
 pub enum LabelText<T> {
     _TodoLocalizedLocalizedString(T),
     ////Localized(LocalizedString<T>),
-    Specific(String),
+    Specific(String::<U20>),
 }
 
 /// A label that displays some text.

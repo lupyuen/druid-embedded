@@ -54,12 +54,12 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use kurbo::{/* Affine, Point, */ Rect, /* Shape, */ Size, /* Vec2 */}; ////
+use druid_shell::kurbo::{/* Affine, Point, */ Rect, /* Shape, */ Size, /* Vec2 */}; ////
 ////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
-use piet::{Piet, RenderContext};
+use druid_shell::piet::{Piet, RenderContext}; ////
 
 // these are the types from shell that we expose; others we only use internally.
-pub use shell::{ ////
+pub use druid_shell::{ ////
     /* Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
     FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods, */
     Text, /* TimerToken, */ WinCtx, WindowHandle,
