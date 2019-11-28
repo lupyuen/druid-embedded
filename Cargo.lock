@@ -82,6 +82,7 @@ dependencies = [
 name = "piet-embedded-graphics"
 version = "0.0.1"
 dependencies = [
+ "arrayvec 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "embedded-graphics 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "piet 0.0.7",
  "unicode-segmentation 1.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
