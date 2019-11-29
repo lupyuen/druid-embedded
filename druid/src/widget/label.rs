@@ -74,7 +74,6 @@ impl<T: Data> Label<T> {
         }
     }
 
-    /* ////
     fn get_layout(&self, t: &mut PietText, env: &Env) -> PietTextLayout {
         let font_name = env.get(theme::FONT_NAME);
         let font_size = env.get(theme::TEXT_SIZE_NORMAL);
@@ -83,7 +82,6 @@ impl<T: Data> Label<T> {
         let font = t.new_font_by_name(font_name, font_size).build().unwrap();
         t.new_text_layout(&font, text).build().unwrap()
     }
-    */ ////
 }
 
 impl<T: Data> Widget<T> for Label<T> {

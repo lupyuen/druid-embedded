@@ -14,13 +14,12 @@
 
 //! An environment which is passed downward into the widget tree.
 
-/*
-use std::collections::HashMap;
-use std::fmt::{Debug, Formatter};
-use std::marker::PhantomData;
-use std::ops::Deref;
-use std::sync::Arc;
-*/
+////use std::collections::HashMap;
+////use std::fmt::{Debug, Formatter};
+use core::marker::PhantomData;////
+////use std::marker::PhantomData;
+////use std::ops::Deref;
+////use std::sync::Arc;
 
 use crate::kurbo::{Point, Rect, Size};
 use crate::piet::{Color, LinearGradient};
@@ -59,9 +58,11 @@ struct EnvImpl {
 /// [`ValueType`]: trait.ValueType.html
 pub struct Key<T> {
     key: &'static str,
-    value_type: Option<T>, ////
-    ////value_type: PhantomData<T>,
+    value_type: PhantomData<T>,
 }
+
+type MaxStringValue = heapless::consts::U20; //// Max length of string values
+type String = heapless::String::<MaxStringValue>; ////
 
 // we could do some serious deriving here: the set of types that can be stored
 // could be defined per-app
@@ -113,11 +114,14 @@ impl Env {
     ///
     /// Panics if the key is not found, or if it is present with the wrong type.
     pub fn get<'a, V: ValueType<'a>>(&'a self, key: Key<V>) -> V {
+        panic!("no env get"); ////TODO
+        /* ////
         if let Some(value) = self.0.map.get(key.key) {
             value.to_inner_unchecked()
         } else {
             panic!("key for {} not found", key.key)
         }
+        */ ////
     }
 
     /// Gets a value from the environment.
@@ -126,16 +130,21 @@ impl Env {
     ///
     /// Panics if the value for the key is found, but has the wrong type.
     pub fn try_get<'a, V: ValueType<'a>>(&'a self, key: Key<V>) -> Option<V> {
+        assert!(false, "no env try_get"); ////TODO
+        None ////
+        /*
         self.0
             .map
             .get(key.key)
             .map(|value| value.to_inner_unchecked())
+        */
     }
 
     /// Adds a key/value, acting like a builder.
     pub fn adding<'a, V: ValueType<'a>>(mut self, key: Key<V>, value: impl Into<V::Owned>) -> Env {
-        let env = Arc::make_mut(&mut self.0);
-        env.map.insert(key.into(), value.into().into());
+        assert!(false, "no env add"); ////TODO
+        ////let env = Arc::make_mut(&mut self.0);
+        ////env.map.insert(key.into(), value.into().into());
         self
     }
 
@@ -146,6 +155,8 @@ impl Env {
     /// Panics if the environment already has a value for the key, but it is
     /// of a different type.
     pub fn set<'a, V: ValueType<'a>>(&'a mut self, key: Key<V>, value: impl Into<V::Owned>) {
+        assert!(false, "no env set"); ////TODO
+        /* ////
         let env = Arc::make_mut(&mut self.0);
         let value = value.into().into();
         let key = key.into();
@@ -159,6 +170,7 @@ impl Env {
             }
         }
         env.map.insert(key, value);
+        */ ////
     }
 
     /*
@@ -231,7 +243,7 @@ impl Value {
             (Size(_), Size(_)) => true,
             (Rect(_), Rect(_)) => true,
             (Color(_), Color(_)) => true,
-            (LinearGradient(_), LinearGradient(_)) => true,
+            ////(LinearGradient(_), LinearGradient(_)) => true,
             (Float(_), Float(_)) => true,
             (UnsignedInt(_), UnsignedInt(_)) => true,
             (String(_), String(_)) => true,
@@ -250,7 +262,7 @@ impl Data for Value {
             }
             (Size(s1), Size(s2)) => s1.width.same(&s2.width) && s1.height.same(&s2.height),
             (Color(c1), Color(c2)) => c1.as_rgba_u32() == c2.as_rgba_u32(),
-            (LinearGradient(g1), LinearGradient(g2)) => Arc::ptr_eq(g1, g2),
+            ////(LinearGradient(g1), LinearGradient(g2)) => Arc::ptr_eq(g1, g2),
             (Float(f1), Float(f2)) => f1.same(&f2),
             (UnsignedInt(f1), UnsignedInt(f2)) => f1.same(&f2),
             (String(s1), String(s2)) => s1 == s2,
