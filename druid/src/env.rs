@@ -101,7 +101,7 @@ pub trait ValueType<'a>: Sized {
 /// mismatch.
 ///
 /// TODO: replace with a less stringly-typed object.
-////pub type EnvError = String;
+pub type EnvError = String;
 
 impl Env {
     /// Gets a value from the environment, expecting it to be present.

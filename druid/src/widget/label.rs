@@ -88,7 +88,8 @@ impl<T: Data> Widget<T> for Label<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, _data: &T, env: &Env) {
         let font_size = env.get(theme::TEXT_SIZE_NORMAL);
 
-        let text_layout = self.get_layout(paint_ctx.text(), env);
+        let text_layout = self.get_layout(paint_ctx.render_ctx.text(), env); ////
+        ////let text_layout = self.get_layout(paint_ctx.text(), env);
 
         // Find the origin for the text
         let mut origin = self.align.resolve(Rect::from_origin_size(
@@ -102,7 +103,8 @@ impl<T: Data> Widget<T> for Label<T> {
         //Make sure we don't draw the text too low
         origin.y = origin.y.min(base_state.size().height);
 
-        paint_ctx.draw_text(&text_layout, origin, &env.get(theme::LABEL_COLOR));
+        paint_ctx.render_ctx.draw_text(&text_layout, origin, &env.get(theme::LABEL_COLOR)); ////
+        ////paint_ctx.draw_text(&text_layout, origin, &env.get(theme::LABEL_COLOR));
     }
 
     fn layout(

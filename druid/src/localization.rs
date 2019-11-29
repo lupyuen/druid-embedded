@@ -327,17 +327,20 @@ impl<T> LocalizedString<T> {
             self.placeholder = Some(placeholder);
             self
         }
+    */ ////
 
         /// Return the localized value for this string, or the placeholder, if
         /// the localization is missing, or the key if there is no placeholder.
         pub fn localized_str(&self) -> &str {
+            "TODO localized_str"
+            /* ////TODO
             self.resolved
                 .as_ref()
                 .map(|s| s.as_str())
                 .or_else(|| self.placeholder.as_ref().map(String::as_ref))
                 .unwrap_or(self.key)
+            */ ////
         }
-    */ ////
 }
 
 impl<T: Data> LocalizedString<T> {
