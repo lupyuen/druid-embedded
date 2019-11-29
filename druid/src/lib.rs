@@ -417,7 +417,6 @@ pub struct BoxConstraints {
     max: Size,
 }
 
-/*
 impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
     /// Create a new widget pod.
     ///
@@ -501,7 +500,8 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
         }
 
         if let Err(e) = paint_ctx.save() {
-            error!("saving render context failed: {:?}", e);
+            assert!(false, "save context fail"); ////
+            ////error!("saving render context failed: {:?}", e);
             return;
         }
 
@@ -515,7 +515,8 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
         });
 
         if let Err(e) = paint_ctx.restore() {
-            error!("restoring render context failed: {:?}", e);
+            assert!(false, "restore context fail"); ////
+            ////error!("restoring render context failed: {:?}", e);
         }
     }
 
@@ -554,8 +555,8 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
         let had_active = self.state.has_active;
         let mut child_ctx = EventCtx {
             win_ctx: ctx.win_ctx,
-            cursor: ctx.cursor,
-            command_queue: ctx.command_queue,
+            ////cursor: ctx.cursor,
+            ////command_queue: ctx.command_queue,
             window: &ctx.window,
             window_id: ctx.window_id,
             base_state: &mut self.state,
@@ -568,10 +569,12 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
         let mut recurse = true;
         let mut hot_changed = None;
         let child_event = match event {
+            /*
             Event::OpenFile(file) => {
                 recurse = ctx.is_root;
                 Event::OpenFile(file.clone())
             }
+            */
             Event::Size(size) => {
                 recurse = ctx.is_root;
                 Event::Size(*size)
@@ -599,6 +602,7 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
                 mouse_event.pos -= rect.origin().to_vec2();
                 Event::MouseMoved(mouse_event)
             }
+            /*
             Event::KeyDown(e) => {
                 recurse = child_ctx.base_state.has_focus;
                 Event::KeyDown(*e)
@@ -615,6 +619,7 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
                 recurse = had_active || child_ctx.base_state.is_hot;
                 Event::Wheel(wheel_event.clone())
             }
+            */
             Event::HotChanged(is_hot) => Event::HotChanged(*is_hot),
             Event::FocusChanged(_is_focused) => {
                 let had_focus = child_ctx.base_state.has_focus;
@@ -624,6 +629,7 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
                 recurse = focus || had_focus;
                 Event::FocusChanged(focus)
             }
+            /*
             Event::AnimFrame(interval) => {
                 recurse = child_ctx.base_state.request_anim;
                 child_ctx.base_state.request_anim = false;
@@ -634,6 +640,7 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
                 Event::Timer(*id)
             }
             Event::Command(cmd) => Event::Command(cmd.clone()),
+            */
         };
         child_ctx.base_state.needs_inval = false;
         if let Some(is_hot) = hot_changed {
@@ -682,6 +689,7 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
     }
 }
 
+/* ////
 impl<T: Data, W: Widget<T> + 'static> WidgetPod<T, W> {
     /// Box the contained widget.
     ///
@@ -1021,4 +1029,4 @@ impl<'a, 'b> UpdateCtx<'a, 'b> {
         self.window_id
     }
 }
-*/
+*/ ////

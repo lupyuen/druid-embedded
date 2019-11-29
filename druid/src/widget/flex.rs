@@ -19,6 +19,7 @@ use crate::kurbo::{Point, Rect, Size}; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
     WidgetPod,
+    widget::{Label, WidgetBox, WidgetType}, ////
 };
 
 /// A builder for a row widget that can contain flex children.
@@ -46,11 +47,9 @@ pub struct Flex<T: Data> {
 }
 
 struct ChildWidget<T: Data> {
-    ////aaa: Widget<T>, ////
-    ////widget: WidgetPod<T, dyn Widget<T>>, ////
+    widget: WidgetPod<T, WidgetBox<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
-    _todo: Option<T>, ////
 }
 
 pub enum Axis {
@@ -122,10 +121,16 @@ impl<T: Data> Flex<T> {
     /// If `flex` is non-zero, then all the space left over after layout of
     /// the non-flex children is divided up, in proportion to the `flex` value,
     /// among the flex children.
-    pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
+    pub fn add_child(&mut self, child: Label<T>, flex: f64) { ////
+    ////pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
         let params = Params { flex };
         let child = ChildWidget {
-            widget: WidgetPod::new(child).boxed(),
+            widget: WidgetPod::new(
+                WidgetBox {
+                    widget: WidgetType::Label(child)
+                }
+            ), ////TODO
+            ////widget: WidgetPod::new(child).boxed(),
             params,
         };
         self.children.push(child);
