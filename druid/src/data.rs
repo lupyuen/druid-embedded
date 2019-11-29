@@ -129,7 +129,7 @@ impl_data_simple!(u64);
 impl_data_simple!(usize);
 impl_data_simple!(char);
 impl_data_simple!(bool);
-impl_data_simple!(String);
+////impl_data_simple!(String);
 
 impl Data for f32 {
     fn same(&self, other: &Self) -> bool {
@@ -143,6 +143,7 @@ impl Data for f64 {
     }
 }
 
+/* ////
 impl<T: ?Sized> Data for Arc<T> {
     fn same(&self, other: &Self) -> bool {
         Arc::ptr_eq(self, other)
@@ -154,6 +155,7 @@ impl<T: ?Sized> Data for Rc<T> {
         Rc::ptr_eq(self, other)
     }
 }
+*/ ////
 
 impl<T: Data> Data for Option<T> {
     fn same(&self, other: &Self) -> bool {

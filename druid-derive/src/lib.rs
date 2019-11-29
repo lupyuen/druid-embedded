@@ -14,7 +14,6 @@
 
 //! derive macros for druid.
 
-#![no_std] ////
 extern crate proc_macro;
 
 mod attr;

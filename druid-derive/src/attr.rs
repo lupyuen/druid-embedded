@@ -24,7 +24,7 @@ const IGNORE_ATTR_PATH: &str = "ignore";
 const SAME_FN_ATTR_PATH: &str = "same_fn";
 
 /// The fields for a struct or an enum variant.
-#[derive(Debug)]
+////#[derive(Debug)]
 pub struct Fields {
     pub kind: FieldKind,
     fields: Vec<Field>,
@@ -44,7 +44,7 @@ pub enum FieldIdent {
     Unnamed(usize),
 }
 
-#[derive(Debug)]
+////#[derive(Debug)]
 pub struct Field {
     pub ident: FieldIdent,
     /// `true` if this field should be ignored.
