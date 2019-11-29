@@ -46,7 +46,7 @@ pub struct Flex<T: Data> {
 }
 
 struct ChildWidget<T: Data> {
-    aaa: Widget<T>, ////
+    ////aaa: Widget<T>, ////
     ////widget: WidgetPod<T, dyn Widget<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
@@ -63,7 +63,6 @@ struct Params {
     flex: f64,
 }
 
-/* ////
 impl Axis {
     fn major(&self, coords: Size) -> f64 {
         match *self {
@@ -99,7 +98,6 @@ impl Row {
         }
     }
 }
-*/ ////
 
 impl Column {
     /// Create a new row widget.
@@ -114,7 +112,6 @@ impl Column {
     }
 }
 
-/* ////
 impl<T: Data> Flex<T> {
     /// Add a child widget.
     ///
@@ -135,6 +132,7 @@ impl<T: Data> Flex<T> {
     }
 }
 
+/* ////
 impl<T: Data> Widget<T> for Flex<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         for child in &mut self.children {

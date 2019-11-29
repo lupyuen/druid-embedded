@@ -178,9 +178,8 @@ pub struct BaseState {
 /// [`update`]: #tymethod.update
 /// [`Data`]: trait.Data.html
 /// [`WidgetPod`]: struct.WidgetPod.html
-pub trait Widget<T: Sized> { ////
-////pub trait Widget<T> {
-        /// Paint the widget appearance.
+pub trait Widget<T> {
+    /// Paint the widget appearance.
     ///
     /// The widget calls methods on the `render_ctx` field of the
     /// `paint_ctx` in order to paint its appearance. `paint_ctx` auto

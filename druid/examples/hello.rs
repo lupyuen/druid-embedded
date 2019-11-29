@@ -29,8 +29,8 @@ fn main() {
         .expect("launch failed");
 }
 
-/// Build the UI for the window
-fn ui_builder() -> impl Widget<u32> {
+/// Build the UI for the window. The window state consists of 1 value: `count` of type `u32`.
+fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
     //  Create a line of text based on a counter value
     let text =
         LocalizedString::new("hello-counter")
@@ -49,6 +49,8 @@ fn ui_builder() -> impl Widget<u32> {
     //  Create a column for the UI
     let mut col = Column::new();
     //  Add the label and button widgets to the column
+    col.add_child(label, 1.0); ////
+    /*
     col.add_child(
         Align::centered(
             Padding::new(5.0, label)
@@ -59,6 +61,7 @@ fn ui_builder() -> impl Widget<u32> {
         Padding::new(5.0, button), 
         1.0
     );
+    */
     col
 }
 
