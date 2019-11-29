@@ -14,6 +14,7 @@
 
 ////#![no_main]
 #![no_std] ////
+use core::panic::PanicInfo; //  Import `PanicInfo` type which is used by `panic()` below
 use druid::widget::{Align, Button, Column, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
 
@@ -59,4 +60,24 @@ fn ui_builder() -> impl Widget<u32> {
         1.0
     );
     col
+}
+
+///  This function is called on panic, like an assertion failure. We display the filename and line number and pause in the debugger. From https://os.phil-opp.com/freestanding-rust-binary/
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    //  Display the filename and line number to the Semihosting Console.
+    //console::print("panic ");
+    if let Some(location) = info.location() {
+        let file = location.file();
+        let line = location.line();
+        //console::print("at ");       console::buffer(&file);
+        //console::print(" line ");    console::printint(line as i32);
+        //console::print("\n");        console::flush();
+    } else {
+        //console::print("no loc\n");  console::flush();
+    }
+    //  Pause in the debugger.
+    //bkpt();
+    //  Loop forever so that device won't restart.
+    loop {}
 }
