@@ -31,9 +31,10 @@ use druid_shell::piet::UnitPoint; ////
 /// A widget that aligns its child.
 pub struct Align<T: Data> {
     align: UnitPoint,
-    child: WidgetPod<T, Box<dyn Widget<T>>>,
+    ////TODO child: WidgetPod<T, Box<dyn Widget<T>>>,
     width_factor: Option<f64>,
     height_factor: Option<f64>,
+    _TODO: T, ////
 }
 
 /*
