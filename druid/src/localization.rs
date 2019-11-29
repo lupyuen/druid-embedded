@@ -35,59 +35,63 @@
 //! [`Data`]: trait.Data.html
 
 /* ////
-use std::collections::HashMap;
-use std::sync::Arc;
-use std::{fs, io};
+    use std::collections::HashMap;
+    use std::sync::Arc;
+    use std::{fs, io};
 
-use log::{debug, error, warn};
+    use log::{debug, error, warn};
+*/ ////
 
 use crate::data::Data;
 use crate::env::Env;
 use crate::shell::Application;
 
-use fluent_bundle::{
-    FluentArgs, FluentBundle, FluentError, FluentMessage, FluentResource, FluentValue,
-};
-use fluent_locale::{negotiate_languages, NegotiationStrategy};
-use fluent_syntax::ast::Pattern as FluentPattern;
-use unic_langid::LanguageIdentifier;
+/* ////
+    use fluent_bundle::{
+        FluentArgs, FluentBundle, FluentError, FluentMessage, FluentResource, FluentValue,
+    };
+    use fluent_locale::{negotiate_languages, NegotiationStrategy};
+    use fluent_syntax::ast::Pattern as FluentPattern;
+    use unic_langid::LanguageIdentifier;
 
-// Localization looks for string files in druid/resources, but this path is hardcoded;
-// it will only work if you're running an example from the druid/ directory.
-// At some point we will need to bundle strings with applications, and choose
-// the path dynamically.
-static FALLBACK_STRINGS: &str = include_str!("../resources/i18n/en-US/builtin.ftl");
+    // Localization looks for string files in druid/resources, but this path is hardcoded;
+    // it will only work if you're running an example from the druid/ directory.
+    // At some point we will need to bundle strings with applications, and choose
+    // the path dynamically.
+    static FALLBACK_STRINGS: &str = include_str!("../resources/i18n/en-US/builtin.ftl");
 
-/// Provides access to the localization strings for the current locale.
-#[allow(dead_code)]
-pub(crate) struct L10nManager {
-    // these two are not currently used; will be used when we let the user
-    // add additional localization files.
-    res_mgr: ResourceManager,
-    resources: Vec<String>,
-    current_bundle: BundleStack,
-    current_locale: LanguageIdentifier,
-}
+    /// Provides access to the localization strings for the current locale.
+    #[allow(dead_code)]
+    pub(crate) struct L10nManager {
+        // these two are not currently used; will be used when we let the user
+        // add additional localization files.
+        res_mgr: ResourceManager,
+        resources: Vec<String>,
+        current_bundle: BundleStack,
+        current_locale: LanguageIdentifier,
+    }
 
-/// Manages a collection of localization files.
-struct ResourceManager {
-    resources: HashMap<String, Arc<FluentResource>>,
-    locales: Vec<LanguageIdentifier>,
-    default_locale: LanguageIdentifier,
-    path_scheme: String,
-}
-*/
+    /// Manages a collection of localization files.
+    struct ResourceManager {
+        resources: HashMap<String, Arc<FluentResource>>,
+        locales: Vec<LanguageIdentifier>,
+        default_locale: LanguageIdentifier,
+        path_scheme: String,
+    }
 
-/*
-//NOTE: instead of a closure, at some point we can use something like a lens for this.
-//TODO: this is an Arc so that it can be clone, which is a bound on things like `Menu`.
-/// A closure that generates a localization value.
-type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
+    //NOTE: instead of a closure, at some point we can use something like a lens for this.
+    //TODO: this is an Arc so that it can be clone, which is a bound on things like `Menu`.
+    /// A closure that generates a localization value.
+    type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
+
+*/ ////
 
 /// Wraps a closure that generates an argument for localization.
 #[derive(Clone)]
 struct ArgSource<T>(ArgClosure<T>);
-*/ ////
+
+type MAX_LOCALIZED_STRING = heapless::consts::U10; ////
+type String = heapless::String::<MAX_LOCALIZED_STRING>; ////
 
 /// A string that can be localized based on the current locale.
 ///
@@ -95,14 +99,11 @@ struct ArgSource<T>(ArgClosure<T>);
 /// against a map of localized strings for a given locale.
 #[derive(Debug, Clone)]
 pub struct LocalizedString<T> {
-    _todo: T, ////
-    /* ////
     pub(crate) key: &'static str,
     placeholder: Option<String>,
     args: Option<Vec<(&'static str, ArgSource<T>)>>,
     resolved: Option<String>,
-    resolved_lang: Option<LanguageIdentifier>,
-    */ ////
+    ////resolved_lang: Option<LanguageIdentifier>,
 }
 
 /* ////
@@ -298,6 +299,7 @@ impl L10nManager {
     }
     //TODO: handle locale change
 }
+*/ ////
 
 impl<T> LocalizedString<T> {
     /// Create a new `LocalizedString` with the given key.
@@ -307,27 +309,29 @@ impl<T> LocalizedString<T> {
             args: None,
             placeholder: None,
             resolved: None,
-            resolved_lang: None,
+            ////resolved_lang: None,
         }
     }
 
-    /// Add a placeholder value. This will be used if localization fails.
-    ///
-    /// This is intended for use during prototyping.
-    pub fn with_placeholder(mut self, placeholder: String) -> Self {
-        self.placeholder = Some(placeholder);
-        self
-    }
+    /* ////
+        /// Add a placeholder value. This will be used if localization fails.
+        ///
+        /// This is intended for use during prototyping.
+        pub fn with_placeholder(mut self, placeholder: String) -> Self {
+            self.placeholder = Some(placeholder);
+            self
+        }
 
-    /// Return the localized value for this string, or the placeholder, if
-    /// the localization is missing, or the key if there is no placeholder.
-    pub fn localized_str(&self) -> &str {
-        self.resolved
-            .as_ref()
-            .map(|s| s.as_str())
-            .or_else(|| self.placeholder.as_ref().map(String::as_ref))
-            .unwrap_or(self.key)
-    }
+        /// Return the localized value for this string, or the placeholder, if
+        /// the localization is missing, or the key if there is no placeholder.
+        pub fn localized_str(&self) -> &str {
+            self.resolved
+                .as_ref()
+                .map(|s| s.as_str())
+                .or_else(|| self.placeholder.as_ref().map(String::as_ref))
+                .unwrap_or(self.key)
+        }
+    */ ////
 }
 
 impl<T: Data> LocalizedString<T> {
@@ -374,6 +378,7 @@ impl<T: Data> LocalizedString<T> {
     }
 }
 
+/* ////
 impl<T> std::fmt::Debug for ArgSource<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "Arg Resolver {:p}", self.0)

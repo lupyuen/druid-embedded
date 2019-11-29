@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+////#![no_main]
 #![no_std] ////
 use druid::widget::{Align, Button, Column, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
@@ -31,16 +32,31 @@ fn main() {
 fn ui_builder() -> impl Widget<u32> {
     //  Create a line of text based on a counter value
     let text =
-        LocalizedString::new("hello-counter").with_arg("count", |data: &u32, _env| (*data).into());
+        LocalizedString::new("hello-counter")
+        .with_arg(
+            "count", 
+            |data: &u32, _env| (*data).into()
+        );
     //  Create a label widget to display the text
     let label = Label::new(text);
     //  Create a button widget to increment the counter
-    let button = Button::new("increment", |_ctx, data, _env| *data += 1);
+    let button = Button::new(
+        "increment", 
+        |_ctx, data, _env| *data += 1
+    );
 
     //  Create a column for the UI
     let mut col = Column::new();
     //  Add the label and button widgets to the column
-    col.add_child(Align::centered(Padding::new(5.0, label)), 1.0);
-    col.add_child(Padding::new(5.0, button), 1.0);
+    col.add_child(
+        Align::centered(
+            Padding::new(5.0, label)
+        ),
+        1.0
+    );
+    col.add_child(
+        Padding::new(5.0, button), 
+        1.0
+    );
     col
 }
