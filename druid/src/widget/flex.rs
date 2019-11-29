@@ -46,7 +46,8 @@ pub struct Flex<T: Data> {
 }
 
 struct ChildWidget<T: Data> {
-    widget: WidgetPod<T, dyn Widget<T>>, ////
+    aaa: Widget<T>, ////
+    ////widget: WidgetPod<T, dyn Widget<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
     _todo: Option<T>, ////
@@ -98,6 +99,7 @@ impl Row {
         }
     }
 }
+*/ ////
 
 impl Column {
     /// Create a new row widget.
@@ -112,6 +114,7 @@ impl Column {
     }
 }
 
+/* ////
 impl<T: Data> Flex<T> {
     /// Add a child widget.
     ///
