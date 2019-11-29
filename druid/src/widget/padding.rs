@@ -28,7 +28,7 @@ pub struct Padding<T: Data> {
     bottom: f64,
 
     ////TODO child: WidgetPod<T, Box<dyn Widget<T>>>,
-    _TODO: T, ////
+    _todo: T, ////
 }
 
 /* ////

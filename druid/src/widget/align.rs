@@ -34,7 +34,7 @@ pub struct Align<T: Data> {
     ////TODO child: WidgetPod<T, Box<dyn Widget<T>>>,
     width_factor: Option<f64>,
     height_factor: Option<f64>,
-    _TODO: T, ////
+    _todo: T, ////
 }
 
 /*

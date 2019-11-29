@@ -40,12 +40,16 @@ pub struct Column;
 pub struct Flex<T: Data> {
     direction: Axis,
 
-    children: Vec<ChildWidget<T>>,
+    children: heapless::Vec::<ChildWidget<T>, MAX_WIDGETS>, ////
+    ////children: Vec<ChildWidget<T>>,
 }
 
+type MAX_WIDGETS = heapless::consts::U8; ////
+
 struct ChildWidget<T: Data> {
-    widget: WidgetPod<T, Box<dyn Widget<T>>>,
+    ////TODO: widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
+    _todo: T, ////
 }
 
 pub enum Axis {
