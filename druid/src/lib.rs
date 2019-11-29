@@ -54,7 +54,7 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use druid_shell::kurbo::{/* Affine, Point, */ Rect, /* Shape, */ Size, /* Vec2 */}; ////
+use druid_shell::kurbo::{/* Affine, */ Point, Rect, /* Shape, */ Size, /* Vec2 */}; ////
 ////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
 use druid_shell::piet::{Piet, RenderContext}; ////
 
