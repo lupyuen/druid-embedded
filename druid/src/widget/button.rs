@@ -14,7 +14,6 @@
 
 //! A button widget.
 
-/*
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
     Widget,
@@ -23,13 +22,9 @@ use crate::{
 use crate::kurbo::RoundedRect;
 use crate::piet::{LinearGradient, UnitPoint};
 
-use crate::theme;
-*/
-use crate::widget::{/* Align, */ Label, /* LabelText, SizedBox */};////
-////use crate::widget::{Align, Label, LabelText, SizedBox};
-/*
+////use crate::theme;
+use crate::widget::{/* Align, */ Label, LabelText, /* SizedBox */};////
 use crate::{Point, RenderContext};
-*/
 
 /// A button with a text label.
 pub struct Button<T> {
@@ -38,7 +33,6 @@ pub struct Button<T> {
     ////action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
 }
 
-/*
 impl<T: Data + 'static> Button<T> {
     /// Create a new button. The closure provided will be called when the button
     /// is clicked.
@@ -48,10 +42,11 @@ impl<T: Data + 'static> Button<T> {
     ) -> Button<T> {
         Button {
             label: Label::aligned(text, UnitPoint::CENTER),
-            action: Box::new(action),
+            ////action: Box::new(action),
         }
     }
 
+    /* ////
     /// Create a new button with a fixed size.
     pub fn sized(
         text: impl Into<LabelText<T>>,
@@ -80,8 +75,10 @@ impl<T: Data + 'static> Button<T> {
     /// let button = Button::<u32>::new("hello", Button::noop);
     /// ```
     pub fn noop(_: &mut EventCtx, _: &mut T, _: &Env) {}
+    */ ////
 }
 
+/* ////
 impl<T: Data> Widget<T> for Button<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, data: &T, env: &Env) {
         let is_active = base_state.is_active();
@@ -154,4 +151,4 @@ impl<T: Data> Widget<T> for Button<T> {
         self.label.update(ctx, old_data, data, env)
     }
 }
-*/
+*/ ////

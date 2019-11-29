@@ -43,7 +43,7 @@ pub enum LabelText<T> {
 /// A label that displays some text.
 pub struct Label<T> {
     text: LabelText<T>,
-    ////align: UnitPoint,
+    align: UnitPoint,
 }
 
 /* ////
@@ -63,11 +63,10 @@ impl<T: Data> Label<T> {
     pub fn new(text: impl Into<LabelText<T>>) -> Self {
         Label {
             text: text.into(),
-            ////align: UnitPoint::LEFT,
+            align: UnitPoint::LEFT,
         }
     }
 
-    /* ////
     pub fn aligned(text: impl Into<LabelText<T>>, align: UnitPoint) -> Self {
         Label {
             text: text.into(),
@@ -75,6 +74,7 @@ impl<T: Data> Label<T> {
         }
     }
 
+    /* ////
     fn get_layout(&self, t: &mut PietText, env: &Env) -> PietTextLayout {
         let font_name = env.get(theme::FONT_NAME);
         let font_size = env.get(theme::TEXT_SIZE_NORMAL);

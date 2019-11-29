@@ -21,8 +21,7 @@ mod button;
 pub use crate::widget::button::Button;
 
 mod label;
-pub use crate::widget::label::{/* DynLabel, */ Label, /* LabelText */};////
-////pub use crate::widget::label::{DynLabel, Label, LabelText};
+pub use crate::widget::label::{/* DynLabel, */ Label, LabelText};////
 
 /* ////
 mod either;
