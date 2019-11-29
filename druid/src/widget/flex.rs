@@ -137,7 +137,6 @@ impl<T: Data> Flex<T> {
     }
 }
 
-/* ////
 impl<T: Data> Widget<T> for Flex<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         for child in &mut self.children {
@@ -162,11 +161,13 @@ impl<T: Data> Widget<T> for Flex<T> {
                 let child_bc = match self.direction {
                     Axis::Horizontal => BoxConstraints::new(
                         Size::new(0.0, bc.min().height),
-                        Size::new(std::f64::INFINITY, bc.max.height),
+                        Size::new(core::f64::INFINITY, bc.max.height), ////
+                        ////Size::new(std::f64::INFINITY, bc.max.height),
                     ),
                     Axis::Vertical => BoxConstraints::new(
                         Size::new(bc.min().width, 0.0),
-                        Size::new(bc.max().width, std::f64::INFINITY),
+                        Size::new(bc.max().width, core::f64::INFINITY), ////
+                        ////Size::new(bc.max().width, std::f64::INFINITY),
                     ),
                 };
                 let child_size = child.widget.layout(layout_ctx, &child_bc, data, env);
@@ -218,7 +219,7 @@ impl<T: Data> Widget<T> for Flex<T> {
         }
 
         if flex_sum > 0.0 && total_major.is_infinite() {
-            log::warn!("A child of Flex is flex, but Flex is unbounded.")
+            ////log::warn!("A child of Flex is flex, but Flex is unbounded.")
         }
 
         if flex_sum > 0.0 {
@@ -242,4 +243,3 @@ impl<T: Data> Widget<T> for Flex<T> {
         }
     }
 }
-*/ ////

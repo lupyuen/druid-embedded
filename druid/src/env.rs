@@ -20,13 +20,13 @@ use std::fmt::{Debug, Formatter};
 use std::marker::PhantomData;
 use std::ops::Deref;
 use std::sync::Arc;
+*/
 
 use crate::kurbo::{Point, Rect, Size};
 use crate::piet::{Color, LinearGradient};
 
-use crate::localization::L10nManager;
+////use crate::localization::L10nManager;
 use crate::Data;
-*/
 
 /// An environment passed down through all widget traversals.
 ///
@@ -252,13 +252,16 @@ impl Data for Value {
         }
     }
 }
+*/ ////
 
 impl Data for Env {
     fn same(&self, other: &Env) -> bool {
-        Arc::ptr_eq(&self.0, &other.0) || self.0.deref().same(other.0.deref())
+        true ////TODO
+        ////Arc::ptr_eq(&self.0, &other.0) || self.0.deref().same(other.0.deref())
     }
 }
 
+/* ////
 impl Data for EnvImpl {
     fn same(&self, other: &EnvImpl) -> bool {
         self.map.len() == other.map.len()

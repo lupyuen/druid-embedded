@@ -44,7 +44,7 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use kurbo::{/* Affine, */ Point, Rect, /* Shape, */ Size, /* Vec2 */}; ////
+use kurbo::{Affine, Point, Rect, Shape, Size, Vec2}; ////
 use piet::{Piet, RenderContext}; ////
 
 // these are the types from shell that we expose; others we only use internally.
@@ -284,7 +284,6 @@ pub struct PaintCtx<'a, 'b: 'a> {
 #[derive(Debug, Clone)]
 pub struct Region(Rect);
 
-/*
 impl Region {
     /// Returns the smallest `Rect` that encloses the entire region.
     pub fn to_rect(&self) -> Rect {
@@ -304,6 +303,7 @@ impl From<Rect> for Region {
     }
 }
 
+/* ////
 impl<'a, 'b: 'a> Deref for PaintCtx<'a, 'b> {
     type Target = Piet<'b>;
 
@@ -317,6 +317,7 @@ impl<'a, 'b: 'a> DerefMut for PaintCtx<'a, 'b> {
         self.render_ctx
     }
 }
+*/ ////
 
 impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
     /// Returns the currently visible [`Region`].
@@ -346,7 +347,6 @@ impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
         f(&mut child_ctx)
     }
 }
-*/
 
 /// A context provided to layout handling methods of widgets.
 ///
@@ -499,14 +499,16 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
             return;
         }
 
-        if let Err(e) = paint_ctx.save() {
+        if let Err(e) = paint_ctx.render_ctx.save() { ////
+        ////if let Err(e) = paint_ctx.save() {
             assert!(false, "save context fail"); ////
             ////error!("saving render context failed: {:?}", e);
             return;
         }
 
         let layout_origin = self.state.layout_rect.origin().to_vec2();
-        paint_ctx.transform(Affine::translate(layout_origin));
+        paint_ctx.render_ctx.transform(Affine::translate(layout_origin)); ////
+        ////paint_ctx.transform(Affine::translate(layout_origin));
 
         let visible = paint_ctx.region().to_rect() - layout_origin;
 
@@ -514,7 +516,8 @@ impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
             self.inner.paint(ctx, &self.state, data, &env)
         });
 
-        if let Err(e) = paint_ctx.restore() {
+        if let Err(e) = paint_ctx.render_ctx.restore() { ////
+        ////if let Err(e) = paint_ctx.restore() {
             assert!(false, "restore context fail"); ////
             ////error!("restoring render context failed: {:?}", e);
         }
@@ -769,6 +772,7 @@ impl BaseState {
         self.layout_rect.size()
     }
 }
+*/ ////
 
 impl BoxConstraints {
     /// Create a new box constraints object.
@@ -832,8 +836,8 @@ impl BoxConstraints {
             && 0.0 <= self.min.height
             && self.min.height <= self.max.height)
         {
-            warn!("Bad BoxConstraints passed to {}:", name);
-            warn!("{:?}", self);
+            ////warn!("Bad BoxConstraints passed to {}:", name);
+            ////warn!("{:?}", self);
         }
     }
 
@@ -853,6 +857,7 @@ impl BoxConstraints {
     }
 }
 
+/* ////
 impl<'a, 'b> EventCtx<'a, 'b> {
     /// Invalidate.
     ///
