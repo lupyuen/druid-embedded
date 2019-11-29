@@ -14,7 +14,7 @@
 
 //! A widget that just adds padding during layout.
 
-use druid_shell::kurbo::Insets; ////
+use crate::kurbo::Insets; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Point, Rect, Size,
     UpdateCtx, Widget, WidgetPod,

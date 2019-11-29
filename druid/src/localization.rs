@@ -34,7 +34,7 @@
 //! [`Env`]: struct.Env.html
 //! [`Data`]: trait.Data.html
 
-/*
+/* ////
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::{fs, io};
@@ -87,6 +87,7 @@ type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
 /// Wraps a closure that generates an argument for localization.
 #[derive(Clone)]
 struct ArgSource<T>(ArgClosure<T>);
+*/ ////
 
 /// A string that can be localized based on the current locale.
 ///
@@ -94,15 +95,17 @@ struct ArgSource<T>(ArgClosure<T>);
 /// against a map of localized strings for a given locale.
 #[derive(Debug, Clone)]
 pub struct LocalizedString<T> {
+    _todo: T, ////
+    /* ////
     pub(crate) key: &'static str,
     placeholder: Option<String>,
     args: Option<Vec<(&'static str, ArgSource<T>)>>,
     resolved: Option<String>,
     resolved_lang: Option<LanguageIdentifier>,
+    */ ////
 }
-*/
 
-/*
+/* ////
 /// A stack of localization resources, used for fallback.
 struct BundleStack(Vec<FluentBundle<Arc<FluentResource>>>);
 

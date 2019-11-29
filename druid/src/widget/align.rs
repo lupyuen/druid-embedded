@@ -25,8 +25,7 @@ use crate::{
 };
 */
 
-use druid_shell::piet::UnitPoint; ////
-////use crate::piet::UnitPoint;
+use crate::piet::UnitPoint;
 
 /// A widget that aligns its child.
 pub struct Align<T: Data> {

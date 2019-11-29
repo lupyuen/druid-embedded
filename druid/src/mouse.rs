@@ -14,7 +14,7 @@
 
 //! The mousey bits
 
-use druid_shell::kurbo::Point; ////
+use crate::kurbo::Point; ////
 ////use crate::{KeyModifiers, MouseButton};
 
 /// The state of the mouse for a click, mouse-up, or move event.

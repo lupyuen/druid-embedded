@@ -18,32 +18,22 @@
 #![deny(intra_doc_link_resolution_failure, unsafe_code)]
 #![allow(clippy::new_ret_no_self)]
 
-/*
 use druid_shell as shell;
 pub use druid_shell::{kurbo, piet};
 
 mod app;
-mod app_delegate;
-mod command;
-*/
+////mod app_delegate;
+////mod command;
 mod data;
 mod env;
 mod event;
-/*
-mod lens;
-*/
+////mod lens;
 mod localization;
-/*
-mod menu;
-*/
+////mod menu;
 mod mouse;
-/*
-pub mod theme;
-*/
+////pub mod theme;
 pub mod widget;
-/*
-mod win_handler;
-*/
+////mod win_handler;
 mod window;
 
 /*
@@ -54,43 +44,30 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use druid_shell::kurbo::{/* Affine, */ Point, Rect, /* Shape, */ Size, /* Vec2 */}; ////
-////use kurbo::{Affine, Point, Rect, Shape, Size, Vec2};
-use druid_shell::piet::{Piet, RenderContext}; ////
+use kurbo::{/* Affine, */ Point, Rect, /* Shape, */ Size, /* Vec2 */}; ////
+use piet::{Piet, RenderContext}; ////
 
 // these are the types from shell that we expose; others we only use internally.
-pub use druid_shell::{ ////
+pub use shell::{ ////
     /* Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
     FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods, */
     Text, /* TimerToken, */ WinCtx, WindowHandle,
 }; ////
-/* ////
-pub use shell::{
-    Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
-    FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods,
-    Text, TimerToken, WinCtx, WindowHandle,
-};
-*/ ////
 
-/*
 pub use app::{AppLauncher, WindowDesc};
-pub use app_delegate::{AppDelegate, DelegateCtx};
-pub use command::{sys as commands, Command, Selector};
-*/
+////pub use app_delegate::{AppDelegate, DelegateCtx};
+////pub use command::{sys as commands, Command, Selector};
 pub use data::Data;
 pub use env::{Env, /* Key, Value */}; ////
 ////pub use env::{Env, Key, Value};
 pub use event::{Event, /* WheelEvent */}; ////
 ////pub use event::{Event, WheelEvent};
-/*
-pub use lens::{Lens, LensWrap};
+////pub use lens::{Lens, LensWrap};
 pub use localization::LocalizedString;
-pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
+////pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
-pub use win_handler::DruidHandler;
-*/
+////pub use win_handler::DruidHandler;
 pub use window::{/* Window, */ WindowId}; ////
-////pub use window::{Window, WindowId};
 
 /// A container for one widget in the hierarchy.
 ///
@@ -111,10 +88,10 @@ pub struct WidgetPod<T: Data, W: Widget<T>> {
     inner: W,
 }
 
-/*
+/* ////
 /// Convenience type for dynamic boxed widget.
 pub type BoxedWidget<T> = WidgetPod<T, Box<dyn Widget<T>>>;
-*/
+*/ ////
 
 /// Generic state for all widgets in the hierarchy.
 ///

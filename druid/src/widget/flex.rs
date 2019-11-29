@@ -14,7 +14,7 @@
 
 //! A widget that arranges its children in a one-dimensional array.
 
-use druid_shell::kurbo::{Point, Rect, Size}; ////
+use crate::kurbo::{Point, Rect, Size}; ////
 
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
