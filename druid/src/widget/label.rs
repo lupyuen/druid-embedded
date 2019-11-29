@@ -14,9 +14,9 @@
 
 //! A label widget.
 
-/* ////
-use std::marker::PhantomData;
+////use std::marker::PhantomData;
 
+use core::str::FromStr; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
     Widget,
@@ -26,13 +26,10 @@ use crate::kurbo::Rect;
 use crate::piet::{
     FontBuilder, PietText, PietTextLayout, Text, TextLayout, TextLayoutBuilder, UnitPoint,
 };
-*/ ////
 
 use crate::localization::LocalizedString;
-/* ////
-use crate::theme;
+////use crate::theme;
 use crate::{Point, RenderContext};
-*/ ////
 
 type MaxLabel = heapless::consts::U20; //// Max length of label strings
 type String = heapless::String::<MaxLabel>; ////
@@ -49,7 +46,7 @@ pub struct Label<T> {
     ////align: UnitPoint,
 }
 
-/*
+/* ////
 /// A label with dynamic text.
 ///
 /// The provided closure is called on update, and its return
@@ -58,6 +55,7 @@ pub struct DynLabel<T: Data> {
     label_closure: Box<dyn FnMut(&T, &Env) -> String>,
     phantom: PhantomData<T>,
 }
+*/ ////
 
 impl<T: Data> Label<T> {
     /// Discussion question: should this return Label or a wrapped
@@ -65,10 +63,11 @@ impl<T: Data> Label<T> {
     pub fn new(text: impl Into<LabelText<T>>) -> Self {
         Label {
             text: text.into(),
-            align: UnitPoint::LEFT,
+            ////align: UnitPoint::LEFT,
         }
     }
 
+    /* ////
     pub fn aligned(text: impl Into<LabelText<T>>, align: UnitPoint) -> Self {
         Label {
             text: text.into(),
@@ -84,8 +83,10 @@ impl<T: Data> Label<T> {
         let font = t.new_font_by_name(font_name, font_size).build().unwrap();
         t.new_text_layout(&font, text).build().unwrap()
     }
+    */ ////
 }
 
+/* ////
 impl<T: Data> Widget<T> for Label<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, _data: &T, env: &Env) {
         let font_size = env.get(theme::TEXT_SIZE_NORMAL);
@@ -210,6 +211,7 @@ impl<T: Data> Widget<T> for DynLabel<T> {
         ctx.invalidate();
     }
 }
+*/ ////
 
 impl<T> From<String> for LabelText<T> {
     fn from(src: String) -> LabelText<T> {
@@ -219,7 +221,8 @@ impl<T> From<String> for LabelText<T> {
 
 impl<T> From<&str> for LabelText<T> {
     fn from(src: &str) -> LabelText<T> {
-        LabelText::Specific(src.to_string())
+        LabelText::Specific(String::from_str(src).unwrap()) ////
+        ////LabelText::Specific(src.to_string())
     }
 }
 
@@ -228,4 +231,3 @@ impl<T> From<LocalizedString<T>> for LabelText<T> {
         LabelText::Localized(src)
     }
 }
-*/
