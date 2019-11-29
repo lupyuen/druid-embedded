@@ -36,20 +36,20 @@ pub struct Row;
 /// [`Flex`]: struct.Flex.html
 pub struct Column;
 
+type MaxWidgets = heapless::consts::U8; //// Max widgets per container
+type Vec<T> = heapless::Vec::<T, MaxWidgets>;
+
 /// A container with either horizontal or vertical layout.
 pub struct Flex<T: Data> {
     direction: Axis,
-
-    children: heapless::Vec::<ChildWidget<T>, MAX_WIDGETS>, ////
-    ////children: Vec<ChildWidget<T>>,
+    children: Vec<ChildWidget<T>>,
 }
 
-type MAX_WIDGETS = heapless::consts::U8; ////
-
 struct ChildWidget<T: Data> {
-    ////TODO: widget: WidgetPod<T, Box<dyn Widget<T>>>,
+    widget: WidgetPod<T, dyn Widget<T>>, ////
+    ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
-    _todo: T, ////
+    _todo: Option<T>, ////
 }
 
 pub enum Axis {
