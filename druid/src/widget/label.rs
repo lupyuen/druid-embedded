@@ -86,7 +86,6 @@ impl<T: Data> Label<T> {
     */ ////
 }
 
-/* ////
 impl<T: Data> Widget<T> for Label<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, _data: &T, env: &Env) {
         let font_size = env.get(theme::TEXT_SIZE_NORMAL);
@@ -153,6 +152,7 @@ impl<T: Data> LabelText<T> {
     }
 }
 
+/* ////
 impl<T: Data> DynLabel<T> {
     pub fn new(label_closure: impl FnMut(&T, &Env) -> String + 'static) -> DynLabel<T> {
         DynLabel {

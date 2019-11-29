@@ -23,13 +23,14 @@ use crate::kurbo::RoundedRect;
 use crate::piet::{LinearGradient, UnitPoint};
 
 ////use crate::theme;
-use crate::widget::{/* Align, */ Label, LabelText, /* SizedBox */};////
+use crate::widget::{Align, Label, LabelText, /* SizedBox */};////
 use crate::{Point, RenderContext};
 
 /// A button with a text label.
 pub struct Button<T> {
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.
+    action: fn(&mut EventCtx, &mut T, &Env), ////
     ////action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
 }
 
@@ -38,10 +39,12 @@ impl<T: Data + 'static> Button<T> {
     /// is clicked.
     pub fn new(
         text: impl Into<LabelText<T>>,
-        action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
+        action: fn(&mut EventCtx, &mut T, &Env), ////
+        ////action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
     ) -> Button<T> {
         Button {
             label: Label::aligned(text, UnitPoint::CENTER),
+            action, ////
             ////action: Box::new(action),
         }
     }
@@ -78,7 +81,6 @@ impl<T: Data + 'static> Button<T> {
     */ ////
 }
 
-/* ////
 impl<T: Data> Widget<T> for Button<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, data: &T, env: &Env) {
         let is_active = base_state.is_active();
@@ -108,7 +110,8 @@ impl<T: Data> Widget<T> for Button<T> {
 
         paint_ctx.stroke(rounded_rect, &border_color, 2.0);
 
-        paint_ctx.fill(rounded_rect, &bg_gradient);
+        paint_ctx.render_ctx.fill(rounded_rect, &bg_gradient); ////
+        ////paint_ctx.fill(rounded_rect, &bg_gradient);
 
         self.label.paint(paint_ctx, base_state, data, env);
     }
@@ -151,4 +154,3 @@ impl<T: Data> Widget<T> for Button<T> {
         self.label.update(ctx, old_data, data, env)
     }
 }
-*/ ////

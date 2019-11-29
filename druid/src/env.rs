@@ -48,6 +48,7 @@ struct EnvImpl {
     map: HashMap<String, Value>,
     l10n: Arc<L10nManager>,
 }
+*/
 
 /// A typed key.
 ///
@@ -58,7 +59,8 @@ struct EnvImpl {
 /// [`ValueType`]: trait.ValueType.html
 pub struct Key<T> {
     key: &'static str,
-    value_type: PhantomData<T>,
+    value_type: Option<T>, ////
+    ////value_type: PhantomData<T>,
 }
 
 // we could do some serious deriving here: the set of types that can be stored
@@ -71,7 +73,7 @@ pub enum Value {
     Size(Size),
     Rect(Rect),
     Color(Color),
-    LinearGradient(Arc<LinearGradient>),
+    ////LinearGradient(Arc<LinearGradient>),
     Float(f64),
     UnsignedInt(u64),
     String(String),
@@ -98,7 +100,7 @@ pub trait ValueType<'a>: Sized {
 /// mismatch.
 ///
 /// TODO: replace with a less stringly-typed object.
-pub type EnvError = String;
+////pub type EnvError = String;
 
 impl Env {
     /// Gets a value from the environment, expecting it to be present.
@@ -159,6 +161,7 @@ impl Env {
         env.map.insert(key, value);
     }
 
+    /*
     /// Returns a reference to the [`L10nManager`], which handles localization
     /// resources.
     ///
@@ -166,8 +169,10 @@ impl Env {
     pub(crate) fn localization_manager(&self) -> &L10nManager {
         &self.0.l10n
     }
+    */
 }
 
+/* ////
 impl Debug for Value {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         match self {
@@ -183,6 +188,7 @@ impl Debug for Value {
         }
     }
 }
+*/ ////
 
 impl<T> Key<T> {
     /// Create a new strongly typed `Key` with the given string value.
@@ -252,7 +258,6 @@ impl Data for Value {
         }
     }
 }
-*/ ////
 
 impl Data for Env {
     fn same(&self, other: &Env) -> bool {

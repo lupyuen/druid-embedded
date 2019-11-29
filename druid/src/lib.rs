@@ -707,6 +707,7 @@ impl<T: Data, W: Widget<T> + 'static> WidgetPod<T, W> {
         }
     }
 }
+*/ ////
 
 impl BaseState {
     /// The "hot" (aka hover) status of a widget.
@@ -772,7 +773,6 @@ impl BaseState {
         self.layout_rect.size()
     }
 }
-*/ ////
 
 impl BoxConstraints {
     /// Create a new box constraints object.
