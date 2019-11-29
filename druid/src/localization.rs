@@ -42,6 +42,7 @@
     use log::{debug, error, warn};
 */ ////
 
+use core::str::FromStr; ////
 use crate::data::Data;
 use crate::env::Env;
 use crate::shell::Application;
@@ -79,25 +80,30 @@ use crate::shell::Application;
         path_scheme: String,
     }
 
-    //NOTE: instead of a closure, at some point we can use something like a lens for this.
-    //TODO: this is an Arc so that it can be clone, which is a bound on things like `Menu`.
-    /// A closure that generates a localization value.
-    type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
-
 */ ////
+
+type MaxLocalizedString = heapless::consts::U20; //// Max length of localized strings
+type String = heapless::String::<MaxLocalizedString>; ////
+
+type MaxLocalizedArg = heapless::consts::U2; //// Max number of localized args
+type Vec<T> = heapless::Vec::<T, MaxLocalizedArg>; ///
+
+type ArgClosure<T> = fn(&T, &Env) -> String; ////
+//////NOTE: instead of a closure, at some point we can use something like a lens for this.
+//////TODO: this is an Arc so that it can be clone, which is a bound on things like `Menu`.
+/////// A closure that generates a localization value.
+////type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
 
 /// Wraps a closure that generates an argument for localization.
 #[derive(Clone)]
 struct ArgSource<T>(ArgClosure<T>);
 
-type MAX_LOCALIZED_STRING = heapless::consts::U10; ////
-type String = heapless::String::<MAX_LOCALIZED_STRING>; ////
-
 /// A string that can be localized based on the current locale.
 ///
 /// At its simplest, a `LocalizedString` is a key that can be resolved
 /// against a map of localized strings for a given locale.
-#[derive(Debug, Clone)]
+#[derive(Clone)]////
+////#[derive(Debug, Clone)]
 pub struct LocalizedString<T> {
     pub(crate) key: &'static str,
     placeholder: Option<String>,
@@ -343,11 +349,13 @@ impl<T: Data> LocalizedString<T> {
     pub fn with_arg(
         mut self,
         key: &'static str,
-        f: impl Fn(&T, &Env) -> FluentValue<'static> + 'static,
+        f: fn(&T, &Env) -> String, ////
+        ////f: impl Fn(&T, &Env) -> FluentValue<'static> + 'static,
     ) -> Self {
         self.args
             .get_or_insert(Vec::new())
-            .push((key, ArgSource(Arc::new(f))));
+            .push((key, ArgSource(f))); ////
+            ////.push((key, ArgSource(Arc::new(f))));
         self
     }
 
@@ -360,18 +368,22 @@ impl<T: Data> LocalizedString<T> {
         //or *anytime* we have arguments. Ideally we would be using a lens
         //to only recompute when our actual data has changed.
         if self.args.is_some()
-            || self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
+            ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
+            /* ////TODO
             let args: Option<FluentArgs> = self
                 .args
                 .as_ref()
                 .map(|a| a.iter().map(|(k, v)| (*k, (v.0)(data, env))).collect());
 
-            self.resolved_lang = Some(env.localization_manager().current_locale.clone());
+            ////self.resolved_lang = Some(env.localization_manager().current_locale.clone());
             let next = env.localization_manager().localize(self.key, args.as_ref());
             let result = next != self.resolved;
             self.resolved = next;
             result
+            */ ////
+            self.resolved = Some(String::from_str("TODO resolve").unwrap()); ////
+            true ////
         } else {
             false
         }

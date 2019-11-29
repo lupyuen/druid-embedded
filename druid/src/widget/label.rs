@@ -14,12 +14,7 @@
 
 //! A label widget.
 
-use heapless::{
-    String,
-    consts::*,
-};
-
-/*
+/* ////
 use std::marker::PhantomData;
 
 use crate::{
@@ -31,19 +26,21 @@ use crate::kurbo::Rect;
 use crate::piet::{
     FontBuilder, PietText, PietTextLayout, Text, TextLayout, TextLayoutBuilder, UnitPoint,
 };
-*/
+*/ ////
 
-/*
 use crate::localization::LocalizedString;
+/* ////
 use crate::theme;
 use crate::{Point, RenderContext};
-*/
+*/ ////
+
+type MaxLabel = heapless::consts::U20; //// Max length of label strings
+type String = heapless::String::<MaxLabel>; ////
 
 /// The text for the label; either a localized or a specific string.
 pub enum LabelText<T> {
-    _TodoLocalizedLocalizedString(T),
-    ////Localized(LocalizedString<T>),
-    Specific(String::<U20>),
+    Localized(LocalizedString<T>),
+    Specific(String),
 }
 
 /// A label that displays some text.

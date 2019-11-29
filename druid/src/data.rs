@@ -17,9 +17,9 @@
 /*
 use std::rc::Rc;
 use std::sync::Arc;
+*/
 
 pub use druid_derive::Data;
-*/
 
 /// A trait used to represent value types.
 ///
@@ -103,7 +103,6 @@ pub trait Data: Clone {
     fn same(&self, other: &Self) -> bool;
 }
 
-/*
 /// An impl of `Data` suitable for simple types.
 ///
 /// The `same` method is implemented with equality, so the type should
@@ -235,4 +234,3 @@ impl<T0: Data, T1: Data, T2: Data, T3: Data, T4: Data, T5: Data> Data for (T0, T
             && self.5.same(&other.5)
     }
 }
-*/

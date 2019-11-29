@@ -29,6 +29,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "druid"
 version = "0.4.0"
 dependencies = [
+ "druid-derive 0.1.2",
  "druid-shell 0.4.0",
  "heapless 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]

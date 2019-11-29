@@ -36,6 +36,6 @@ heapless             = "0.5.1" #### `static` friendly data structures that don't
 path = "../druid-shell"
 version = "0.4.0"
 
-#[dependencies.druid-derive]
-#path = "../druid-derive"
-#version = "0.1.1"
+[dependencies.druid-derive]
+path = "../druid-derive"
+version = "0.1.1"
