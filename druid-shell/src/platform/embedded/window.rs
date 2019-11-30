@@ -101,7 +101,7 @@ pub struct WindowBuilder {
 
 #[derive(Clone, Default)]
 pub(crate) struct WindowState {
-    pub(crate) handler: Option<&'static mut dyn WinHandler>, ////
+    ////pub(crate) handler: Option<&'static mut dyn WinHandler>, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,
@@ -174,7 +174,7 @@ impl WindowBuilder {
         */
 
         let win_state = WindowState {
-            handler: Some(handler)
+            ////TODO: handler: Some(handler)
         };
 
         /*

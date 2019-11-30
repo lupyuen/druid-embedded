@@ -124,8 +124,10 @@ impl<T: Data + 'static> AppLauncher<T> {
         ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
+            /*  ////TODO2
             let window = desc.build_native(&mut state)?;
             window.show();
+            */ ////
         }
 
         ////main_loop.run();
@@ -183,6 +185,7 @@ impl<T: Data + 'static> WindowDesc<T> {
         self
     }
 
+    /* ////TODO1
     /// Attempt to create a platform window from this `WindowDesc`.
     pub(crate) fn build_native(
         &self,
@@ -227,6 +230,7 @@ impl<T: Data + 'static> WindowDesc<T> {
 
         builder.build()
     }
+    */ ////
 
     /* ////
     /// Set the menu for this window.

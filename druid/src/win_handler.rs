@@ -59,7 +59,6 @@ pub struct DruidHandler<T: Data + 'static> { ////
 }
 
 /// State shared by all windows in the UI.
-#[derive(Clone)] ////
 pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
@@ -70,7 +69,6 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 }
 
 /// All active windows.
-#[derive(Clone)] ////
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
     windows: Option<Window<T>>, //// Only 1 window supported
@@ -80,7 +78,6 @@ struct Windows<T: Data + 'static> { ////
 }
 
 /// Per-window state not owned by user code.
-#[derive(Clone)] ////
 pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle,
     ////prev_paint_time: Option<Instant>,

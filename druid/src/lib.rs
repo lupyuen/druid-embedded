@@ -81,6 +81,7 @@ pub use window::{ Window, WindowId}; ////
 /// widget can process a diff between the old value and the new.
 ///
 /// [`update`]: trait.Widget.html#tymethod.update
+#[derive(Clone)] ////
 pub struct WidgetPod<T: Data, W: Widget<T>> {
     state: BaseState,
     old_data: Option<T>,
@@ -108,7 +109,8 @@ pub type BoxedWidget<T> = WidgetPod<T, Box<dyn Widget<T>>>;
 ///
 /// [`paint`]: trait.Widget.html#tymethod.paint
 /// [`WidgetPod`]: struct.WidgetPod.html
-#[derive(Default)]
+#[derive(Clone, Default)] ////
+////#[derive(Default)]
 pub struct BaseState {
     layout_rect: Rect,
 
