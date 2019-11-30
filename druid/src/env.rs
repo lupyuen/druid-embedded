@@ -64,6 +64,19 @@ pub struct Key<T> {
 type MaxStringValue = heapless::consts::U20; //// Max length of string values
 type String = heapless::String::<MaxStringValue>; ////
 
+////TODO: Sync with piet-embedded-graphics/src/text.rs
+////pub type FontType<'a> = fonts::Font12x16::<'a, Rgb565>;
+pub const FONT_WIDTH:  u16  = 12;
+pub const FONT_HEIGHT: u16  = 16;
+pub const FONT_NAME:   &str = &"Font12x16";
+pub const TEXT_SIZE_NORMAL: f64 = FONT_HEIGHT as f64;
+
+pub const LABEL_COLOR:  Color = Color::WHITE;
+pub const BORDER:       Color = Color::WHITE;
+pub const BORDER_LIGHT: Color = Color::WHITE;
+pub const BUTTON_LIGHT: Color = Color::BLACK;
+pub const BUTTON_DARK:  Color = Color::BLACK;
+
 // we could do some serious deriving here: the set of types that can be stored
 // could be defined per-app
 // Also consider Box<Any> (though this would also impact debug).

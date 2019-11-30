@@ -50,34 +50,34 @@ impl<T: Data + 'static> Button<T> {
     }
 
     /* ////
-    /// Create a new button with a fixed size.
-    pub fn sized(
-        text: impl Into<LabelText<T>>,
-        action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
-        width: f64,
-        height: f64,
-    ) -> impl Widget<T> {
-        Align::vertical(
-            UnitPoint::CENTER,
-            SizedBox::new(Button {
-                label: Label::aligned(text, UnitPoint::CENTER),
-                action: Box::new(action),
-            })
-            .width(width)
-            .height(height),
-        )
-    }
+        /// Create a new button with a fixed size.
+        pub fn sized(
+            text: impl Into<LabelText<T>>,
+            action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
+            width: f64,
+            height: f64,
+        ) -> impl Widget<T> {
+            Align::vertical(
+                UnitPoint::CENTER,
+                SizedBox::new(Button {
+                    label: Label::aligned(text, UnitPoint::CENTER),
+                    action: Box::new(action),
+                })
+                .width(width)
+                .height(height),
+            )
+        }
 
-    /// A function that can be passed to `Button::new`, for buttons with no action.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use druid::widget::Button;
-    ///
-    /// let button = Button::<u32>::new("hello", Button::noop);
-    /// ```
-    pub fn noop(_: &mut EventCtx, _: &mut T, _: &Env) {}
+        /// A function that can be passed to `Button::new`, for buttons with no action.
+        ///
+        /// # Examples
+        ///
+        /// ```
+        /// use druid::widget::Button;
+        ///
+        /// let button = Button::<u32>::new("hello", Button::noop);
+        /// ```
+        pub fn noop(_: &mut EventCtx, _: &mut T, _: &Env) {}
     */ ////
 }
 
@@ -88,29 +88,37 @@ impl<T: Data> Widget<T> for Button<T> {
 
         let rounded_rect =
             RoundedRect::from_origin_size(Point::ORIGIN, base_state.size().to_vec2(), 4.);
-        let bg_gradient = if is_active {
-            LinearGradient::new(
-                UnitPoint::TOP,
-                UnitPoint::BOTTOM,
-                (env.get(theme::BUTTON_LIGHT), env.get(theme::BUTTON_DARK)),
-            )
-        } else {
-            LinearGradient::new(
-                UnitPoint::TOP,
-                UnitPoint::BOTTOM,
-                (env.get(theme::BUTTON_DARK), env.get(theme::BUTTON_LIGHT)),
-            )
-        };
+        let bg_color = crate::env::BUTTON_DARK; ////
+        /* ////
+            let bg_gradient = if is_active {
+                LinearGradient::new(
+                    UnitPoint::TOP,
+                    UnitPoint::BOTTOM,
+                    (env.get(theme::BUTTON_LIGHT), env.get(theme::BUTTON_DARK)),
+                )
+            } else {
+                LinearGradient::new(
+                    UnitPoint::TOP,
+                    UnitPoint::BOTTOM,
+                    (env.get(theme::BUTTON_DARK), env.get(theme::BUTTON_LIGHT)),
+                )
+            };
+        */ ////
 
-        let border_color = if is_hot {
-            env.get(theme::BORDER_LIGHT)
-        } else {
-            env.get(theme::BORDER)
-        };
+        let border_color = crate::env::BORDER; ////
+        /* ////
+            let border_color = if is_hot {
+                env.get(theme::BORDER_LIGHT)
+            } else {
+                env.get(theme::BORDER)
+            };
+        */ ////
 
-        paint_ctx.stroke(rounded_rect, &border_color, 2.0);
+        paint_ctx.render_ctx.stroke(rounded_rect, &border_color, 2.0); ////
+        ////paint_ctx.stroke(rounded_rect, &border_color, 2.0);
 
-        paint_ctx.render_ctx.fill(rounded_rect, &bg_gradient); ////
+        paint_ctx.render_ctx.fill(rounded_rect, &bg_color); ////
+        ////paint_ctx.render_ctx.fill(rounded_rect, &bg_gradient); ////
         ////paint_ctx.fill(rounded_rect, &bg_gradient);
 
         self.label.paint(paint_ctx, base_state, data, env);

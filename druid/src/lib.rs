@@ -58,8 +58,7 @@ pub use app::{AppLauncher, WindowDesc};
 ////pub use app_delegate::{AppDelegate, DelegateCtx};
 ////pub use command::{sys as commands, Command, Selector};
 pub use data::Data;
-pub use env::{Env, /* Key, Value */}; ////
-////pub use env::{Env, Key, Value};
+pub use env::{Env, Key, Value}; ////
 pub use event::{Event, /* WheelEvent */}; ////
 ////pub use event::{Event, WheelEvent};
 ////pub use lens::{Lens, LensWrap};
@@ -857,7 +856,6 @@ impl BoxConstraints {
     }
 }
 
-/* ////
 impl<'a, 'b> EventCtx<'a, 'b> {
     /// Invalidate.
     ///
@@ -877,6 +875,7 @@ impl<'a, 'b> EventCtx<'a, 'b> {
         self.win_ctx.text_factory()
     }
 
+    /* ////
     /// Set the cursor icon.
     ///
     /// Call this when handling a mouse move event, to set the cursor for the
@@ -893,6 +892,7 @@ impl<'a, 'b> EventCtx<'a, 'b> {
     pub fn set_cursor(&mut self, cursor: &Cursor) {
         *self.cursor = Some(cursor.clone());
     }
+    */ ////
 
     /// Set the "active" state of the widget.
     ///
@@ -952,6 +952,7 @@ impl<'a, 'b> EventCtx<'a, 'b> {
         self.base_state.request_focus = true;
     }
 
+    /* ////
     /// Request an animation frame.
     pub fn request_anim_frame(&mut self) {
         self.base_state.request_anim = true;
@@ -965,12 +966,14 @@ impl<'a, 'b> EventCtx<'a, 'b> {
         self.base_state.request_timer = true;
         self.win_ctx.request_timer(deadline)
     }
+    */ ////
 
     /// Returns the layout size of the current widget.
     pub fn size(&self) -> Size {
         self.base_state.size()
     }
 
+    /* ////
     /// Submit a [`Command`] to be run after this event is handled.
     ///
     /// Commands are run in the order they are submitted; all commands
@@ -987,6 +990,7 @@ impl<'a, 'b> EventCtx<'a, 'b> {
         let window_id = window_id.into().unwrap_or(self.window_id);
         self.command_queue.push_back((window_id, command.into()))
     }
+    */ ////
 
     /// Get the window id.
     pub fn window_id(&self) -> WindowId {
@@ -1034,4 +1038,3 @@ impl<'a, 'b> UpdateCtx<'a, 'b> {
         self.window_id
     }
 }
-*/ ////
