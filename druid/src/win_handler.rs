@@ -325,7 +325,7 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
 impl<T: Data + 'static> AppState<T> {
     pub(crate) fn new(
         data: T,
-        ////env: Env,
+        env: Env,
         ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ) -> Self { ////
     ////) -> Rc<RefCell<Self>> {
@@ -334,7 +334,7 @@ impl<T: Data + 'static> AppState<T> {
             ////delegate,
             ////command_queue: VecDeque::new(),
             data,
-            ////env,
+            env,
             windows: Windows::default(),
         } ////))
     }
@@ -404,9 +404,10 @@ impl<T: Data + 'static> AppState<T> {
     }
 
     fn show_window(&mut self, id: WindowId) {
-        if let Some(state) = self.windows.state.get(&id) {
+        let state = self.windows.state[0]; ////
+        ////if let Some(state) = self.windows.state.get(&id) {
             state.handle.bring_to_front_and_focus();
-        }
+        ////}
     }
 
     fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> {
@@ -714,9 +715,9 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            windows: [Window::<T>; 1], ////
+            windows: [ Default::default() ], ////
             ////windows: HashMap::new(),
-            state: [WindowState::<T>; 1], ////
+            state: [ Default::default() ], ////
             ////state: HashMap::new(),
         }
     }

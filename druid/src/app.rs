@@ -120,7 +120,7 @@ impl<T: Data + 'static> AppLauncher<T> {
         }
         */ ////
 
-        let state = AppState::new(data); ////
+        let state = AppState::new(data, env); ////
         ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
