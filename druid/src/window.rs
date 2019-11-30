@@ -46,12 +46,14 @@ pub struct Window<T: Data + 'static> { ////
 
 impl<T: Data> Window<T> {
     pub fn new(
-        root: impl Widget<T> + 'static,
+        root: WidgetBox<T>,
+        ////root: &dyn Widget<T>,
         ////title: LocalizedString<T>,
         ////menu: Option<MenuDesc<T>>,
     ) -> Window<T> {
         Window {
-            root: WidgetPod::new(WidgetBox::new(&root)), ////
+            root: WidgetPod::new(root), ////
+            ////root: WidgetPod::new(WidgetBox::new(root)), ////
             ////root: WidgetPod::new(Box::new(root)),
             size: Size::ZERO,
             ////title,

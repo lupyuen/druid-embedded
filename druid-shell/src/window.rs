@@ -72,7 +72,7 @@ impl IdleHandle {
 */ ////
 
 /// A handle to a platform window object.
-#[derive(Clone, Default)]
+////#[derive(Clone, Default)]
 pub struct WindowHandle(platform::WindowHandle);
 
 impl WindowHandle {
@@ -145,9 +145,10 @@ impl WindowBuilder {
     /// callbacks from this window.
     ///
     /// [`WinHandler`]: trait.WinHandler.html
-    pub fn set_handler(&mut self, handler: dyn WinHandler) { ////
+    pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
-        self.0.set_handler(handler)
+        self.0.set_handler(handler) ////
+        ////self.0.set_handler(handler)
     }
 
     /// Set the window's initial size.

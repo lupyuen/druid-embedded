@@ -80,7 +80,7 @@ struct Windows<T: Data + 'static> { ////
 /// Per-window state not owned by user code.
 pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle,
-    prev_paint_time: Option<Instant>,
+    ////prev_paint_time: Option<Instant>,
 }
 
 /// Everything required for a window to handle an event.
@@ -98,7 +98,7 @@ impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle) {
         let state = WindowState {
             handle,
-            prev_paint_time: None,
+            ////prev_paint_time: None,
         };
         self.state[0] = state; ////
         ////self.state.insert(id, state);
@@ -130,8 +130,10 @@ impl<T: Data> Windows<T> {
 
         Some(SingleWindowState { ////
             window_id,
-            window,
-            state,
+            window: &mut window, ////
+            ////window,
+            state: &mut state, ////
+            ////state,
             ////command_queue,
             data,
             env,
@@ -223,6 +225,7 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
             _ => None,
         };
 
+        /* ////
         let event = match event {
             Event::Size(size) => {
                 let dpi = f64::from(self.state.handle.get_dpi());
@@ -231,6 +234,7 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
             }
             other => other,
         };
+        */ ////
 
         let mut base_state = BaseState::default();
         let mut ctx = EventCtx {
@@ -323,14 +327,16 @@ impl<T: Data + 'static> AppState<T> {
         data: T,
         ////env: Env,
         ////delegate: Option<Box<dyn AppDelegate<T>>>,
-    ) -> Rc<RefCell<Self>> {
-        Rc::new(RefCell::new(AppState {
+    ) -> Self { ////
+    ////) -> Rc<RefCell<Self>> {
+        AppState { ////
+        ////Rc::new(RefCell::new(AppState {
             ////delegate,
             ////command_queue: VecDeque::new(),
             data,
             ////env,
             windows: Windows::default(),
-        }))
+        } ////))
     }
 
     /* ////
@@ -389,9 +395,11 @@ impl<T: Data + 'static> AppState<T> {
 
     fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {
         let res = self.windows.remove(id);
+        /* ////
         self.with_delegate(id, |del, data, env, ctx| {
             del.window_removed(id, data, env, ctx)
         });
+        */ ////
         res
     }
 
@@ -403,13 +411,14 @@ impl<T: Data + 'static> AppState<T> {
 
     fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> {
         let AppState {
-            ref mut command_queue,
+            ////ref mut command_queue,
             ref mut windows,
             ref mut data,
             ref env,
             ..
         } = self;
-        windows.get(window_id, command_queue, data, env)
+        windows.get(window_id, data, env) ////
+        ////windows.get(window_id, command_queue, data, env)
     }
 
     fn paint(&mut self, window_id: WindowId, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
@@ -488,11 +497,13 @@ impl<T: Data + 'static> DruidHandler<T> {
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
     pub(crate) fn new_shared(
-        app_state: Rc<RefCell<AppState<T>>>,
+        app_state: AppState<T>, ////
+        ////app_state: Rc<RefCell<AppState<T>>>,
         window_id: WindowId,
     ) -> DruidHandler<T> {
         DruidHandler {
-            app_state,
+            app_state: &app_state, ////
+            ////app_state,
             window_id,
         }
     }
@@ -506,7 +517,7 @@ impl<T: Data + 'static> DruidHandler<T> {
     fn do_event(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
         let result = self
             .app_state
-            .borrow_mut()
+            ////.borrow_mut()
             .do_event(self.window_id, event, win_ctx);
         ////self.process_commands(win_ctx);
         result
@@ -572,7 +583,6 @@ impl<T: Data + 'static> DruidHandler<T> {
                 .do_event(window_id, event, win_ctx);
         }
     }
-    */ ////
 
     fn new_window(&mut self /*, cmd: Command*/) { ////
         let desc = match cmd.get_object::<WindowDesc<T>>() {
@@ -595,13 +605,13 @@ impl<T: Data + 'static> DruidHandler<T> {
 
     fn close_window(&mut self, /* cmd: Command, */ window_id: WindowId) { ////
         let id = cmd.get_object().unwrap_or(&window_id);
-        let handle = self.app_state.borrow_mut().remove_window(*id);
+        let handle = self.app_state.remove_window(*id); ////
+        ////let handle = self.app_state.borrow_mut().remove_window(*id);
         if let Some(handle) = handle {
             handle.close();
         }
     }
 
-    /* ////
     fn show_window(&mut self, cmd: Command) {
         let id: WindowId = *cmd
             .get_object()
@@ -633,12 +643,13 @@ impl<T: Data + 'static> DruidHandler<T> {
 impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     fn connect(&mut self, handle: &WindowHandle) {
         self.app_state
-            .borrow_mut()
+            ////.borrow_mut()
             .connect(self.window_id, handle.clone());
     }
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
-        self.app_state.borrow_mut().paint(self.window_id, piet, ctx)
+        self.app_state.paint(self.window_id, piet, ctx) ////
+        ////self.app_state.borrow_mut().paint(self.window_id, piet, ctx)
     }
 
     fn size(&mut self, width: u32, height: u32, ctx: &mut dyn WinCtx) {
@@ -703,8 +714,10 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            windows: HashMap::new(),
-            state: HashMap::new(),
+            windows: [Window::<T>; 1], ////
+            ////windows: HashMap::new(),
+            state: [WindowState::<T>; 1], ////
+            ////state: HashMap::new(),
         }
     }
 }

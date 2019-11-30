@@ -201,10 +201,12 @@ impl<T: Data + 'static> WindowDesc<T> {
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let handler = DruidHandler::new_shared(state.clone(), self.id);
+        let mut handler = DruidHandler::new_shared(*state.clone(), self.id);
+        ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder = WindowBuilder::new();
-        builder.set_handler(Box::new(handler));
+        builder.set_handler(&mut handler);
+        ////builder.set_handler(Box::new(handler));
         if let Some(size) = self.size {
             builder.set_size(size);
         }
@@ -215,10 +217,13 @@ impl<T: Data + 'static> WindowDesc<T> {
         }
         */ ////
 
-        let root = (self.root_builder)();
+        let root = &(self.root_builder)(); ////
+        let root_box = crate::widget::WidgetBox::new(&root); //// TODO
+        ////let root = (self.root_builder)();
         state
-            .borrow_mut()
-            .add_window(self.id, Window::new(root, title, menu));
+            ////.borrow_mut()
+            .add_window(self.id, Window::new(root_box /* , title, menu */)); ////
+            ////.add_window(self.id, Window::new(root, title, menu));
 
         builder.build()
     }
