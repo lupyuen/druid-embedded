@@ -72,8 +72,7 @@ impl IdleHandle {
 */ ////
 
 /// A handle to a platform window object.
-#[derive(Default)]  ////
-////#[derive(Clone, Default)]
+#[derive(Clone, Default)]
 pub struct WindowHandle(platform::WindowHandle);
 
 impl WindowHandle {

@@ -76,8 +76,7 @@ use crate::Error;
     }
 */ ////
 
-#[derive(Default)]
-////#[derive(Clone, Default)]
+#[derive(Clone, Default)]
 pub struct WindowHandle {
     pub(crate) state: WindowState, ////
     ////pub(crate) state: Weak<WindowState>,
@@ -100,8 +99,7 @@ pub struct WindowBuilder {
     }
 */ ////
 
-#[derive(Default)] ////
-////#[derive(Clone, Default)]
+#[derive(Clone, Default)]
 pub(crate) struct WindowState {
     pub(crate) handler: Option<&'static mut dyn WinHandler>, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
