@@ -71,9 +71,9 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 /// All active windows.
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
-    windows: [Window<T>; 1], ////
+    windows: Option<Window<T>>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
-    state: [WindowState; 1], ////
+    state: Option<WindowState>, //// Only 1 window state supported
     ////state: HashMap<WindowId, WindowState>,
 }
 
@@ -100,19 +100,20 @@ impl<T: Data> Windows<T> {
             handle,
             ////prev_paint_time: None,
         };
-        self.state[0] = state; ////
+        self.state = Some(state); ////
         ////self.state.insert(id, state);
     }
 
     fn add(&mut self, id: WindowId, window: Window<T>) {
-        self.windows[0] = window; ////
+        self.windows = Some(window); ////
         ////self.windows.insert(id, window);
     }
 
     fn remove(&mut self, id: WindowId) -> Option<WindowHandle> {
         ////self.windows.remove(&id);
         ////self.state.remove(&id).map(|state| state.handle)
-        Some(self.state[0].handle) ////
+        ////Some(self.state[0].handle) ////
+        None ////
     }
 
     //TODO: rename me?
@@ -123,9 +124,9 @@ impl<T: Data> Windows<T> {
         data: &'a mut T,
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> {
-        let state = self.state[0]; ////
+        let state = self.state.unwrap(); ////
         ////let state = self.state.get_mut(&window_id);
-        let window = self.windows[0]; ////
+        let window = self.windows.unwrap(); ////
         ////let window = self.windows.get_mut(&window_id);
 
         Some(SingleWindowState { ////
@@ -404,7 +405,7 @@ impl<T: Data + 'static> AppState<T> {
     }
 
     fn show_window(&mut self, id: WindowId) {
-        let state = self.windows.state[0]; ////
+        let state = self.windows.state.unwrap(); ////
         ////if let Some(state) = self.windows.state.get(&id) {
             state.handle.bring_to_front_and_focus();
         ////}
@@ -429,6 +430,8 @@ impl<T: Data + 'static> AppState<T> {
     }
 
     fn do_event(&mut self, source_id: WindowId, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
+        false ////TODO
+        /* ////
         let event = self.delegate_event(source_id, event);
 
         let (is_handled, dirty, anim) = if let Some(event) = event {
@@ -485,6 +488,7 @@ impl<T: Data + 'static> AppState<T> {
             }
         }
         is_handled
+        */ ////
     }
 
     fn window_got_focus(&mut self, window_id: WindowId, _ctx: &mut dyn WinCtx) {
@@ -715,9 +719,9 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            windows: [ Default::default() ], ////
+            windows: None, ////
             ////windows: HashMap::new(),
-            state: [ Default::default() ], ////
+            state: None, ////
             ////state: HashMap::new(),
         }
     }
