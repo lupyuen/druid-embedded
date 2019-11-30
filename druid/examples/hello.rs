@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-////#![no_main]
-#![no_std] ////
+#![no_main] ////
+#![no_std]  ////
 use core::panic::PanicInfo; //  Import `PanicInfo` type which is used by `panic()` below
 use druid::widget::{Align, Button, Column, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
 
-fn main() {
+#[no_mangle]
+extern "C" fn druid_main() {
     //  Build a new window
     let main_window = WindowDesc::new(ui_builder);
     let data = 0_u32;
@@ -41,7 +42,8 @@ fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
     //  Create a label widget to display the text
     let label = Label::new(text);
     //  Create a button widget to increment the counter
-    let button = Button::new(
+    let button = Button::<u32>::new( ////
+    ////let button = Button::new(
         "increment", 
         |_ctx, data, _env| *data += 1
     );
