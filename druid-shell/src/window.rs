@@ -141,12 +141,12 @@ impl WindowBuilder {
         WindowBuilder(platform::WindowBuilder::new())
     }
 
-    /* ////
     /// Set the [`WinHandler`]. This is the object that will receive
     /// callbacks from this window.
     ///
     /// [`WinHandler`]: trait.WinHandler.html
-    pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
+    pub fn set_handler(&mut self, handler: dyn WinHandler) { ////
+    ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.0.set_handler(handler)
     }
 
@@ -155,6 +155,7 @@ impl WindowBuilder {
         self.0.set_size(size)
     }
 
+    /* ////
     /// Set the window's initial title.
     pub fn set_title(&mut self, title: impl Into<String>) {
         self.0.set_title(title)

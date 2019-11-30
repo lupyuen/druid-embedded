@@ -49,15 +49,18 @@ use crate::{
 ///
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
-pub struct DruidHandler<T: Data> {
-    /// The shared app state.
-    app_state: Rc<RefCell<AppState<T>>>,
+pub struct DruidHandler<T: Data + 'static> { ////
+////pub struct DruidHandler<T: Data> {
+        /// The shared app state.
+    app_state: &'static AppState<T>, ////
+    ////app_state: Rc<RefCell<AppState<T>>>,
     /// The id for the current window.
     window_id: WindowId,
 }
 
 /// State shared by all windows in the UI.
-pub(crate) struct AppState<T: Data> {
+pub(crate) struct AppState<T: Data + 'static> { ////
+////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ////command_queue: VecDeque<(WindowId, Command)>,
     windows: Windows<T>,
@@ -66,7 +69,8 @@ pub(crate) struct AppState<T: Data> {
 }
 
 /// All active windows.
-struct Windows<T: Data> {
+struct Windows<T: Data + 'static> { ////
+////struct Windows<T: Data> {
     windows: [Window<T>; 1], ////
     ////windows: HashMap<WindowId, Window<T>>,
     state: [WindowState; 1], ////
@@ -80,7 +84,8 @@ pub(crate) struct WindowState {
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<'a, T: Data> {
+struct SingleWindowState<'a, T: Data + 'static> { ////
+////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     window: &'a mut Window<T>,
     state: &'a mut WindowState,
@@ -107,6 +112,7 @@ impl<T: Data> Windows<T> {
     fn remove(&mut self, id: WindowId) -> Option<WindowHandle> {
         ////self.windows.remove(&id);
         ////self.state.remove(&id).map(|state| state.handle)
+        Some(self.state[0].handle) ////
     }
 
     //TODO: rename me?
@@ -122,6 +128,15 @@ impl<T: Data> Windows<T> {
         let window = self.windows[0]; ////
         ////let window = self.windows.get_mut(&window_id);
 
+        Some(SingleWindowState { ////
+            window_id,
+            window,
+            state,
+            ////command_queue,
+            data,
+            env,
+        }) ////
+        /* ////
         match (state, window) {
             (Some(state), Some(window)) => {
                 return Some(SingleWindowState {
@@ -138,17 +153,19 @@ impl<T: Data> Windows<T> {
             (None, None) => {} ////warn!("unknown window {:?}", window_id),
         }
         None
+        */ ////
     }
 }
 
 impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
-        let request_anim = self.do_anim_frame(ctx);
+        ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);
         piet.clear(crate::env::WINDOW_BACKGROUND_COLOR); ////
         ////piet.clear(self.env.get(theme::WINDOW_BACKGROUND_COLOR));
         self.do_paint(piet);
-        request_anim
+        false ////
+        ////request_anim
     }
 
     /* ////
@@ -304,14 +321,14 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
 impl<T: Data + 'static> AppState<T> {
     pub(crate) fn new(
         data: T,
-        env: Env,
-        delegate: Option<Box<dyn AppDelegate<T>>>,
+        ////env: Env,
+        ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ) -> Rc<RefCell<Self>> {
         Rc::new(RefCell::new(AppState {
-            delegate,
-            command_queue: VecDeque::new(),
+            ////delegate,
+            ////command_queue: VecDeque::new(),
             data,
-            env,
+            ////env,
             windows: Windows::default(),
         }))
     }
@@ -668,7 +685,7 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 
     fn got_focus(&mut self, ctx: &mut dyn WinCtx) {
         self.app_state
-            .borrow_mut()
+            ////.borrow_mut()
             .window_got_focus(self.window_id, ctx);
     }
 

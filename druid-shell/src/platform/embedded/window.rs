@@ -14,11 +14,6 @@
 
 //! embedded-graphics window creation and management.
 
-#[derive(Clone, Default)]
-pub struct WindowHandle;
-
-pub struct WindowBuilder;
-
 /*
     use std::any::Any;
     use std::cell::{Cell, RefCell};
@@ -33,21 +28,20 @@ pub struct WindowBuilder;
     use gio::ApplicationExt;
     use gtk::prelude::*;
     use gtk::{AccelGroup, ApplicationWindow};
-
-    use crate::kurbo::{Point, Size, Vec2};
-    use crate::piet::{Piet, RenderContext};
-
-    use super::dialog::{self, FileDialogType};
-    use super::menu::Menu;
-    use super::runloop::with_application;
-    use super::util::assert_main_thread;
-
-    use crate::common_util::IdleCallback;
-    use crate::dialog::{FileDialogOptions, FileInfo};
-    use crate::keyboard;
-    use crate::mouse::{Cursor, MouseButton, MouseEvent};
-    use crate::window::{Text, TimerToken, WinCtx, WinHandler};
 */
+use crate::kurbo::{Point, Size, Vec2};
+use crate::piet::{Piet, RenderContext};
+
+////use super::dialog::{self, FileDialogType};
+////use super::menu::Menu;
+////use super::runloop::with_application;
+////use super::util::assert_main_thread;
+
+////use crate::common_util::IdleCallback;
+////use crate::dialog::{FileDialogOptions, FileInfo};
+////use crate::keyboard;
+use crate::mouse::{Cursor, MouseButton, MouseEvent};
+use crate::window::{Text, TimerToken, WinCtx, WinHandler};
 use crate::Error;
 
 /*
@@ -80,33 +74,39 @@ use crate::Error;
             }
         );
     }
+*/ ////
 
-    #[derive(Clone, Default)]
-    pub struct WindowHandle {
-        pub(crate) state: Weak<WindowState>,
-    }
+#[derive(Clone, Default)]
+pub struct WindowHandle {
+    pub(crate) state: WindowState, ////
+    ////pub(crate) state: Weak<WindowState>,
+}
 
-    /// Builder abstraction for creating new windows
-    pub struct WindowBuilder {
-        handler: Option<Box<dyn WinHandler>>,
-        title: String,
-        menu: Option<Menu>,
-        size: Size,
-    }
+/// Builder abstraction for creating new windows
+pub struct WindowBuilder {
+    handler: Option<&'static dyn WinHandler>, ////
+    ////handler: Option<Box<dyn WinHandler>>,
+    ////title: String,
+    ////menu: Option<Menu>,
+    size: Size,
+}
 
+/* ////
     #[derive(Clone)]
     pub struct IdleHandle {
         idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
         state: Weak<WindowState>,
     }
+*/ ////
 
-    pub(crate) struct WindowState {
-        window: ApplicationWindow,
-        pub(crate) handler: RefCell<Box<dyn WinHandler>>,
-        idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
-        current_keyval: RefCell<Option<u32>>,
-    }
+pub(crate) struct WindowState {
+    pub(crate) handler: Option<&'static dyn WinHandler>, ////
+    ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
+    ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
+    ////current_keyval: RefCell<Option<u32>>,
+}
 
+/* ////
     pub(crate) struct WinCtxImpl<'a> {
         handle: &'a WindowHandle,
         text: Text<'static>,
@@ -115,16 +115,20 @@ use crate::Error;
 
 impl WindowBuilder {
     pub fn new() -> WindowBuilder {
-        WindowBuilder  /* {
+        WindowBuilder  {
             handler: None,
-            title: String::new(),
-            menu: None,
-            size: Size::new(500.0, 400.0),
-        } */
+            ////title: String::new(),
+            ////menu: None,
+            size: Size::new( ////
+                240., //// crate::env::WINDOW_WIDTH as f64, 
+                240., //// crate::env::WINDOW_HEIGHT as f64
+            ), ////
+            ////size: Size::new(500.0, 400.0),
+        }
     }
 
-    /*
-    pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
+    pub fn set_handler(&mut self, handler: &'static dyn WinHandler) { ////
+    ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.handler = Some(handler);
     }
 
@@ -132,6 +136,7 @@ impl WindowBuilder {
         self.size = size;
     }
 
+    /* ////
     pub fn set_title(&mut self, title: impl Into<String>) {
         self.title = title.into();
     }
@@ -139,10 +144,15 @@ impl WindowBuilder {
     pub fn set_menu(&mut self, menu: Menu) {
         self.menu = Some(menu);
     }
-    */
+    */ ////
 
     pub fn build(self) -> Result<WindowHandle, Error> {
-        Ok(WindowHandle)
+        let window = WindowHandle {
+            state: WindowState {
+                handler: None
+            }           
+        };
+        Ok(window) ////TODO
         /*
         assert_main_thread();
 

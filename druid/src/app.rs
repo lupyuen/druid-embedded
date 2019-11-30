@@ -24,7 +24,7 @@ use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
 use crate::win_handler::AppState;
 use crate::window::{Window, WindowId};
-use crate::{/* theme, AppDelegate, */ Data, /* DruidHandler, */ Env, LocalizedString, /* MenuDesc, */ Widget}; ////
+use crate::{/* theme, AppDelegate, */ Data, DruidHandler, Env, LocalizedString, /* MenuDesc, */ Widget}; ////
 
 /////// A function that modifies the initial environment.
 ////type EnvSetupFn = dyn FnOnce(&mut Env);
@@ -41,17 +41,17 @@ pub struct AppLauncher<T> {
     */ ////
 }
 
-/* ////
 /// A function that can create a widget.
-type WidgetBuilderFn<T> = dyn Fn() -> Box<dyn Widget<T>> + 'static;
-*/ ////
+type WidgetBuilderFn<T> = fn() -> dyn Widget<T>; ////
+////type WidgetBuilderFn<T> = dyn Fn() -> Box<dyn Widget<T>> + 'static;
 
 /// A description of a window to be instantiated.
 ///
 /// This includes a function that can build the root widget, as well as other
 /// window properties such as the title.
 pub struct WindowDesc<T> {
-    pub(crate) root_builder: Arc<WidgetBuilderFn<T>>,
+    pub(crate) root_builder: WidgetBuilderFn<T>, ////
+    ////pub(crate) root_builder: Arc<WidgetBuilderFn<T>>,
     ////pub(crate) title: Option<LocalizedString<T>>,
     pub(crate) size: Option<Size>,
     /* ////
@@ -120,7 +120,8 @@ impl<T: Data + 'static> AppLauncher<T> {
         }
         */ ////
 
-        let state = AppState::new(data, env, self.delegate.take());
+        let state = AppState::new(data); ////
+        ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
             let window = desc.build_native(&state)?;
@@ -139,26 +140,24 @@ impl<T: Data + 'static> WindowDesc<T> {
     /// It is possible that a `WindowDesc` can be reused to launch multiple windows.
     ///
     /// [`Widget`]: trait.Widget.html
-    pub fn new<W, F>(root: F) -> WindowDesc<T>
+    pub fn new<W, F>(root: WidgetBuilderFn<T>) -> WindowDesc<T> ////
+    ////pub fn new<W, F>(root: F) -> WindowDesc<T>
     where
         W: Widget<T> + 'static,
-        F: Fn() -> W + 'static,
+        ////F: Fn() -> W + 'static,
     {
         // wrap this closure in another closure that dyns the result
         // this just makes our API slightly cleaner; callers don't need to explicitly box.
+        let root_builder = root; ////
         ////let root_builder: Arc<WidgetBuilderFn<T>> = Arc::new(move || Box::new(root()));
         WindowDesc {
             root_builder,
-            size: Some(Size::from((
-                crate::env::WINDOW_WIDTH as f64, 
-                crate::env::WINDOW_HEIGHT as f64
-            ))),
-            ////size: None,
-            /*
+            size: None,
+            /* ////
             title: None,
             menu: MenuDesc::platform_default(),
+            */ ////
             id: WindowId::next(),
-            */
         }
     }
 
@@ -187,7 +186,8 @@ impl<T: Data + 'static> WindowDesc<T> {
     /// Attempt to create a platform window from this `WindowDesc`.
     pub(crate) fn build_native(
         &self,
-        state: &Rc<RefCell<AppState<T>>>,
+        state: &AppState<T> ////
+        ////state: &Rc<RefCell<AppState<T>>>,
     ) -> Result<WindowHandle, PlatformError> {
         /* ////
         let mut title = self

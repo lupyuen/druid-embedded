@@ -19,7 +19,7 @@ use crate::kurbo::{Point, Rect, Size}; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
     WidgetPod,
-    widget::{Label, WidgetBox, WidgetType}, ////
+    widget::{WidgetBox}, ////
 };
 
 /// A builder for a row widget that can contain flex children.
@@ -41,12 +41,14 @@ type MaxWidgets = heapless::consts::U8; //// Max widgets per container
 type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 
 /// A container with either horizontal or vertical layout.
-pub struct Flex<T: Data> {
+pub struct Flex<T: Data + 'static> { ////
+////pub struct Flex<T: Data> {
     direction: Axis,
     children: Vec<ChildWidget<T>>,
 }
 
-struct ChildWidget<T: Data> {
+struct ChildWidget<T: Data + 'static> { ////
+////struct ChildWidget<T: Data> {
     widget: WidgetPod<T, WidgetBox<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
@@ -121,15 +123,12 @@ impl<T: Data> Flex<T> {
     /// If `flex` is non-zero, then all the space left over after layout of
     /// the non-flex children is divided up, in proportion to the `flex` value,
     /// among the flex children.
-    pub fn add_child(&mut self, child: Label<T>, flex: f64) { ////
-    ////pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
+    pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
         let params = Params { flex };
         let child = ChildWidget {
             widget: WidgetPod::new(
-                WidgetBox {
-                    widget: WidgetType::Label(child)
-                }
-            ), ////TODO
+                WidgetBox::<T>::new(&child)
+            ),
             ////widget: WidgetPod::new(child).boxed(),
             params,
         };
