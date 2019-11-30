@@ -20,9 +20,9 @@ use crate::kurbo::{Point, Rect, Size};
 
 use crate::shell::WindowHandle;
 use crate::{
-    BoxConstraints, Command, Data, Env, Event, EventCtx, LayoutCtx, LocalizedString, MenuDesc,
+    BoxConstraints, /* Command, */ Data, Env, Event, EventCtx, LayoutCtx, LocalizedString, /* MenuDesc, */ ////
     PaintCtx, UpdateCtx, Widget, WidgetPod,
-    WidgetBox, ////
+    widget::WidgetBox, ////
 };
 
 /// A unique identifier for a window.
@@ -52,9 +52,9 @@ impl<T: Data> Window<T> {
         Window {
             root: WidgetPod::new(Box::new(root)),
             size: Size::ZERO,
-            title,
-            menu,
-            context_menu: None,
+            ////title,
+            ////menu,
+            ////context_menu: None,
         }
     }
 
@@ -64,9 +64,11 @@ impl<T: Data> Window<T> {
         }
         self.root.event(ctx, event, data, env);
 
+        /* ////
         if let Some(cursor) = ctx.cursor {
             ctx.win_ctx.set_cursor(&cursor);
         }
+        */ ////
     }
 
     pub fn update(&mut self, update_ctx: &mut UpdateCtx, data: &T, env: &Env) {
@@ -107,10 +109,8 @@ impl WindowId {
     ///
     /// Do note that if we create 4 billion windows there may be a collision.
     pub fn next() -> WindowId {
-        unsafe { ////
-            let id = WINDOW_ID_COUNTER; ////
-            WINDOW_ID_COUNTER += 1; ////    
-        } ////
+        let id = unsafe { WINDOW_ID_COUNTER }; ////
+        unsafe { WINDOW_ID_COUNTER += 1 }; ////    
         ////let id = WINDOW_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
         WindowId(id)
     }

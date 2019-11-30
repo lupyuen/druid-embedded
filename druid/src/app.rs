@@ -22,10 +22,8 @@ use std::sync::Arc;
 
 use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
-/* ////
 use crate::win_handler::AppState;
 use crate::window::{Window, WindowId};
-*/ ////
 use crate::{/* theme, AppDelegate, */ Data, /* DruidHandler, */ Env, LocalizedString, /* MenuDesc, */ Widget}; ////
 
 /////// A function that modifies the initial environment.
@@ -58,12 +56,12 @@ pub struct WindowDesc<T> {
     pub(crate) size: Option<Size>,
     /* ////
     pub(crate) menu: Option<MenuDesc<T>>,
+    */ ////
     /// The `WindowId` that will be assigned to this window.
     ///
     /// This can be used to track a window from when it is launched and when
     /// it actually connects.
     pub id: WindowId,
-    */ ////
 }
 
 impl<T: Data + 'static> AppLauncher<T> {
@@ -151,7 +149,10 @@ impl<T: Data + 'static> WindowDesc<T> {
         ////let root_builder: Arc<WidgetBuilderFn<T>> = Arc::new(move || Box::new(root()));
         WindowDesc {
             root_builder,
-            size: Some(Size::from(crate::env::WINDOW_WIDTH as f64, create::env::WINDOW_HEIGHT as f64)),
+            size: Some(Size::from((
+                crate::env::WINDOW_WIDTH as f64, 
+                crate::env::WINDOW_HEIGHT as f64
+            ))),
             ////size: None,
             /*
             title: None,
@@ -188,6 +189,7 @@ impl<T: Data + 'static> WindowDesc<T> {
         &self,
         state: &Rc<RefCell<AppState<T>>>,
     ) -> Result<WindowHandle, PlatformError> {
+        /* ////
         let mut title = self
             .title
             .clone()
@@ -197,6 +199,7 @@ impl<T: Data + 'static> WindowDesc<T> {
         let platform_menu = menu
             .as_mut()
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
+        */ ////
 
         let handler = DruidHandler::new_shared(state.clone(), self.id);
 
@@ -205,10 +208,12 @@ impl<T: Data + 'static> WindowDesc<T> {
         if let Some(size) = self.size {
             builder.set_size(size);
         }
+        /* ////
         builder.set_title(title.localized_str());
         if let Some(menu) = platform_menu {
             builder.set_menu(menu);
         }
+        */ ////
 
         let root = (self.root_builder)();
         state
