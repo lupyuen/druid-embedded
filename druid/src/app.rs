@@ -18,9 +18,9 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::sync::Arc;
+*/ ////
 
 use crate::kurbo::Size;
-*/ ////
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
 /* ////
 use crate::win_handler::AppState;
@@ -31,11 +31,13 @@ use crate::{/* theme, AppDelegate, */ Data, /* DruidHandler, */ Env, LocalizedSt
 /////// A function that modifies the initial environment.
 ////type EnvSetupFn = dyn FnOnce(&mut Env);
 
+type MaxWindows = heapless::consts::U2; //// Max number of windows
+type Vec<T> = heapless::Vec::<T, MaxWindows>; ////
+
 /// Handles initial setup of an application, and starts the runloop.
 pub struct AppLauncher<T> {
-    _todo: Option<T>, ////
-    /* ////
     windows: Vec<WindowDesc<T>>,
+    /* ////
     env_setup: Option<Box<EnvSetupFn>>,
     delegate: Option<Box<dyn AppDelegate<T>>>,
     */ ////
@@ -51,11 +53,10 @@ type WidgetBuilderFn<T> = dyn Fn() -> Box<dyn Widget<T>> + 'static;
 /// This includes a function that can build the root widget, as well as other
 /// window properties such as the title.
 pub struct WindowDesc<T> {
-    _todo: Option<T>, ////
-    /* ////
     pub(crate) root_builder: Arc<WidgetBuilderFn<T>>,
-    pub(crate) title: Option<LocalizedString<T>>,
+    ////pub(crate) title: Option<LocalizedString<T>>,
     pub(crate) size: Option<Size>,
+    /* ////
     pub(crate) menu: Option<MenuDesc<T>>,
     /// The `WindowId` that will be assigned to this window.
     ///
@@ -68,10 +69,12 @@ pub struct WindowDesc<T> {
 impl<T: Data + 'static> AppLauncher<T> {
     /// Create a new `AppLauncher` with the provided window.
     pub fn with_window(window: WindowDesc<T>) -> Self {
+        let windows = Vec::new(); ////
+        windows.push(window); ////
         AppLauncher {
-            _todo: None,
+            windows, ////
+            ////windows: vec![window],
             /*
-            windows: vec![window],
             env_setup: None,
             delegate: None,
             */
@@ -110,13 +113,14 @@ impl<T: Data + 'static> AppLauncher<T> {
     /// Returns an error if a window cannot be instantiated. This is usually
     /// a fatal error.
     pub fn launch(mut self, data: T) -> Result<(), PlatformError> {
-        /*
         Application::init();
+        /* ////
         let mut main_loop = RunLoop::new();
         let mut env = theme::init();
         if let Some(f) = self.env_setup.take() {
             f(&mut env);
         }
+        */ ////
 
         let state = AppState::new(data, env, self.delegate.take());
 
@@ -125,8 +129,7 @@ impl<T: Data + 'static> AppLauncher<T> {
             window.show();
         }
 
-        main_loop.run();
-        */
+        ////main_loop.run();
         Ok(())
     }
 }
@@ -147,18 +150,18 @@ impl<T: Data + 'static> WindowDesc<T> {
         // this just makes our API slightly cleaner; callers don't need to explicitly box.
         ////let root_builder: Arc<WidgetBuilderFn<T>> = Arc::new(move || Box::new(root()));
         WindowDesc {
-            _todo: None,
-            /*
             root_builder,
+            size: Some(Size::from(crate::env::WINDOW_WIDTH as f64, create::env::WINDOW_HEIGHT as f64)),
+            ////size: None,
+            /*
             title: None,
-            size: None,
             menu: MenuDesc::platform_default(),
             id: WindowId::next(),
             */
         }
     }
 
-    /*
+    /* ////
     /// Set the title for this window. This is a [`LocalizedString`] that will
     /// be kept up to date as the application's state changes.
     ///
@@ -167,6 +170,7 @@ impl<T: Data + 'static> WindowDesc<T> {
         self.title = Some(title);
         self
     }
+    */ ////
 
     /// Set the window size at creation
     ///
@@ -214,10 +218,11 @@ impl<T: Data + 'static> WindowDesc<T> {
         builder.build()
     }
 
+    /* ////
     /// Set the menu for this window.
     pub fn menu(mut self, menu: MenuDesc<T>) -> Self {
         self.menu = Some(menu);
         self
     }
-    */
+    */ ////
 }

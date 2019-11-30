@@ -15,7 +15,8 @@
 //! Simple data-oriented GUI.
 
 #![no_std] ////
-#![deny(intra_doc_link_resolution_failure, unsafe_code)]
+#![deny(intra_doc_link_resolution_failure)] ////
+////#![deny(intra_doc_link_resolution_failure, unsafe_code)]
 #![allow(clippy::new_ret_no_self)]
 
 use druid_shell as shell;

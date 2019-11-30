@@ -14,8 +14,7 @@
 
 //! Management of multiple windows.
 
-/*
-use std::sync::atomic::{AtomicU32, Ordering};
+////use std::sync::atomic::{AtomicU32, Ordering};
 
 use crate::kurbo::{Point, Rect, Size};
 
@@ -23,23 +22,24 @@ use crate::shell::WindowHandle;
 use crate::{
     BoxConstraints, Command, Data, Env, Event, EventCtx, LayoutCtx, LocalizedString, MenuDesc,
     PaintCtx, UpdateCtx, Widget, WidgetPod,
+    WidgetBox, ////
 };
-*/
 
 /// A unique identifier for a window.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct WindowId(u32);
 
-/*
-static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
+static WINDOW_ID_COUNTER: u32 = 1; ////
+////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
 pub struct Window<T: Data> {
-    pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
-    pub(crate) title: LocalizedString<T>,
+    pub(crate) root: WidgetPod<T, WidgetBox<T>>, ////
+    ////pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
+    ////pub(crate) title: LocalizedString<T>,
     size: Size,
-    pub(crate) menu: Option<MenuDesc<T>>,
-    pub(crate) context_menu: Option<MenuDesc<T>>,
+    ////pub(crate) menu: Option<MenuDesc<T>>,
+    ////pub(crate) context_menu: Option<MenuDesc<T>>,
     // delegate?
 }
 
@@ -70,7 +70,7 @@ impl<T: Data> Window<T> {
     }
 
     pub fn update(&mut self, update_ctx: &mut UpdateCtx, data: &T, env: &Env) {
-        self.update_title(&update_ctx.window, data, env);
+        ////self.update_title(&update_ctx.window, data, env);
         self.root.update(update_ctx, data, env);
     }
 
@@ -86,6 +86,7 @@ impl<T: Data> Window<T> {
         paint_ctx.with_child_ctx(visible, |ctx| self.root.paint(ctx, data, env));
     }
 
+    /* ////
     pub(crate) fn update_title(&mut self, win_handle: &WindowHandle, data: &T, env: &Env) {
         if self.title.resolve(data, env) {
             win_handle.set_title(self.title.localized_str());
@@ -98,6 +99,7 @@ impl<T: Data> Window<T> {
             .and_then(|m| m.command_for_id(cmd_id))
             .or_else(|| self.menu.as_ref().and_then(|m| m.command_for_id(cmd_id)))
     }
+    */ ////
 }
 
 impl WindowId {
@@ -105,8 +107,11 @@ impl WindowId {
     ///
     /// Do note that if we create 4 billion windows there may be a collision.
     pub fn next() -> WindowId {
-        let id = WINDOW_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
+        unsafe { ////
+            let id = WINDOW_ID_COUNTER; ////
+            WINDOW_ID_COUNTER += 1; ////    
+        } ////
+        ////let id = WINDOW_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
         WindowId(id)
     }
 }
-*/
