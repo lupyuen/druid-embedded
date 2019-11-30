@@ -67,7 +67,7 @@ pub struct WindowDesc<T> {
 impl<T: Data + 'static> AppLauncher<T> {
     /// Create a new `AppLauncher` with the provided window.
     pub fn with_window(window: WindowDesc<T>) -> Self {
-        let windows = Vec::new(); ////
+        let mut windows = Vec::new(); ////
         windows.push(window); ////
         AppLauncher {
             windows, ////
@@ -120,11 +120,11 @@ impl<T: Data + 'static> AppLauncher<T> {
         }
         */ ////
 
-        let state = AppState::new(data, env); ////
+        let state = AppState::new(data, Env{}); ////
         ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
-            let window = desc.build_native(&state)?;
+            let window = desc.build_native(&mut state)?;
             window.show();
         }
 
@@ -186,7 +186,7 @@ impl<T: Data + 'static> WindowDesc<T> {
     /// Attempt to create a platform window from this `WindowDesc`.
     pub(crate) fn build_native(
         &self,
-        state: &AppState<T> ////
+        state: &mut AppState<T> ////
         ////state: &Rc<RefCell<AppState<T>>>,
     ) -> Result<WindowHandle, PlatformError> {
         /* ////

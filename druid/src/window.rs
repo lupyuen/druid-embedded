@@ -29,10 +29,11 @@ use crate::{
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct WindowId(u32);
 
-static WINDOW_ID_COUNTER: u32 = 1; ////
+static mut WINDOW_ID_COUNTER: u32 = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
+#[derive(Clone)] ////
 pub struct Window<T: Data + 'static> { ////
 ////pub struct Window<T: Data> {
     pub(crate) root: WidgetPod<T, WidgetBox<T>>, ////

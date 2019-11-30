@@ -51,14 +51,15 @@ use crate::{
 /// it publicly.
 pub struct DruidHandler<T: Data + 'static> { ////
 ////pub struct DruidHandler<T: Data> {
-        /// The shared app state.
-    app_state: &'static AppState<T>, ////
+    /// The shared app state.
+    app_state: &'static mut AppState<T>, ////
     ////app_state: Rc<RefCell<AppState<T>>>,
     /// The id for the current window.
     window_id: WindowId,
 }
 
 /// State shared by all windows in the UI.
+#[derive(Clone)] ////
 pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
@@ -69,6 +70,7 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 }
 
 /// All active windows.
+#[derive(Clone)] ////
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
     windows: Option<Window<T>>, //// Only 1 window supported
@@ -78,6 +80,7 @@ struct Windows<T: Data + 'static> { ////
 }
 
 /// Per-window state not owned by user code.
+#[derive(Clone)] ////
 pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle,
     ////prev_paint_time: Option<Instant>,
@@ -507,7 +510,7 @@ impl<T: Data + 'static> DruidHandler<T> {
         window_id: WindowId,
     ) -> DruidHandler<T> {
         DruidHandler {
-            app_state: &app_state, ////
+            app_state: &mut app_state, ////
             ////app_state,
             window_id,
         }
@@ -647,9 +650,10 @@ impl<T: Data + 'static> DruidHandler<T> {
 
 impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     fn connect(&mut self, handle: &WindowHandle) {
-        self.app_state
+        ////TODO
+        ////self.app_state
             ////.borrow_mut()
-            .connect(self.window_id, handle.clone());
+            ////.connect(self.window_id, handle.clone());
     }
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
@@ -670,18 +674,21 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 
     fn mouse_down(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
         // TODO: double-click detection (or is this done in druid-shell?)
-        let event = Event::MouseDown(event.clone().into());
-        self.do_event(event, ctx);
+        ////TODO
+        ////let event = Event::MouseDown(event.clone().into());
+        ////self.do_event(event, ctx);
     }
 
     fn mouse_up(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
-        let event = Event::MouseUp(event.clone().into());
-        self.do_event(event, ctx);
+        ////TODO
+        ////let event = Event::MouseUp(event.clone().into());
+        ////self.do_event(event, ctx);
     }
 
     fn mouse_move(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
-        let event = Event::MouseMoved(event.clone().into());
-        self.do_event(event, ctx);
+        ////TODO
+        ////let event = Event::MouseMoved(event.clone().into());
+        ////self.do_event(event, ctx);
     }
 
     /* ////
