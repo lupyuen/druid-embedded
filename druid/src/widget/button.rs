@@ -27,7 +27,7 @@ use crate::widget::{Align, Label, LabelText, /* SizedBox, */ WidgetType};////
 use crate::{Point, RenderContext};
 
 /// A button with a text label.
-#[derive(Clone, Copy)] ////
+#[derive(Clone)] ////
 pub struct Button<T> {
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.

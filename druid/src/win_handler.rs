@@ -131,16 +131,16 @@ impl<T: Data> Windows<T> { ////
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {
-        let mut state = self.state.unwrap(); ////
+        let state = self.state.clone().unwrap(); ////
         ////let state = self.state.get_mut(&window_id);
-        let mut window = self.windows.unwrap(); ////
+        let window = self.windows.clone().unwrap(); ////
         ////let window = self.windows.get_mut(&window_id);
 
         Some(SingleWindowState { ////
             window_id,
-            window: &mut window.clone(), ////
+            window: &mut window, ////
             ////window,
-            state: &mut state.clone(), ////
+            state: &mut state, ////
             ////state,
             ////command_queue,
             data,

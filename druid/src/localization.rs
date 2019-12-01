@@ -102,7 +102,7 @@ struct ArgSource<T>(ArgClosure<T>);
 ///
 /// At its simplest, a `LocalizedString` is a key that can be resolved
 /// against a map of localized strings for a given locale.
-#[derive(Clone, Copy)]////
+#[derive(Clone)]////
 ////#[derive(Debug, Clone)]
 pub struct LocalizedString<T> {
     pub(crate) key: &'static str,

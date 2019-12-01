@@ -33,7 +33,7 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
-#[derive(Clone, Copy)] ////
+#[derive(Clone)] ////
 pub struct Window<T: Data + 'static> { ////
 ////pub struct Window<T: Data> {
     pub(crate) root: WidgetPod<T, WidgetBox<T>>, ////

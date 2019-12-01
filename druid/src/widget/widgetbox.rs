@@ -8,14 +8,14 @@ use crate::{
 };
 
 /// Boxed version of a `Widget`
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct WidgetBox<D: Data + 'static>(
     WidgetType<D>,
     PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
 /// Enum to store each `Widget`
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum WidgetType<D: Data + 'static> {
     None,
     Button(Button<D>),

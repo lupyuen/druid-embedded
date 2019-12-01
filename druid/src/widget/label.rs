@@ -36,14 +36,14 @@ type MaxLabel = heapless::consts::U20; //// Max length of label strings
 type String = heapless::String::<MaxLabel>; ////
 
 /// The text for the label; either a localized or a specific string.
-#[derive(Clone, Copy)] ////
+#[derive(Clone)] ////
 pub enum LabelText<T> {
     Localized(LocalizedString<T>),
     Specific(String),
 }
 
 /// A label that displays some text.
-#[derive(Clone, Copy)] ////
+#[derive(Clone)] ////
 pub struct Label<T> {
     text: LabelText<T>,
     align: UnitPoint,
