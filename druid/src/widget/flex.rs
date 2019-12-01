@@ -44,13 +44,13 @@ type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 pub struct Flex<T: Data + 'static> { ////
 ////pub struct Flex<T: Data> {
     direction: Axis,
-    children: Vec<ChildWidget<T, _>>, ////
+    children: Vec<ChildWidget<T>>, ////
     ////children: Vec<ChildWidget<T>>,
 }
 
-struct ChildWidget<T: Data + 'static, W: Widget<T>> { ////
+struct ChildWidget<T: Data + 'static> { ////
 ////struct ChildWidget<T: Data> {
-    widget: WidgetPod<T, WidgetBox<T, W>>, ////
+    widget: WidgetPod<T, WidgetBox<T, dyn Widget<T>>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
 }
