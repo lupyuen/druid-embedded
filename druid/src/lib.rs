@@ -82,7 +82,7 @@ use crate::widget::WidgetType;
 /// widget can process a diff between the old value and the new.
 ///
 /// [`update`]: trait.Widget.html#tymethod.update
-#[derive(Clone)] ////
+#[derive(Clone, Copy)] ////
 pub struct WidgetPod<T: Data + 'static, W: Widget<T>> { ////
 ////pub struct WidgetPod<T: Data, W: Widget<T>> {
     state: BaseState,
@@ -111,7 +111,7 @@ pub type BoxedWidget<T> = WidgetPod<T, Box<dyn Widget<T>>>;
 ///
 /// [`paint`]: trait.Widget.html#tymethod.paint
 /// [`WidgetPod`]: struct.WidgetPod.html
-#[derive(Clone, Default)] ////
+#[derive(Clone, Copy, Default)] ////
 ////#[derive(Default)]
 pub struct BaseState {
     layout_rect: Rect,

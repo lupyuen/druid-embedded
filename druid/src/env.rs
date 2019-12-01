@@ -37,7 +37,8 @@ use crate::Data;
 /// example of the latter is setting a value for enabled/disabled status
 /// so that an entire subtree can be disabled ("grayed out") with one
 /// setting.
-#[derive(Clone)]
+#[derive(Clone, Copy)] ////
+///#[derive(Clone)]
 pub struct Env {} ////
 ////pub struct Env(Arc<EnvImpl>);
 

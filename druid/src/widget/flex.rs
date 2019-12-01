@@ -41,7 +41,7 @@ type MaxWidgets = heapless::consts::U8; //// Max widgets per container
 type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 
 /// A container with either horizontal or vertical layout.
-#[derive(Clone)] ////
+#[derive(Clone, Copy)] ////
 pub struct Flex<T: Data + 'static> { ////
 ////pub struct Flex<T: Data> {
     direction: Axis,
@@ -49,7 +49,7 @@ pub struct Flex<T: Data + 'static> { ////
     ////children: Vec<ChildWidget<T>>,
 }
 
-#[derive(Clone)] ////
+#[derive(Clone, Copy)] ////
 struct ChildWidget<T: Data + 'static> { ////
 ////struct ChildWidget<T: Data> {
     widget: WidgetPod<T, WidgetBox<T>>, ////
@@ -57,7 +57,7 @@ struct ChildWidget<T: Data + 'static> { ////
     params: Params,
 }
 
-#[derive(Clone)] ////
+#[derive(Clone, Copy)] ////
 pub enum Axis {
     Horizontal,
     Vertical,
@@ -127,7 +127,7 @@ impl<T: Data> Flex<T> {
     /// If `flex` is non-zero, then all the space left over after layout of
     /// the non-flex children is divided up, in proportion to the `flex` value,
     /// among the flex children.
-    pub fn add_child<W: Widget<T> + 'static>(&mut self, child: W, flex: f64) { ////
+    pub fn add_child<W: Widget<T> + 'static>(&mut self, child: &mut W, flex: f64) { ////
     ////pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
         let params = Params { flex };
         let child = ChildWidget {

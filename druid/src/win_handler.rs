@@ -80,6 +80,7 @@ struct Windows<T: Data + 'static> { ////
 }
 
 /// Per-window state not owned by user code.
+#[derive(Clone, Copy)] ////
 pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle,
     ////prev_paint_time: Option<Instant>,
@@ -130,16 +131,16 @@ impl<T: Data> Windows<T> { ////
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {
-        let state = self.state.unwrap(); ////
+        let mut state = self.state.unwrap(); ////
         ////let state = self.state.get_mut(&window_id);
-        let window = self.windows.unwrap(); ////
+        let mut window = self.windows.unwrap(); ////
         ////let window = self.windows.get_mut(&window_id);
 
         Some(SingleWindowState { ////
             window_id,
-            window: &mut window, ////
+            window: &mut window.clone(), ////
             ////window,
-            state: &mut state, ////
+            state: &mut state.clone(), ////
             ////state,
             ////command_queue,
             data,
