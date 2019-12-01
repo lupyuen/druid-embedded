@@ -48,9 +48,9 @@ pub struct Flex<T: Data + 'static> { ////
     ////children: Vec<ChildWidget<T>>,
 }
 
-struct ChildWidget<T: Data + 'static> { ////
+struct ChildWidget<T: Data + 'static, W: Widget<T>> { ////
 ////struct ChildWidget<T: Data> {
-    widget: WidgetPod<T, WidgetBox<T, dyn Widget<T>>>, ////
+    widget: WidgetPod<T, WidgetBox<T, W>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
     params: Params,
 }
