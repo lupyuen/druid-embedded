@@ -19,7 +19,8 @@
 use core::str::FromStr; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
-    Widget,
+    Widget, 
+    WidgetType, ////
 };
 
 use crate::kurbo::Rect;
@@ -35,12 +36,14 @@ type MaxLabel = heapless::consts::U20; //// Max length of label strings
 type String = heapless::String::<MaxLabel>; ////
 
 /// The text for the label; either a localized or a specific string.
+#[derive(Clone)] ////
 pub enum LabelText<T> {
     Localized(LocalizedString<T>),
     Specific(String),
 }
 
 /// A label that displays some text.
+#[derive(Clone)] ////
 pub struct Label<T> {
     text: LabelText<T>,
     align: UnitPoint,
@@ -84,7 +87,8 @@ impl<T: Data> Label<T> {
     }
 }
 
-impl<T: Data> Widget<T> for Label<T> {
+impl<T: Data + 'static> Widget<T> for Label<T> { ////
+////impl<T: Data> Widget<T> for Label<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, _data: &T, env: &Env) {
         let font_size = crate::env::TEXT_SIZE_NORMAL; ////env.get(theme::TEXT_SIZE_NORMAL);
 
@@ -129,6 +133,10 @@ impl<T: Data> Widget<T> for Label<T> {
         if self.text.resolve(data, env) {
             ctx.invalidate();
         }
+    }
+
+    fn to_type(&mut self) -> WidgetType<T> { ////
+        WidgetType::Label(self.clone())
     }
 }
 

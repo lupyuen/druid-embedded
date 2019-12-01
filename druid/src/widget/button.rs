@@ -23,10 +23,11 @@ use crate::kurbo::RoundedRect;
 use crate::piet::{LinearGradient, UnitPoint};
 
 ////use crate::theme;
-use crate::widget::{Align, Label, LabelText, /* SizedBox */};////
+use crate::widget::{Align, Label, LabelText, /* SizedBox, */ WidgetType};////
 use crate::{Point, RenderContext};
 
 /// A button with a text label.
+#[derive(Clone)] ////
 pub struct Button<T> {
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.
@@ -81,7 +82,9 @@ impl<T: Data + 'static> Button<T> {
     */ ////
 }
 
-impl<T: Data> Widget<T> for Button<T> {
+
+impl<T: Data + 'static> Widget<T> for Button<T> { ////
+////impl<T: Data> Widget<T> for Button<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, data: &T, env: &Env) {
         let is_active = base_state.is_active();
         let is_hot = base_state.is_hot();
@@ -160,5 +163,9 @@ impl<T: Data> Widget<T> for Button<T> {
 
     fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env) {
         self.label.update(ctx, old_data, data, env)
+    }
+
+    fn to_type(&mut self) -> WidgetType<T> { ////
+        WidgetType::Button(self.clone())
     }
 }

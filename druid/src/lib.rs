@@ -68,6 +68,7 @@ pub use localization::LocalizedString;
 pub use mouse::MouseEvent;
 pub use win_handler::DruidHandler;
 pub use window::{ Window, WindowId}; ////
+use crate::widget::WidgetType;
 
 /// A container for one widget in the hierarchy.
 ///
@@ -82,7 +83,8 @@ pub use window::{ Window, WindowId}; ////
 ///
 /// [`update`]: trait.Widget.html#tymethod.update
 #[derive(Clone)] ////
-pub struct WidgetPod<T: Data, W: Widget<T>> {
+pub struct WidgetPod<T: Data + 'static, W: Widget<T>> { ////
+////pub struct WidgetPod<T: Data, W: Widget<T>> {
     state: BaseState,
     old_data: Option<T>,
     env: Option<Env>,
@@ -180,7 +182,8 @@ pub struct BaseState {
 /// [`update`]: #tymethod.update
 /// [`Data`]: trait.Data.html
 /// [`WidgetPod`]: struct.WidgetPod.html
-pub trait Widget<T> {
+pub trait Widget<T: Data + 'static> { ////
+////pub trait Widget<T> {
     /// Paint the widget appearance.
     ///
     /// The widget calls methods on the `render_ctx` field of the
@@ -243,6 +246,9 @@ pub trait Widget<T> {
     // Consider a no-op default impl. One reason against is that containers might
     // inadvertently forget to propagate.
     fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
+
+    /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
+    fn to_type(&mut self) -> WidgetType<T>; ////
 }
 
 /*
@@ -419,8 +425,9 @@ pub struct BoxConstraints {
     max: Size,
 }
 
-impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
-    /// Create a new widget pod.
+impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
+////impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
+        /// Create a new widget pod.
     ///
     /// In a widget hierarchy, each widget is wrapped in a `WidgetPod`
     /// so it can participate in layout and event flow. The process of
