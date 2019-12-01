@@ -1,6 +1,5 @@
-//! WidgetBox contains a Widget. Allows for dynamic dispatch with static Widgets.
+//! `WidgetBox` contains a `Widget`. Allows for dynamic dispatch with static `Widgets` in `[no_std]`.
 
-use core::any::Any;
 use crate::kurbo::{Point, Rect, Size};
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
@@ -8,111 +7,101 @@ use crate::{
     widget::{Button, Flex, Label},
 };
 
-/// Boxed version of a Widget
-pub struct WidgetBox<DataType: Data + 'static> {
-    pub widget: WidgetType<DataType>,
-}
+/// Boxed version of a `Widget`
+pub struct WidgetBox<D: Data + 'static, W: Widget<D>>(W);
 
-/// Enum of all possible Widget types
-pub enum WidgetType<DataType: Data + 'static> {
-    Button(Button<DataType>),
-    Flex(Flex<DataType>),
-    Label(Label<DataType>),
-}
+/// Implementation of `WidgetBox` for specific `Widgets`
+impl<D: Data + 'static, Button> WidgetBox<D, Button> {}
+impl<D: Data + 'static, Flex>   WidgetBox<D, Flex> {}
+impl<D: Data + 'static, Label>  WidgetBox<D, Label> {}
 
-impl<DataType: Data + 'static> WidgetBox<DataType> {
+/// Generic implementation of `WidgetBox`
+impl<D: Data + 'static, W: Widget<D>> WidgetBox<D, W> {
     /// Create a new box for the `Widget`
-    pub fn new<T: Any>(widget: &T) -> Self {
-        let widget_any = widget as &dyn Any;
-        WidgetBox {
-            widget: {
-                //  Try to convert our widget into a concrete `Widget`
-                if let Some(w) = widget_any.downcast_ref::<Button::<DataType>>() {
-                    WidgetType::Button(*w)        
-                }
-                else if let Some(w) = widget_any.downcast_ref::<Flex::<DataType>>() {
-                    WidgetType::Flex(*w)        
-                }
-                else if let Some(w) = widget_any.downcast_ref::<Label::<DataType>>() {
-                    WidgetType::Label(*w)        
-                }
-                else { panic!("not widget") }
-            }
-        }
-    }
-
-    /// Return the `Widget` inside the box
-    fn get_widget(&mut self) -> &mut dyn Widget<DataType> {
-        match &mut self.widget {
-            WidgetType::Button(w) => w as &mut dyn Widget<DataType>,
-            WidgetType::Flex(w)   => w as &mut dyn Widget<DataType>,
-            WidgetType::Label(w)  => w as &mut dyn Widget<DataType>,
-        }
+    pub fn new(widget: W) -> Self {
+        WidgetBox(widget)
     }
 }
 
-impl<DataType: Data + 'static> Widget<DataType> for WidgetBox<DataType> {
+/// Implementation of `Widget` trait for `WidgetBox`. We just forward to the inner `Widget`.
+impl<D: Data + 'static, W: Widget<D>> Widget<D> for WidgetBox<D, W> {
     fn paint(
         &mut self, 
         paint_ctx: &mut PaintCtx, 
         base_state: &BaseState, 
-        data: &DataType, 
+        data: &D, 
         env: &Env
     ) {
-        self.get_widget().paint(paint_ctx, base_state, data, env);
-        /*
-        match &mut self.widget {
-            WidgetType::Button(w) => w.paint(paint_ctx, base_state, data, env),
-            WidgetType::Label(w)  => w.paint(paint_ctx, base_state, data, env),
-        };
-        */
+        self.0.paint(paint_ctx, base_state, data, env);
     }
 
     fn layout(
         &mut self,
         layout_ctx: &mut LayoutCtx,
         bc: &BoxConstraints,
-        data: &DataType,
+        data: &D,
         env: &Env,
     ) -> Size {
-        self.get_widget().layout(layout_ctx, bc, data, env)
-        /*
-        match &mut self.widget {
-            WidgetType::Button(w) => w.layout(layout_ctx, bc, data, env),
-            WidgetType::Label(w)  => w.layout(layout_ctx, bc, data, env),
-        }
-        */
+        self.0.layout(layout_ctx, bc, data, env)
     }
 
     fn event(
         &mut self, 
         ctx: &mut EventCtx, 
         event: &Event, 
-        data: &mut DataType, 
+        data: &mut D, 
         env: &Env
     ) {
-        self.get_widget().event(ctx, event, data, env);
-        /*
-        match &mut self.widget {
-            WidgetType::Button(w) => w.event(ctx, event, data, env),
-            WidgetType::Label(w)  => w.event(ctx, event, data, env),
-        };
-        */
+        self.0.event(ctx, event, data, env);
     }
 
     fn update(
         &mut self, 
         ctx: &mut UpdateCtx, 
-        old_data: Option<&DataType>, 
-        data: &DataType, 
+        old_data: Option<&D>, 
+        data: &D, 
         env: &Env
     ) {
-        self.get_widget().update(ctx, old_data, data, env);
-        /*
-        match &mut self.widget {
-            WidgetType::Button(w) => w.update(ctx, old_data, data, env),
-            WidgetType::Label(w)  => w.update(ctx, old_data, data, env),
-        };
-        */
+        self.0.update(ctx, old_data, data, env);
+    }
+
+    fn paint(
+        &mut self, 
+        paint_ctx: &mut PaintCtx, 
+        base_state: &BaseState, 
+        data: &D, 
+        env: &Env
+    ) {
+        self.0.paint(paint_ctx, base_state, data, env);
+    }
+
+    fn layout(
+        &mut self,
+        layout_ctx: &mut LayoutCtx,
+        bc: &BoxConstraints,
+        data: &D,
+        env: &Env,
+    ) -> Size {
+        self.0.layout(layout_ctx, bc, data, env);
+    }
+
+    fn event(
+        &mut self, 
+        ctx: &mut EventCtx, 
+        event: &Event, 
+        data: &mut D, 
+        env: &Env
+    ) {
+        self.0.event(ctx, event, data, env);
+    }
+
+    fn update(
+        &mut self, 
+        ctx: &mut UpdateCtx, 
+        old_data: Option<&D>, 
+        data: &D, 
+        env: &Env
+    ) {
+        self.0.update(ctx, old_data, data, env);
     }
 }

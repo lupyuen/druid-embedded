@@ -15,7 +15,7 @@
 //! Common widgets.
 
 mod widgetbox; ////
-pub use crate::widget::widgetbox::{WidgetBox, WidgetType}; ////
+pub use crate::widget::widgetbox::{WidgetBox}; ////
 
 mod align;
 pub use crate::widget::align::Align;

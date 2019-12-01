@@ -33,9 +33,9 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
-pub struct Window<T: Data + 'static> { ////
+pub struct Window<T: Data + 'static, W: Widget<T>> { ////
 ////pub struct Window<T: Data> {
-    pub(crate) root: WidgetPod<T, WidgetBox<T>>, ////
+    pub(crate) root: WidgetPod<T, WidgetBox<T, W>>, ////
     ////pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
     ////pub(crate) title: LocalizedString<T>,
     size: Size,
@@ -44,13 +44,14 @@ pub struct Window<T: Data + 'static> { ////
     // delegate?
 }
 
-impl<T: Data> Window<T> {
+impl<T: Data, W: Widget<T>> Window<T, W> { ////
+////impl<T: Data> Window<T> {
     pub fn new(
-        root: WidgetBox<T>,
+        root: WidgetBox<T, W>,
         ////root: &dyn Widget<T>,
         ////title: LocalizedString<T>,
         ////menu: Option<MenuDesc<T>>,
-    ) -> Window<T> {
+    ) -> Window<T, W> {
         Window {
             root: WidgetPod::new(root), ////
             ////root: WidgetPod::new(WidgetBox::new(root)), ////
