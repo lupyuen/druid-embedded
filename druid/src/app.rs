@@ -20,6 +20,7 @@ use std::rc::Rc;
 use std::sync::Arc;
 */ ////
 
+use core::marker::PhantomData; ////
 use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
 use crate::win_handler::AppState;
@@ -33,8 +34,11 @@ type MaxWindows = heapless::consts::U2; //// Max number of windows
 type Vec<T> = heapless::Vec::<T, MaxWindows>; ////
 
 /// Handles initial setup of an application, and starts the runloop.
-pub struct AppLauncher<T> {
-    windows: Vec<WindowDesc<T>>,
+pub struct AppLauncher<T: Data + 'static, W: Widget<T> + 'static> { ////
+////pub struct AppLauncher<T> {
+    windows: Vec<WindowDesc<T, W>>, ////
+    ////windows: Vec<WindowDesc<T>>,
+    phantom_data: PhantomData<T>,  //  Needed to do compile-time checking for `Data`
     /* ////
     env_setup: Option<Box<EnvSetupFn>>,
     delegate: Option<Box<dyn AppDelegate<T>>>,
@@ -42,15 +46,15 @@ pub struct AppLauncher<T> {
 }
 
 /// A function that can create a widget.
-type WidgetBuilderFn<T> = fn() -> dyn Widget<T>; ////
+////type WidgetBuilderFn<W: Widget<T> + 'static> = fn() -> W; ////
 ////type WidgetBuilderFn<T> = dyn Fn() -> Box<dyn Widget<T>> + 'static;
 
 /// A description of a window to be instantiated.
 ///
 /// This includes a function that can build the root widget, as well as other
 /// window properties such as the title.
-pub struct WindowDesc<T> {
-    pub(crate) root_builder: WidgetBuilderFn<T>, ////
+pub struct WindowDesc<T: Data + 'static, W: Widget<T> + 'static> { ////
+    pub(crate) root_builder: fn() -> W, ////
     ////pub(crate) root_builder: Arc<WidgetBuilderFn<T>>,
     ////pub(crate) title: Option<LocalizedString<T>>,
     pub(crate) size: Option<Size>,
@@ -62,16 +66,19 @@ pub struct WindowDesc<T> {
     /// This can be used to track a window from when it is launched and when
     /// it actually connects.
     pub id: WindowId,
+    phantom_data: PhantomData<T>,  //  Needed to do compile-time checking for `Data`
 }
 
-impl<T: Data + 'static + Default> AppLauncher<T> { ////
+impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { ////
     /// Create a new `AppLauncher` with the provided window.
-    pub fn with_window(window: WindowDesc<T>) -> Self {
+    pub fn with_window(window: WindowDesc<T, W>) -> Self { ////
+    ////pub fn with_window(window: WindowDesc<T>) -> Self {
         let mut windows = Vec::new(); ////
         windows.push(window); ////
         AppLauncher {
             windows, ////
             ////windows: vec![window],
+            phantom_data: PhantomData, ////
             /*
             env_setup: None,
             delegate: None,
@@ -135,17 +142,17 @@ impl<T: Data + 'static + Default> AppLauncher<T> { ////
     }
 }
 
-impl<T: Data + 'static> WindowDesc<T> {
+impl<T: Data + 'static, W: Widget<T> + 'static> WindowDesc<T, W> { ////
     /// Create a new `WindowDesc`, taking a funciton that will generate the root
     /// [`Widget`] for this window.
     ///
     /// It is possible that a `WindowDesc` can be reused to launch multiple windows.
     ///
     /// [`Widget`]: trait.Widget.html
-    pub fn new<W, F>(root: WidgetBuilderFn<T>) -> WindowDesc<T> ////
+    pub fn new(root: fn() -> W) -> WindowDesc<T, W> ////
     ////pub fn new<W, F>(root: F) -> WindowDesc<T>
-    where
-        W: Widget<T> + 'static,
+    ////where
+        ////W: Widget<T> + 'static,
         ////F: Fn() -> W + 'static,
     {
         // wrap this closure in another closure that dyns the result
@@ -160,6 +167,7 @@ impl<T: Data + 'static> WindowDesc<T> {
             menu: MenuDesc::platform_default(),
             */ ////
             id: WindowId::next(),
+            phantom_data: PhantomData, ////
         }
     }
 

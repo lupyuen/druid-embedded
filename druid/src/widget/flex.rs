@@ -127,12 +127,12 @@ impl<T: Data> Flex<T> {
     /// If `flex` is non-zero, then all the space left over after layout of
     /// the non-flex children is divided up, in proportion to the `flex` value,
     /// among the flex children.
-    pub fn add_child<W: Widget<T> + 'static>(&mut self, child: &mut W, flex: f64) { ////
+    pub fn add_child<W: Widget<T> + Clone>(&mut self, child: W, flex: f64) { ////
     ////pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
         let params = Params { flex };
         let child = ChildWidget {
             widget: WidgetPod::new(
-                WidgetBox::<T>::new(child)
+                WidgetBox::<T>::new(&mut child.clone())
             ),
             ////widget: WidgetPod::new(child).boxed(),
             params,
