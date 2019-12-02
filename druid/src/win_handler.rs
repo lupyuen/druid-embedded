@@ -516,14 +516,14 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
     pub(crate) fn new_shared(
-        app_state: AppState<T>, ////
+        app_state: &'static mut AppState<T>, ////
         ////app_state: Rc<RefCell<AppState<T>>>,
         window_id: WindowId,
     ) -> DruidHandler<T> { ////
     ////) -> DruidHandler<T> {
         DruidHandler {
-            app_state: &mut app_state, ////
-            ////app_state,
+            //app_state: &mut app_state, ////
+            app_state,
             window_id,
         }
     }
