@@ -24,6 +24,7 @@ use std::time::Instant;
 use log::{error, info, warn};
 */ ////
 
+use core::clone::Clone; ////
 use crate::kurbo::{Rect, Size, Vec2};
 use crate::piet::{Piet, RenderContext};
 use crate::shell::{
@@ -111,7 +112,7 @@ impl<T: Data + 'static> Windows<T> { ////
         ////self.state.insert(id, state);
     }
 
-    fn add<W: Widget<T> + 'static>(&mut self, id: WindowId, window: Window<T, W>) { ////
+    fn add(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
         self.windows = window.clone(); ////
         ////self.windows.insert(id, window);
@@ -125,7 +126,7 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 
     //TODO: rename me?
-    fn get<'a, W: Widget<T> + 'static>( ////
+    fn get<'a>( ////
         &'a mut self,
         window_id: WindowId,
         ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -257,7 +258,8 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
             base_state: &mut base_state,
             is_handled: false,
             is_root: true,
-            had_active: self.window.root.state.has_active,
+            had_active: self.window.has_active(),
+            ////had_active: self.window.root.state.has_active,
             window: &self.state.handle,
             window_id: self.window_id,
         };
@@ -427,7 +429,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
 
     fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> { ////
     ////fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> {
-            let AppState {
+        let AppState {
             ////ref mut command_queue,
             ref mut windows,
             ref mut data,

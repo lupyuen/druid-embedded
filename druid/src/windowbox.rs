@@ -36,35 +36,9 @@ impl<D: Data + 'static> WindowBox<D> {
     }
 }
 
-/// Implementation of `Window` trait for `WindowBox`. We just forward to the inner `Window`.
+/// Implementation of `WindowBox`. We just forward to the inner `Window`.
 impl<D: Data + 'static> WindowBox<D> {
-    fn paint(
-        &mut self, 
-        paint_ctx: &mut PaintCtx, 
-        base_state: &BaseState, 
-        data: &D, 
-        env: &Env
-    ) {
-        match &mut self.0 {
-            WindowType::Flex(w)   => w.paint(paint_ctx, base_state, data, env),
-            WindowType::None => {}
-        };
-    }
-
-    fn layout(
-        &mut self,
-        layout_ctx: &mut LayoutCtx,
-        bc: &BoxConstraints,
-        data: &D,
-        env: &Env,
-    ) -> Size {
-        match &mut self.0 {
-            WindowType::Flex(w)   => w.layout(layout_ctx, bc, data, env),
-            WindowType::None => Size::ZERO,
-        }
-    }
-
-    fn event(
+    pub fn event(
         &mut self, 
         ctx: &mut EventCtx, 
         event: &Event, 
@@ -77,16 +51,48 @@ impl<D: Data + 'static> WindowBox<D> {
         };
     }
 
-    fn update(
+    pub fn update(
         &mut self, 
         ctx: &mut UpdateCtx, 
-        old_data: Option<&D>, 
         data: &D, 
         env: &Env
     ) {
         match &mut self.0 {
-            WindowType::Flex(w)   => w.update(ctx, old_data, data, env),
+            WindowType::Flex(w)   => w.update(ctx, data, env),
             WindowType::None => {}
         };
+    }
+
+    pub fn layout(
+        &mut self,
+        layout_ctx: &mut LayoutCtx,
+        data: &D,
+        env: &Env,
+    ) {
+        match &mut self.0 {
+            WindowType::Flex(w)   => w.layout(layout_ctx, data, env),
+            WindowType::None => {}
+        };
+    }
+
+    pub fn paint(
+        &mut self, 
+        paint_ctx: &mut PaintCtx, 
+        data: &D, 
+        env: &Env
+    ) {
+        match &mut self.0 {
+            WindowType::Flex(w)   => w.paint(paint_ctx, data, env),
+            WindowType::None => {}
+        };
+    }
+
+    pub fn has_active(
+        self,
+    ) -> bool {
+        match self.0 {
+            WindowType::Flex(w)   => w.root.state.has_active,
+            WindowType::None => false
+        }        
     }
 }

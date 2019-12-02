@@ -19,7 +19,7 @@ use crate::kurbo::{Point, Rect, Size}; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
     WidgetPod,
-    widget::{WidgetBox, WidgetType}, ////
+    Window, WindowType, widget::{WidgetBox, WidgetType}, ////
 };
 
 /// A builder for a row widget that can contain flex children.
@@ -251,4 +251,8 @@ impl<T: Data> Widget<T> for Flex<T> {
         ////WidgetType::Flex(self.clone())
         WidgetType::None
     }
+
+    fn to_window_type<W: Widget<T>>(window: &mut Window<T, W>) -> WindowType<T> { ////
+        WindowType::Flex(*window)
+    }        
 }

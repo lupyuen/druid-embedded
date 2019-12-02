@@ -227,11 +227,11 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
 
         let root_widget = (self.root_builder)(); ////
         let root_win = Window::new(root_widget); ////
-        let root_box = WindowBox::new(root_win); ////
+        let root_box = WindowBox::new(&mut root_win); ////
         ////let root = (self.root_builder)();
         state
             ////.borrow_mut()
-            .add_window(self.id, root_win); ////
+            .add_window(self.id, root_box); ////
             ////.add_window(self.id, Window::new(root, title, menu));
 
         builder.build()

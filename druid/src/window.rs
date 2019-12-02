@@ -37,7 +37,7 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 #[derive(Clone, Default)] ////
 pub struct Window<T: Data + 'static, W: Widget<T> + 'static> { ////
 ////pub struct Window<T: Data> {
-    pub(crate) root: W, ////
+    pub(crate) root: WidgetPod<T, W>, ////
     ////pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
     ////pub(crate) title: LocalizedString<T>,
     size: Size,
@@ -56,7 +56,7 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
         ////menu: Option<MenuDesc<T>>,
     ) -> Self {
         Window {
-            root, ////
+            root: WidgetPod::new(root), ////
             ////root: WidgetPod::new(WidgetBox::new(root)), ////
             ////root: WidgetPod::new(Box::new(root)),
             size: Size::ZERO,
@@ -112,8 +112,8 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
     }
     */ ////
 
-    fn to_type(&mut self) -> WindowType<T> { ////
-        WindowType::Flex(self.clone())
+    pub fn to_type(&mut self) -> WindowType<T> { ////
+        W::to_window_type(self.clone)
     }
 }
 
