@@ -8,7 +8,7 @@ use crate::{
 };
 
 /// Boxed version of a `Widget`
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct WidgetBox<D: Data + 'static>(
     WidgetType<D>,
     PhantomData<D>,  //  Needed to do compile-time checking for `Data`
@@ -21,6 +21,10 @@ pub enum WidgetType<D: Data + 'static> {
     Button(Button<D>),
     Flex(Flex<D>),
     Label(Label<D>),
+}
+
+impl<D: Data + 'static> Default for WidgetType<D> {
+    fn default() -> Self { WidgetType::None }
 }
 
 /// Generic implementation of `WidgetBox`

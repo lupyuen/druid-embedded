@@ -131,16 +131,16 @@ impl<T: Data> Windows<T> { ////
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
-        let state = self.state; ////
+        let state = &mut self.state; ////
         ////let state = self.state.get_mut(&window_id);
-        let window = self.windows; ////
+        let window = &mut self.windows; ////
         ////let window = self.windows.get_mut(&window_id);
         Some(SingleWindowState { ////
             window_id,
-            window: &mut window, ////
-            ////window,
-            state: &mut state, ////
-            ////state,
+            //window: &mut window, ////
+            window,
+            //state: &mut state, ////
+            state,
             ////command_queue,
             data,
             env,
@@ -333,7 +333,7 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
     }
 }
 
-impl<T: Data + 'static> AppState<T> { ////
+impl<T: Data + 'static + Default> AppState<T> { ////
 ////impl<T: Data + 'static> AppState<T> {
     pub(crate) fn new(
         data: T,
@@ -511,7 +511,7 @@ impl<T: Data + 'static> AppState<T> { ////
     }
 }
 
-impl<T: Data + 'static> DruidHandler<T> { ////
+impl<T: Data + 'static + Default> DruidHandler<T> { ////
 ////impl<T: Data + 'static> DruidHandler<T> {
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
@@ -660,7 +660,8 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static> WinHandler for DruidHandler<T> {
+impl<T: Data + 'static + Default> WinHandler for DruidHandler<T> { ////
+////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     fn connect(&mut self, handle: &WindowHandle) {
         ////TODO
         ////self.app_state
@@ -735,11 +736,11 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     */ ////
 }
 
-impl<T: Data> Default for Windows<T> { ////
+impl<T: Data + 'static + Default> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            windows: Default::default(), //// Default::default(), ////
+            windows: Default::default(), ////Window::<T>::default(), ////
             ////windows: HashMap::new(),
             state: Default::default(), ////
             ////state: HashMap::new(),

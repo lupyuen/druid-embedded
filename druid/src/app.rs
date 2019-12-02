@@ -64,7 +64,7 @@ pub struct WindowDesc<T> {
     pub id: WindowId,
 }
 
-impl<T: Data + 'static> AppLauncher<T> {
+impl<T: Data + 'static + Default> AppLauncher<T> { ////
     /// Create a new `AppLauncher` with the provided window.
     pub fn with_window(window: WindowDesc<T>) -> Self {
         let mut windows = Vec::new(); ////
