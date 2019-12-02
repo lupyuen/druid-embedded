@@ -73,14 +73,14 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 /// All active windows.
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
-    windows: Option<Window<T>>, //// Only 1 window supported
+    windows: Window<T>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
-    state: Option<WindowState>, //// Only 1 window state supported
+    state: WindowState, //// Only 1 window state supported
     ////state: HashMap<WindowId, WindowState>,
 }
 
 /// Per-window state not owned by user code.
-#[derive(Clone, Copy)] ////
+#[derive(Clone, Copy, Default)] ////
 pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle,
     ////prev_paint_time: Option<Instant>,
@@ -100,18 +100,18 @@ struct SingleWindowState<'a, T: Data + 'static> { ////
 
 impl<T: Data> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
-        fn connect(&mut self, id: WindowId, handle: WindowHandle) {
+    fn connect(&mut self, id: WindowId, handle: WindowHandle) {
         let state = WindowState {
             handle,
             ////prev_paint_time: None,
         };
-        self.state = Some(state); ////
+        self.state = state; ////
         ////self.state.insert(id, state);
     }
 
     fn add(&mut self, id: WindowId, window: Window<T>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
-        self.windows = Some(window); ////
+        self.windows = window.clone(); ////
         ////self.windows.insert(id, window);
     }
 
@@ -130,12 +130,11 @@ impl<T: Data> Windows<T> { ////
         data: &'a mut T,
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
-    ////) -> Option<SingleWindowState<'a, T>> {
-        let state = self.state.clone().unwrap(); ////
+    ////) -> Option<SingleWindowState<'a, T>> {        
+        let state = self.state; ////
         ////let state = self.state.get_mut(&window_id);
-        let window = self.windows.clone().unwrap(); ////
+        let window = self.windows; ////
         ////let window = self.windows.get_mut(&window_id);
-
         Some(SingleWindowState { ////
             window_id,
             window: &mut window, ////
@@ -147,12 +146,16 @@ impl<T: Data> Windows<T> { ////
             env,
         }) ////
         /* ////
-        match (state, window) {
-            (Some(state), Some(window)) => {
+        match (self.state, self.windows) { ////
+        ////match (state, window) {
+            (Some(mut state), Some(mut window)) => { ////
+            ////(Some(state), Some(window)) => {
                 return Some(SingleWindowState {
                     window_id,
-                    window,
-                    state,
+                    window: &mut window, ////
+                    ////window,
+                    state: &mut state, ////
+                    ////state,
                     ////command_queue,
                     data,
                     env,
@@ -414,7 +417,7 @@ impl<T: Data + 'static> AppState<T> { ////
     }
 
     fn show_window(&mut self, id: WindowId) {
-        let state = self.windows.state.unwrap(); ////
+        let state = self.windows.state; ////
         ////if let Some(state) = self.windows.state.get(&id) {
             state.handle.bring_to_front_and_focus();
         ////}
@@ -734,11 +737,11 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
 
 impl<T: Data> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
-        fn default() -> Self {
+    fn default() -> Self {
         Windows {
-            windows: None, ////
+            windows: Default::default(), //// Default::default(), ////
             ////windows: HashMap::new(),
-            state: None, ////
+            state: Default::default(), ////
             ////state: HashMap::new(),
         }
     }
