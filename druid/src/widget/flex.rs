@@ -248,6 +248,7 @@ impl<T: Data> Widget<T> for Flex<T> {
     }
 
     fn to_type(&mut self) -> WidgetType<T> { ////
-        WidgetType::Flex(self.clone())
+        ////WidgetType::Flex(self.clone())
+        WidgetType::None
     }
 }
