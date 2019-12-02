@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#![feature(start)]
-//#![no_main] ////
+#![no_main] ////
 #![no_std]  ////
 use core::panic::PanicInfo; //  Import `PanicInfo` type which is used by `panic()` below
 use druid::widget::{Align, Button, Column, Label, Padding};
 use druid::{AppLauncher, LocalizedString, Widget, WindowDesc};
+use cortex_m_rt::entry; ////
 
-//#[no_mangle]
-pub extern fn main() {
+#[entry]
+fn main() -> ! {
     //  Build a new window
     let main_window = WindowDesc::new(ui_builder);
     let data = 0_u32;
@@ -29,6 +29,7 @@ pub extern fn main() {
         .use_simple_logger()
         .launch(data)
         .expect("launch failed");
+    loop {}
 }
 
 /// Build the UI for the window. The window state consists of 1 value: `count` of type `u32`.
@@ -66,12 +67,6 @@ fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
     );
     */
     col
-}
-
-// Entry point for this program.
-#[start]
-fn start(_argc: isize, _argv: *const *const u8) -> isize {
-    0
 }
 
 ///  This function is called on panic, like an assertion failure. We display the filename and line number and pause in the debugger. From https://os.phil-opp.com/freestanding-rust-binary/
