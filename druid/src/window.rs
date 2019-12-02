@@ -16,13 +16,14 @@
 
 ////use std::sync::atomic::{AtomicU32, Ordering};
 
+use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Rect, Size};
 
 use crate::shell::WindowHandle;
 use crate::{
     BoxConstraints, /* Command, */ Data, Env, Event, EventCtx, LayoutCtx, LocalizedString, /* MenuDesc, */ ////
     PaintCtx, UpdateCtx, Widget, WidgetPod,
-    widget::WidgetBox, ////
+    widget::WidgetBox, WindowBox, WindowType, ////
 };
 
 /// A unique identifier for a window.
@@ -34,33 +35,35 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 
 /// Per-window state not owned by user code.
 #[derive(Clone, Default)] ////
-pub struct Window<T: Data + 'static> { ////
+pub struct Window<T: Data + 'static, W: Widget<T> + 'static> { ////
 ////pub struct Window<T: Data> {
-    pub(crate) root: WidgetPod<T, WidgetBox<T>>, ////
+    pub(crate) root: W, ////
     ////pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
     ////pub(crate) title: LocalizedString<T>,
     size: Size,
     ////pub(crate) menu: Option<MenuDesc<T>>,
     ////pub(crate) context_menu: Option<MenuDesc<T>>,
+    phantom_data: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     // delegate?
 }
 
-impl<T: Data> Window<T> { ////
+impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
 ////impl<T: Data> Window<T> {
     pub fn new(
-        root: WidgetBox<T>,
+        root: W,
         ////root: &dyn Widget<T>,
         ////title: LocalizedString<T>,
         ////menu: Option<MenuDesc<T>>,
-    ) -> Window<T> {
+    ) -> Self {
         Window {
-            root: WidgetPod::new(root), ////
+            root, ////
             ////root: WidgetPod::new(WidgetBox::new(root)), ////
             ////root: WidgetPod::new(Box::new(root)),
             size: Size::ZERO,
             ////title,
             ////menu,
             ////context_menu: None,
+            phantom_data: PhantomData, ////
         }
     }
 
@@ -108,6 +111,10 @@ impl<T: Data> Window<T> { ////
             .or_else(|| self.menu.as_ref().and_then(|m| m.command_for_id(cmd_id)))
     }
     */ ////
+
+    fn to_type(&mut self) -> WindowType<T> { ////
+        WindowType::Flex(self.clone())
+    }
 }
 
 impl WindowId {

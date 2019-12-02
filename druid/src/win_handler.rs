@@ -39,7 +39,7 @@ use crate::window::Window;
 use crate::{
     BaseState, /* Command, */ Data, Env, Event, EventCtx, /* KeyEvent, KeyModifiers, */ LayoutCtx, /* MenuDesc, */ ////
     PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, */ WindowDesc, WindowId,
-    Widget, ////
+    Widget, WindowBox, ////
 };
 
 ////use crate::command::sys as sys_cmd;
@@ -60,6 +60,7 @@ pub struct DruidHandler<T: Data + 'static> { ////
 }
 
 /// State shared by all windows in the UI.
+#[derive(Clone)] ////
 pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
@@ -71,9 +72,10 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 }
 
 /// All active windows.
+#[derive(Clone)] ////
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
-    windows: Window<T>, //// Only 1 window supported
+    windows: WindowBox<T>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
     state: WindowState, //// Only 1 window state supported
     ////state: HashMap<WindowId, WindowState>,
@@ -90,7 +92,7 @@ pub(crate) struct WindowState {
 struct SingleWindowState<'a, T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
-    window: &'a mut Window<T>, ////
+    window: &'a mut WindowBox<T>, ////
     ////window: &'a mut Window<T>,
     state: &'a mut WindowState,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -98,7 +100,7 @@ struct SingleWindowState<'a, T: Data + 'static> { ////
     env: &'a Env,
 }
 
-impl<T: Data> Windows<T> { ////
+impl<T: Data + 'static> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle) {
         let state = WindowState {
@@ -109,7 +111,7 @@ impl<T: Data> Windows<T> { ////
         ////self.state.insert(id, state);
     }
 
-    fn add(&mut self, id: WindowId, window: Window<T>) { ////
+    fn add<W: Widget<T> + 'static>(&mut self, id: WindowId, window: Window<T, W>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
         self.windows = window.clone(); ////
         ////self.windows.insert(id, window);
@@ -123,7 +125,7 @@ impl<T: Data> Windows<T> { ////
     }
 
     //TODO: rename me?
-    fn get<'a>(
+    fn get<'a, W: Widget<T> + 'static>( ////
         &'a mut self,
         window_id: WindowId,
         ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -401,9 +403,9 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     }
     */ ////
 
-    pub(crate) fn add_window(&mut self, id: WindowId, window: Window<T>) { ////
+    pub(crate) fn add_window(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////pub(crate) fn add_window(&mut self, id: WindowId, window: Window<T>) {
-            self.windows.add(id, window);
+        self.windows.add(id, window);
     }
 
     fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {

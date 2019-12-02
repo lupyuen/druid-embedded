@@ -25,7 +25,7 @@ use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
 use crate::win_handler::AppState;
 use crate::window::{Window, WindowId};
-use crate::{/* theme, AppDelegate, */ Data, DruidHandler, Env, LocalizedString, /* MenuDesc, */ Widget}; ////
+use crate::{/* theme, AppDelegate, */ Data, DruidHandler, Env, LocalizedString, /* MenuDesc, */ Widget, WindowBox}; ////
 
 /////// A function that modifies the initial environment.
 ////type EnvSetupFn = dyn FnOnce(&mut Env);
@@ -131,10 +131,8 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
         ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
-            /*  ////TODO2
             let window = desc.build_native(&mut state)?;
             window.show();
-            */ ////
         }
 
         ////main_loop.run();
@@ -142,7 +140,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
     }
 }
 
-impl<T: Data + 'static, W: Widget<T> + 'static> WindowDesc<T, W> { ////
+impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ////
     /// Create a new `WindowDesc`, taking a funciton that will generate the root
     /// [`Widget`] for this window.
     ///
@@ -193,7 +191,6 @@ impl<T: Data + 'static, W: Widget<T> + 'static> WindowDesc<T, W> { ////
         self
     }
 
-    /* ////TODO1
     /// Attempt to create a platform window from this `WindowDesc`.
     pub(crate) fn build_native(
         &self,
@@ -212,7 +209,7 @@ impl<T: Data + 'static, W: Widget<T> + 'static> WindowDesc<T, W> { ////
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let mut handler = DruidHandler::new_shared(*state.clone(), self.id);
+        let mut handler = DruidHandler::new_shared(&mut state.clone(), self.id);
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder = WindowBuilder::new();
@@ -228,17 +225,17 @@ impl<T: Data + 'static, W: Widget<T> + 'static> WindowDesc<T, W> { ////
         }
         */ ////
 
-        let root = &(self.root_builder)(); ////
-        let root_box = crate::widget::WidgetBox::new(&root); //// TODO
+        let root_widget = (self.root_builder)(); ////
+        let root_win = Window::new(root_widget); ////
+        let root_box = WindowBox::new(root_win); ////
         ////let root = (self.root_builder)();
         state
             ////.borrow_mut()
-            .add_window(self.id, Window::new(root_box /* , title, menu */)); ////
+            .add_window(self.id, root_win); ////
             ////.add_window(self.id, Window::new(root, title, menu));
 
         builder.build()
     }
-    */ ////
 
     /* ////
     /// Set the menu for this window.
