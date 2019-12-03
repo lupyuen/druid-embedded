@@ -36,13 +36,25 @@ pub fn widget_to_window_type<D: Data + 'static, W>(window: &mut Window<D, W>) ->
 }        
 */
 
+pub trait WindowTrait<D: Data + 'static> {
+    /// Wrap this `Window` in a `WindowType` enum for boxing by `WindowBox`
+    fn to_type() -> WindowType<T>;
+}
+
+impl<D: Data + 'static, W: Widget<D> + 'static> WindowTrait<D> for Window<D, W> {
+    fn to_type() -> WindowType<T> {
+        WindowType::Flex(*window)
+    }
+}
+
 /// Generic implementation of `WindowBox`
 impl<D: Data + 'static> WindowBox<D> {
     /// Create a new box for the `Window`
-    //pub fn new(window: &mut Window<D, Flex<D>>) -> Self {
-    pub fn new<W: Widget<D>>(window: &mut Window<D, W>) -> Self {
+    pub fn new(window: &mut Window<D, Flex<D>>) -> Self {
+    ////TODO pub fn new<W: Widget<D>>(window: &mut Window<D, W>) -> Self {
         WindowBox(
             WindowType::Flex(*window), ////TODO: window.to_type(),
+            ////widget.to_type(),
             ////widget_to_window_type::<D, W>(window),
             PhantomData,
         )
