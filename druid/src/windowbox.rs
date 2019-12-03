@@ -25,6 +25,7 @@ impl<D: Data + 'static> Default for WindowType<D> {
     fn default() -> Self { WindowType::None }
 }
 
+/*
 pub fn widget_to_window_type<D: Data + 'static, W: Widget<D>>(window: &mut Window<D, W>) -> WindowType<D> {
     WindowType::None
 }        
@@ -33,13 +34,16 @@ pub fn widget_to_window_type<D: Data + 'static, W>(window: &mut Window<D, W>) ->
     where W: Flex<D> {
     WindowType::Flex(*window)
 }        
+*/
 
 /// Generic implementation of `WindowBox`
 impl<D: Data + 'static> WindowBox<D> {
     /// Create a new box for the `Window`
+    //pub fn new(window: &mut Window<D, Flex<D>>) -> Self {
     pub fn new<W: Widget<D>>(window: &mut Window<D, W>) -> Self {
         WindowBox(
-            widget_to_window_type::<D, W>(window),
+            WindowType::Flex(*window), ////TODO: window.to_type(),
+            ////widget_to_window_type::<D, W>(window),
             PhantomData,
         )
     }

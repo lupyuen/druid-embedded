@@ -252,7 +252,9 @@ impl<T: Data> Widget<T> for Flex<T> {
         WidgetType::None
     }
 
+    /*
     fn to_window_type<W: Widget<T>>(window: &mut Window<T, W>) -> WindowType<T> { ////
         WindowType::Flex(*window)
-    }        
+    } 
+    */       
 }

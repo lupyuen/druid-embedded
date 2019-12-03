@@ -112,9 +112,11 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
     }
     */ ////
 
+    /*
     pub fn to_type(&mut self) -> WindowType<T> { ////
         W::to_window_type(self.clone)
     }
+    */
 }
 
 impl WindowId {
