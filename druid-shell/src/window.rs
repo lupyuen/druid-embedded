@@ -134,11 +134,16 @@ impl WindowHandle {
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder(platform::WindowBuilder);
+pub struct WindowBuilder<T>(
+    platform::WindowBuilder
+); ////
+////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl WindowBuilder {
+impl<T> WindowBuilder<T> { ////
+////impl WindowBuilder {
     /// Create a new `WindowBuilder`
-    pub fn new() -> WindowBuilder {
+    pub fn new() -> Self { ////
+    ////pub fn new() -> WindowBuilder {
         WindowBuilder(platform::WindowBuilder::new())
     }
 
@@ -146,7 +151,8 @@ impl WindowBuilder {
     /// callbacks from this window.
     ///
     /// [`WinHandler`]: trait.WinHandler.html
-    pub fn set_handler(&mut self, handler: WinHandler) { ////
+    pub fn set_handler(&mut self, handler: T) { ////
+    ////pub fn set_handler(&mut self, handler: WinHandler) { ////
     ////TODO1 pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.0.set_handler(handler) ////

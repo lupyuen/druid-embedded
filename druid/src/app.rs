@@ -209,11 +209,11 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let mut handler = DruidHandler::new_shared(state.clone(), self.id);
+        let mut handler = DruidHandler::new_shared(state.clone(), self.id); ////
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder = WindowBuilder::new();
-        builder.set_handler(&mut handler.clone());
+        builder.set_handler(&mut handler.clone()); ////
         ////builder.set_handler(Box::new(handler));
         if let Some(size) = self.size {
             builder.set_size(size);
