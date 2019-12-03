@@ -20,7 +20,7 @@ use core::str::FromStr; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
     Widget, 
-    WidgetType, ////
+    WidgetType, WindowBox, ////
 };
 
 use crate::kurbo::Rect;
@@ -137,6 +137,10 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
 
     fn to_type(&mut self) -> WidgetType<T> { ////
         WidgetType::Label(self.clone())
+    }
+
+    fn new_window(self) -> WindowBox<T> { ////
+        WindowBox::new()
     }
 }
 

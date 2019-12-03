@@ -10,8 +10,8 @@ use crate::{
 /// Boxed version of a `Window`
 #[derive(Clone, Default)]
 pub struct WindowBox<D: Data + 'static>(
-    WindowType<D>,
-    PhantomData<D>,  //  Needed to do compile-time checking for `Data`
+    pub WindowType<D>,
+    pub PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
 /// Enum to store each `Window`
@@ -33,8 +33,7 @@ pub fn widget_to_window_type<D: Data + 'static, W: Widget<D>>(window: &mut Windo
 pub fn widget_to_window_type<D: Data + 'static, W>(window: &mut Window<D, W>) -> WindowType<D>
     where W: Flex<D> {
     WindowType::Flex(*window)
-}        
-*/
+}
 
 pub trait WindowTrait<D: Data + 'static> {
     /// Wrap this `Window` in a `WindowType` enum for boxing by `WindowBox`
@@ -46,9 +45,19 @@ impl<D: Data + 'static, W: Widget<D> + 'static> WindowTrait<D> for Window<D, W> 
         WindowType::Flex(*window)
     }
 }
+*/
 
 /// Generic implementation of `WindowBox`
 impl<D: Data + 'static> WindowBox<D> {
+    /// Create a new empty box without a `Window`
+    pub fn new() -> Self {
+        WindowBox(
+            WindowType::None,
+            PhantomData,
+        )
+    }
+
+    /*        
     /// Create a new box for the `Window`
     pub fn new(window: &mut Window<D, Flex<D>>) -> Self {
     ////TODO pub fn new<W: Widget<D>>(window: &mut Window<D, W>) -> Self {
@@ -59,6 +68,7 @@ impl<D: Data + 'static> WindowBox<D> {
             PhantomData,
         )
     }
+    */
 }
 
 /// Implementation of `WindowBox`. We just forward to the inner `Window`.

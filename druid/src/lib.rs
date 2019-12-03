@@ -252,7 +252,9 @@ pub trait Widget<T: Data + 'static> { ////
     /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
     fn to_type(&mut self) -> WidgetType<T>; ////
 
-    //// Wrap this `Window` in a `WindowType` enum for boxing by `WindowBox`
+    /// Wrap this `Widget` in a `WindowBox`
+    fn new_window(self) -> WindowBox<T>; ////
+ 
     //fn to_window_type(window: &mut Window<T, Flex<T>>) -> WindowType<T>; ////
     //fn to_window_type<W: Widget<T>>(window: &mut Window<T, W>) -> WindowType<T>; ////
 }

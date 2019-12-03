@@ -3,7 +3,7 @@
 use core::marker::PhantomData;
 use crate::kurbo::{Rect, Size};
 use crate::{
-    BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
+    BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget, WindowBox,
     widget::{Button, Flex, Label},
 };
 
@@ -102,5 +102,9 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
 
     fn to_type(&mut self) -> WidgetType<D> {
         WidgetType::None
+    }
+
+    fn new_window(self) -> WindowBox<D> {
+        WindowBox::new()
     }
 }

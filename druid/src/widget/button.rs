@@ -23,8 +23,8 @@ use crate::kurbo::RoundedRect;
 use crate::piet::{LinearGradient, UnitPoint};
 
 ////use crate::theme;
-use crate::widget::{Align, Label, LabelText, /* SizedBox, */ WidgetType};////
-use crate::{Point, RenderContext};
+use crate::widget::{Align, Label, LabelText, /* SizedBox, */ WidgetType}; ////
+use crate::{Point, RenderContext, WindowBox}; ////
 
 /// A button with a text label.
 #[derive(Clone)] ////
@@ -167,5 +167,9 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
 
     fn to_type(&mut self) -> WidgetType<T> { ////
         WidgetType::Button(self.clone())
+    }
+
+    fn new_window(self) -> WindowBox<T> { ////
+        WindowBox::new()
     }
 }

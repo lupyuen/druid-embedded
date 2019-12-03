@@ -226,8 +226,9 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
         */ ////
 
         let root_widget = (self.root_builder)(); ////
-        let root_win = Window::new(root_widget); ////
-        let root_box = WindowBox::new(&mut root_win); ////
+        let root_box = root_widget.new_window(); ////
+        //let root_win = Window::new(root_widget); ////
+        //let root_box = WindowBox::new(&mut root_win); ////
         ////let root = (self.root_builder)();
         state
             ////.borrow_mut()

@@ -14,12 +14,13 @@
 
 //! A widget that arranges its children in a one-dimensional array.
 
+use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Rect, Size}; ////
 
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
     WidgetPod,
-    Window, WindowType, widget::{WidgetBox, WidgetType}, ////
+    Window, WindowType, WindowBox, widget::{WidgetBox, WidgetType}, ////
 };
 
 /// A builder for a row widget that can contain flex children.
@@ -250,6 +251,15 @@ impl<T: Data> Widget<T> for Flex<T> {
     fn to_type(&mut self) -> WidgetType<T> { ////
         ////WidgetType::Flex(self.clone())
         WidgetType::None
+    }
+
+    fn new_window(self) -> WindowBox<T> { ////
+        let window = Window::new(self);
+        let window_box = WindowBox(
+            WindowType::Flex(window),
+            PhantomData,
+        );
+        window_box
     }
 
     /*
