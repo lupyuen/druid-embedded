@@ -146,7 +146,8 @@ impl WindowBuilder {
     /// callbacks from this window.
     ///
     /// [`WinHandler`]: trait.WinHandler.html
-    pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
+    pub fn set_handler(&mut self, handler: WinHandler) { ////
+    ////TODO1 pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.0.set_handler(handler) ////
         ////self.0.set_handler(handler)

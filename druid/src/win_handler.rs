@@ -51,10 +51,12 @@ use crate::{
 ///
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
+#[derive(Clone)] ////
 pub struct DruidHandler<T: Data + 'static> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
-    app_state: &'static mut AppState<T>, ////
+    app_state: AppState<T>, ////
+    ////TODO1 app_state: &'static mut AppState<T>, ////
     ////app_state: Rc<RefCell<AppState<T>>>,
     /// The id for the current window.
     window_id: WindowId,
@@ -520,14 +522,15 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
     pub(crate) fn new_shared(
-        app_state: &'static mut AppState<T>, ////
+        app_state: AppState<T>, ////
+        ////TODO1 app_state: &'static mut AppState<T>, ////
         ////app_state: Rc<RefCell<AppState<T>>>,
         window_id: WindowId,
     ) -> DruidHandler<T> { ////
     ////) -> DruidHandler<T> {
         DruidHandler {
-            //app_state: &mut app_state, ////
-            app_state,
+            app_state: app_state.clone(),
+            ////TODO1 app_state,
             window_id,
         }
     }
