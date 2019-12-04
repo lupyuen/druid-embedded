@@ -135,7 +135,8 @@ impl WindowHandle {
 
 /// A builder type for creating new windows.
 pub struct WindowBuilder<T>(
-    platform::WindowBuilder
+    platform::WindowBuilder::<T> ////
+    ////platform::WindowBuilder
 ); ////
 ////pub struct WindowBuilder(platform::WindowBuilder);
 

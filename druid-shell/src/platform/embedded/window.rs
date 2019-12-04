@@ -83,8 +83,10 @@ pub struct WindowHandle {
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder {
-    handler: Option<&'static mut dyn WinHandler>, ////
+pub struct WindowBuilder<T> { ////
+////pub struct WindowBuilder {
+    handler: Option<T>, ////
+    ////handler: Option<&'static mut dyn WinHandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,
     ////title: String,
     ////menu: Option<Menu>,
@@ -114,8 +116,10 @@ pub(crate) struct WindowState {
     }
 */ ////
 
-impl WindowBuilder {
-    pub fn new() -> WindowBuilder {
+impl<T> WindowBuilder<T> { ////
+////impl WindowBuilder {
+    pub fn new() -> Self { ////
+    ////pub fn new() -> WindowBuilder {
         WindowBuilder  {
             handler: None,
             ////title: String::new(),
@@ -128,7 +132,8 @@ impl WindowBuilder {
         }
     }
 
-    pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
+    pub fn set_handler(&mut self, handler: T) { ////
+    ////pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.handler = Some(handler);
     }

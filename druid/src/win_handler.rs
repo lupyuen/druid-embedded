@@ -95,7 +95,7 @@ pub(crate) struct WindowState {
 struct SingleWindowState<'a, T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
-    window: &'a mut WindowBox<T>, ////
+    window: WindowBox<T>, ////
     ////window: &'a mut Window<T>,
     state: &'a mut WindowState,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -142,9 +142,8 @@ impl<T: Data + 'static> Windows<T> { ////
         ////let window = self.windows.get_mut(&window_id);
         Some(SingleWindowState { ////
             window_id,
-            //window: &mut window, ////
-            window,
-            //state: &mut state, ////
+            window: window.clone(), ////
+            ////window,
             state,
             ////command_queue,
             data,
@@ -260,7 +259,7 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
             base_state: &mut base_state,
             is_handled: false,
             is_root: true,
-            had_active: self.window.has_active(),
+            had_active: false, ////TODO self.window.has_active(),
             ////had_active: self.window.root.state.has_active,
             window: &self.state.handle,
             window_id: self.window_id,
