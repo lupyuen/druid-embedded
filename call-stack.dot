@@ -1,0 +1,62 @@
+digraph {
+    node [fontname=monospace shape=box]
+    0 [label="core::ops::function::FnOnce::call_once\nmax = 296\nlocal = 88"]
+    1 [label="core::ptr::real_drop_in_place\nmax = 0\nlocal = 0"]
+    2 [label="<&mut W as core::fmt::Write>::write_char\nmax = 24\nlocal = 24"]
+    3 [label="<&mut W as core::fmt::Write>::write_fmt\nmax = 256\nlocal = 48"]
+    4 [label="<&mut W as core::fmt::Write>::write_str\nmax = 16\nlocal = 16"]
+    5 [label="<druid::widget::label::Label<T> as core::clone::Clone>::clone\nmax = 192\nlocal = 192"]
+    6 [label="<druid::windowbox::WindowBox<D> as core::clone::Clone>::clone\nmax = 3816\nlocal = 3624"]
+    7 [label="main\nmax = 10768\nlocal = 6952"]
+    8 [label="core::fmt::num::imp::<impl core::fmt::Display for u32>::fmt\nmax = 120\nlocal = 0"]
+    9 [label="core::fmt::num::imp::fmt_u32\nmax = 120\nlocal = 80"]
+    10 [label="core::fmt::Formatter::pad_integral::write_prefix\nmax = 40\nlocal = 16"]
+    11 [label="core::fmt::write\nmax = 208\nlocal = 88"]
+    12 [label="core::fmt::ArgumentV1::show_usize\nmax = 120\nlocal = 0"]
+    13 [label="Reset\nmax = 10768\nlocal = 0"]
+    14 [label="ResetTrampoline\nmax = 10768\nlocal = 0"]
+    15 [label="DefaultHandler_\nmax = 0\nlocal = 0"]
+    16 [label="DefaultPreInit\nmax = 0\nlocal = 0"]
+    17 [label="__aeabi_memcpy\nmax = 16\nlocal = 16"]
+    18 [label="__aeabi_memcpy4\nmax = 32\nlocal = 16"]
+    19 [label="__aeabi_memcpy8\nmax = 32\nlocal = 0"]
+    20 [label="__aeabi_memset\nmax = 8\nlocal = 8"]
+    21 [label="__aeabi_memset4\nmax = 16\nlocal = 8"]
+    22 [label="__aeabi_memclr8\nmax = 16\nlocal = 0"]
+    23 [label="HardFaultTrampoline\nmax = 0\nlocal = 0"]
+    24 [label="HardFault_\nmax = 0\nlocal = 0"]
+    25 [label="i1 (%\"fmt::Void\"*, %\"core::fmt::Formatter\"*)*\nmax = 120\nlocal = 0" style=dashed]
+    26 [label="i1 ({}*, [0 x i8]*, i32)\nmax = 16\nlocal = 0" style=dashed]
+    27 [label="i1 ({}*, i32)\nmax = 24\nlocal = 0" style=dashed]
+    3 -> 11
+    7 -> 6
+    7 -> 5
+    9 -> 10
+    14 -> 7
+    6 -> 5
+    0 -> 11
+    8 -> 9
+    12 -> 9
+    13 -> 16
+    13 -> 14
+    6 -> 22
+    6 -> 19
+    7 -> 22
+    7 -> 19
+    7 -> 17
+    18 -> 17
+    19 -> 18
+    21 -> 20
+    22 -> 21
+    23 -> 24
+    11 -> 25
+    25 -> 8
+    25 -> 12
+    11 -> 26
+    9 -> 26
+    10 -> 26
+    26 -> 4
+    10 -> 27
+    9 -> 27
+    27 -> 2
+}
