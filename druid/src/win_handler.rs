@@ -41,18 +41,21 @@ use crate::window::Window;
 use crate::{
     BaseState, /* Command, */ Data, Env, Event, EventCtx, /* KeyEvent, KeyModifiers, */ LayoutCtx, /* MenuDesc, */ ////
     PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, */ WindowDesc, WindowId,
-    Widget, WindowBox, ////
+    Widget, WindowBox, widget::WidgetType, ////
 };
 
 ////use crate::command::sys as sys_cmd;
 
-static mut APP_STATE: AppState<u32> = AppState {
+type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
+
+pub(crate) static mut APP_STATE: AppState<u32> = AppState {
     windows: Windows::<u32> {
         windows: None,
         state: None,
     },
     env: Env {},
     data: 0,
+    widgets: None,
 };
 
 /// The struct implements the druid-shell `WinHandler` trait.
@@ -83,6 +86,13 @@ pub(crate) struct AppState<T: Data + 'static + Default> { ////
     ////windows: Windows<T>,
     pub(crate) env: Env,
     pub(crate) data: T,
+    /// widgets[i] contains the Widget with ID i
+    pub(crate) widgets: Option<
+        heapless::Vec::<
+            WidgetType<T>, 
+            MAX_WIDGETS
+        >
+    >, ////
 }
 
 /// All active windows.
@@ -361,6 +371,13 @@ impl<T: Data + 'static + Default> AppState<T> { ////
         ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ) -> Self { ////
     ////) -> Rc<RefCell<Self>> {
+        //  Fill the Widget list with None
+        let widgets = heapless::Vec::new(); ////
+        loop { ////
+            if let Err(_) = widgets.push(WidgetType::None) {
+                break;
+            }
+        }
         AppState { ////
         ////Rc::new(RefCell::new(AppState {
             ////delegate,
@@ -368,6 +385,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
             data,
             env,
             windows: Windows::default(),
+            widgets: Some(widgets), ////
         } ////))
     }
 
@@ -529,6 +547,16 @@ impl<T: Data + 'static + Default> AppState<T> { ////
         self.assemble_window_state(window_id)
             .as_mut()
             .map(SingleWindowState::window_got_focus);
+    }
+
+    pub(crate) fn add_widget(&mut self, id: u32, widget: WidgetType<T>) { ////
+        let mut widgets = self.widgets.unwrap();
+        widgets[id as usize] = widget;
+    }
+
+    pub(crate) fn get_widget(&mut self, id: u32) -> WidgetType<T> { ////
+        let widgets = self.widgets.unwrap();
+        widgets[id as usize]
     }
 }
 
