@@ -380,7 +380,8 @@ pub struct LayoutCtx<'a, 'b: 'a> {
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct EventCtx<'a, 'b> {
+pub struct EventCtx<'a, 'b, THandler> { ////
+////pub struct EventCtx<'a, 'b> {
     // Note: there's a bunch of state that's just passed down, might
     // want to group that into a single struct.
     win_ctx: &'a mut dyn WinCtx<'b>,
@@ -389,7 +390,8 @@ pub struct EventCtx<'a, 'b> {
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     window_id: WindowId,
     // TODO: migrate most usage of `WindowHandle` to `WinCtx` instead.
-    window: &'a WindowHandle,
+    window: &'a WindowHandle<THandler>, ////
+    ////window: &'a WindowHandle,
     base_state: &'a mut BaseState,
     had_active: bool,
     is_handled: bool,
@@ -402,9 +404,11 @@ pub struct EventCtx<'a, 'b> {
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct UpdateCtx<'a, 'b: 'a> {
+pub struct UpdateCtx<'a, 'b: 'a, THandler> { ////
+////pub struct UpdateCtx<'a, 'b: 'a> {
     text_factory: &'a mut Text<'b>,
-    window: &'a WindowHandle,
+    window: &'a WindowHandle<THandler>, ////
+    ////window: &'a WindowHandle,
     // Discussion: we probably want to propagate more fine-grained
     // invalidations, which would mean a structure very much like
     // `EventCtx` (and possibly using the same structure). But for

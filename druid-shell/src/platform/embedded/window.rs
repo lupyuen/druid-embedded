@@ -419,9 +419,11 @@ impl<THandler> WindowBuilder<THandler> { ////
 impl<THandler> WindowHandle<THandler> { ////
 ////impl WindowHandle {
     pub fn show(&self) {
+        /* ////
         if let Some(state) = self.state.upgrade() {
             state.window.show_all();
         }
+        */ ////
     }
 
     /// Close the window.
@@ -443,11 +445,11 @@ impl<THandler> WindowHandle<THandler> { ////
 
     // Request invalidation of the entire window contents.
     pub fn invalidate(&self) {
-        /*
+        /* ////
         if let Some(state) = self.state.upgrade() {
             state.window.queue_draw();
         }
-        */
+        */ ////
     }
     /*
     /// Get a handle that can be used to schedule an idle task.
