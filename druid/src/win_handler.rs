@@ -24,6 +24,7 @@ use std::time::Instant;
 use log::{error, info, warn};
 */ ////
 
+use core::marker::PhantomData; ////
 use core::clone::Clone; ////
 use crate::kurbo::{Rect, Size, Vec2};
 use crate::piet::{Piet, RenderContext};
@@ -51,15 +52,16 @@ use crate::{
 ///
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
-#[derive(Clone)] ////
+#[derive(Clone, Default)] ////
 pub struct DruidHandler<T: Data + 'static + Default> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
-    app_state: AppState<T>, ////
-    ////TODO1 app_state: &'static mut AppState<T>, ////
+    ////app_state: AppState<T>, //// Causes loop
     ////app_state: Rc<RefCell<AppState<T>>>,
+
     /// The id for the current window.
     window_id: WindowId,
+    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
 }
 
 /// State shared by all windows in the UI.
@@ -534,9 +536,10 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     ) -> DruidHandler<T> { ////
     ////) -> DruidHandler<T> {
         DruidHandler {
-            app_state: app_state.clone(),
+            ////app_state: app_state.clone(),
             ////TODO1 app_state,
             window_id,
+            phantomData: PhantomData, ////
         }
     }
 

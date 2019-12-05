@@ -27,7 +27,8 @@ use crate::{
 };
 
 /// A unique identifier for a window.
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, PartialOrd, Ord)] ////
+////#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct WindowId(u32);
 
 static mut WINDOW_ID_COUNTER: u32 = 1; ////
