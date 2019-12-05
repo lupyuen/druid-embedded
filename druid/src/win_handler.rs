@@ -46,6 +46,15 @@ use crate::{
 
 ////use crate::command::sys as sys_cmd;
 
+static mut APP_STATE: AppState<u32> = AppState {
+    windows: Windows::<u32> {
+        windows: None,
+        state: None,
+    },
+    env: Env {},
+    data: 0,
+};
+
 /// The struct implements the druid-shell `WinHandler` trait.
 ///
 /// One `DruidHandler` exists per window.
@@ -80,9 +89,9 @@ pub(crate) struct AppState<T: Data + 'static + Default> { ////
 #[derive(Clone)] ////
 struct Windows<T: Data + 'static + Default> { ////
 ////struct Windows<T: Data> {
-    windows: WindowBox<T>, //// Only 1 window supported
+    windows: Option<WindowBox<T>>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
-    state: WindowState<T>, //// Only 1 window state supported
+    state: Option<WindowState<T>>, //// Only 1 window state supported
     ////state: HashMap<WindowId, WindowState>,
 }
 
@@ -101,7 +110,7 @@ struct SingleWindowState<'a, T: Data + 'static + Default> { ////
     window_id: WindowId,
     window: WindowBox<T>, ////
     ////window: &'a mut Window<T>,
-    state: &'a mut WindowState<T>, ////
+    state: WindowState<T>, ////
     ////state: &'a mut WindowState,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     data: &'a mut T,
@@ -112,17 +121,17 @@ impl<T: Data + 'static + Default> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
-            let state = WindowState {
+        let state = WindowState {
             handle,
             ////prev_paint_time: None,
         };
-        self.state = state; ////
+        self.state = Some(state); ////
         ////self.state.insert(id, state);
     }
 
     fn add(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
-        self.windows = window.clone(); ////
+        self.windows = Some(window); ////
         ////self.windows.insert(id, window);
     }
 
@@ -143,14 +152,13 @@ impl<T: Data + 'static + Default> Windows<T> { ////
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
-        let state = &mut self.state; ////
+        let state = self.state.clone().unwrap(); ////
         ////let state = self.state.get_mut(&window_id);
-        let window = &mut self.windows; ////
+        let window = self.windows.clone().unwrap(); ////
         ////let window = self.windows.get_mut(&window_id);
         Some(SingleWindowState { ////
             window_id,
-            window: window.clone(), ////
-            ////window,
+            window,
             state,
             ////command_queue,
             data,
@@ -430,7 +438,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     }
 
     fn show_window(&mut self, id: WindowId) {
-        let state = self.windows.state; ////
+        let state = self.windows.state.clone().unwrap(); ////
         ////if let Some(state) = self.windows.state.get(&id) {
             state.handle.bring_to_front_and_focus();
         ////}
@@ -550,10 +558,13 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     /// This is principally because in certain cases (such as keydown on Windows)
     /// the OS needs to know if an event was handled.
     fn do_event(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
-        let result = self
-            .app_state
+        let result = unsafe { APP_STATE ////
+            ////self
+            ////.app_state
             ////.borrow_mut()
-            .do_event(self.window_id, event, win_ctx);
+            .do_event(self.window_id, event, win_ctx)
+            } ////
+            ;
         ////self.process_commands(win_ctx);
         result
     }
@@ -686,7 +697,7 @@ impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T
     }
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
-        self.app_state.paint(self.window_id, piet, ctx) ////
+        unsafe { APP_STATE.paint(self.window_id, piet, ctx) } ////
         ////self.app_state.borrow_mut().paint(self.window_id, piet, ctx)
     }
 
@@ -736,9 +747,11 @@ impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T
     */ ////
 
     fn got_focus(&mut self, ctx: &mut dyn WinCtx) {
-        self.app_state
+        unsafe { APP_STATE ////
+        ////self.app_state
             ////.borrow_mut()
             .window_got_focus(self.window_id, ctx);
+        } ////
     }
 
     /* ////
@@ -756,9 +769,9 @@ impl<T: Data + 'static + Default> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            windows: Default::default(), ////Window::<T>::default(), ////
+            windows: None, ////
             ////windows: HashMap::new(),
-            state: Default::default(), ////
+            state: None, ////
             ////state: HashMap::new(),
         }
     }
