@@ -9,26 +9,26 @@ use crate::{
 
 /// Boxed version of a `Widget`
 #[derive(Clone, Default)]
-pub struct WidgetBox<D: Data + 'static>(
+pub struct WidgetBox<D: Data + 'static + Default>(
     WidgetType<D>,
     PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
 /// Enum to store each `Widget`
 #[derive(Clone)]
-pub enum WidgetType<D: Data + 'static> {
+pub enum WidgetType<D: Data + 'static + Default> {
     None,
     Button(Button<D>),
     ////Flex(Flex<D>),
     Label(Label<D>),
 }
 
-impl<D: Data + 'static> Default for WidgetType<D> {
+impl<D: Data + 'static + Default> Default for WidgetType<D> {
     fn default() -> Self { WidgetType::None }
 }
 
 /// Generic implementation of `WidgetBox`
-impl<D: Data + 'static> WidgetBox<D> {
+impl<D: Data + 'static + Default> WidgetBox<D> {
     /// Create a new box for the `Widget`
     pub fn new<W: Widget<D>>(widget: &mut W) -> Self {
         WidgetBox(
@@ -39,7 +39,7 @@ impl<D: Data + 'static> WidgetBox<D> {
 }
 
 /// Implementation of `Widget` trait for `WidgetBox`. We just forward to the inner `Widget`.
-impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
+impl<D: Data + 'static + Default> Widget<D> for WidgetBox<D> {
     fn paint(
         &mut self, 
         paint_ctx: &mut PaintCtx, 

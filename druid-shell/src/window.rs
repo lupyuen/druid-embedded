@@ -74,10 +74,10 @@ impl IdleHandle {
 /// A handle to a platform window object.
 #[derive(Clone, Copy, Default)] ////
 ////#[derive(Clone, Default)]
-pub struct WindowHandle<THandler>(platform::WindowHandle<THandler>); ////
+pub struct WindowHandle<THandler>(platform::WindowHandle<THandler>); ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowHandle(platform::WindowHandle);
 
-impl<THandler> WindowHandle<THandler> { ////
+impl<THandler> WindowHandle<THandler> { ////  THandler is Data + 'static + Default
 ////impl WindowHandle {
     /// Make this window visible.
     ///
@@ -136,13 +136,13 @@ impl<THandler> WindowHandle<THandler> { ////
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<THandler>(
+pub struct WindowBuilder<THandler>(  //// THandler is Data + 'static + Default
     platform::WindowBuilder::<THandler> ////
     ////platform::WindowBuilder
 ); ////
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler> WindowBuilder<THandler> { ////
+impl<THandler> WindowBuilder<THandler> { ////  THandler is Data + 'static + Default
 ////impl WindowBuilder {
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////

@@ -52,7 +52,7 @@ use crate::{
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
 #[derive(Clone)] ////
-pub struct DruidHandler<T: Data + 'static> { ////
+pub struct DruidHandler<T: Data + 'static + Default> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
     app_state: AppState<T>, ////
@@ -64,7 +64,7 @@ pub struct DruidHandler<T: Data + 'static> { ////
 
 /// State shared by all windows in the UI.
 #[derive(Clone)] ////
-pub(crate) struct AppState<T: Data + 'static> { ////
+pub(crate) struct AppState<T: Data + 'static + Default> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ////command_queue: VecDeque<(WindowId, Command)>,
@@ -106,7 +106,7 @@ struct SingleWindowState<'a, T: Data + 'static + Default> { ////
     env: &'a Env,
 }
 
-impl<T: Data + 'static> Windows<T> { ////
+impl<T: Data + 'static + Default> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
@@ -179,7 +179,7 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 }
 
-impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
+impl<'a, T: Data + 'static + Default> SingleWindowState<'a, T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);

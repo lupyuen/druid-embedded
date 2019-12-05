@@ -43,7 +43,7 @@ type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 
 /// A container with either horizontal or vertical layout.
 #[derive(Clone)] ////
-pub struct Flex<T: Data + 'static> { ////
+pub struct Flex<T: Data + 'static + Default> { ////
 ////pub struct Flex<T: Data> {
     direction: Axis,
     children: Vec<ChildWidget<T>>, ////
@@ -51,7 +51,7 @@ pub struct Flex<T: Data + 'static> { ////
 }
 
 #[derive(Clone)] ////
-struct ChildWidget<T: Data + 'static> { ////
+struct ChildWidget<T: Data + 'static + Default> { ////
 ////struct ChildWidget<T: Data> {
     widget: WidgetPod<T, WidgetBox<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
@@ -96,7 +96,8 @@ impl Row {
     /// Create a new row widget.
     ///
     /// The child widgets are laid out horizontally, from left to right.
-    pub fn new<T: Data>() -> Flex<T> {
+    pub fn new<T: Data + 'static + Default>() -> Flex<T> { ////
+    ////pub fn new<T: Data>() -> Flex<T> {
         Flex {
             direction: Axis::Horizontal,
 
@@ -109,7 +110,8 @@ impl Column {
     /// Create a new row widget.
     ///
     /// The child widgets are laid out vertically, from top to bottom.
-    pub fn new<T: Data>() -> Flex<T> {
+    pub fn new<T: Data + 'static + Default>() -> Flex<T> { ////
+    ////pub fn new<T: Data>() -> Flex<T> {
         Flex {
             direction: Axis::Vertical,
 
@@ -118,7 +120,8 @@ impl Column {
     }
 }
 
-impl<T: Data> Flex<T> {
+impl<T: Data + 'static + Default> Flex<T> { ////
+////impl<T: Data> Flex<T> {
     /// Add a child widget.
     ///
     /// If `flex` is zero, then the child is non-flex. It is given the same
@@ -142,8 +145,9 @@ impl<T: Data> Flex<T> {
     }
 }
 
-impl<T: Data> Widget<T> for Flex<T> {
-    fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
+impl<T: Data + 'static + Default> Widget<T> for Flex<T> { ////
+////impl<T: Data> Widget<T> for Flex<T> {
+        fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         for child in &mut self.children {
             child.widget.paint_with_offset(paint_ctx, data, env);
         }

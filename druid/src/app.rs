@@ -34,7 +34,7 @@ type MaxWindows = heapless::consts::U2; //// Max number of windows
 type Vec<T> = heapless::Vec::<T, MaxWindows>; ////
 
 /// Handles initial setup of an application, and starts the runloop.
-pub struct AppLauncher<T: Data + 'static, W: Widget<T> + 'static> { ////
+pub struct AppLauncher<T: Data + 'static + Default, W: Widget<T> + 'static> { ////
 ////pub struct AppLauncher<T> {
     windows: Vec<WindowDesc<T, W>>, ////
     ////windows: Vec<WindowDesc<T>>,
@@ -53,7 +53,7 @@ pub struct AppLauncher<T: Data + 'static, W: Widget<T> + 'static> { ////
 ///
 /// This includes a function that can build the root widget, as well as other
 /// window properties such as the title.
-pub struct WindowDesc<T: Data + 'static, W: Widget<T> + 'static> { ////
+pub struct WindowDesc<T: Data + 'static + Default, W: Widget<T> + 'static> { ////
     pub(crate) root_builder: fn() -> W, ////
     ////pub(crate) root_builder: Arc<WidgetBuilderFn<T>>,
     ////pub(crate) title: Option<LocalizedString<T>>,
@@ -210,10 +210,10 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let mut handler = DruidHandler::new_shared(state.clone(), self.id); ////
+        let mut handler: DruidHandler<T> = DruidHandler::new_shared(state.clone(), self.id); ////
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
-        let mut builder = WindowBuilder::new();
+        let mut builder: WindowBuilder<DruidHandler<T>> = WindowBuilder::new();
         builder.set_handler(handler.clone()); ////
         ////builder.set_handler(Box::new(handler));
         if let Some(size) = self.size {
