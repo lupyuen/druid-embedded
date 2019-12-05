@@ -127,9 +127,11 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
         bc.constrain((text_layout.width(), font_size * 1.2))
     }
 
-    fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
+    fn event(&mut self, _ctx: &mut EventCtx<T>, _event: &Event, _data: &mut T, _env: &Env) {} ////
+    ////fn event(&mut self, _ctx: &mut EventCtx, _event: &Event, _data: &mut T, _env: &Env) {}
 
-    fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
+    ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
         if self.text.resolve(data, env) {
             ctx.invalidate();
         }

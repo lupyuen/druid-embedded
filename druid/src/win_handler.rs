@@ -76,28 +76,31 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 
 /// All active windows.
 #[derive(Clone)] ////
-struct Windows<T: Data + 'static> { ////
+struct Windows<T: Data + 'static + Default> { ////
 ////struct Windows<T: Data> {
     windows: WindowBox<T>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
-    state: WindowState, //// Only 1 window state supported
+    state: WindowState<T>, //// Only 1 window state supported
     ////state: HashMap<WindowId, WindowState>,
 }
 
 /// Per-window state not owned by user code.
-#[derive(Clone, Copy, Default)] ////
-pub(crate) struct WindowState {
-    pub(crate) handle: WindowHandle,
+#[derive(Clone, Default)] ////
+pub(crate) struct WindowState<D: Data + 'static + Default> { ////  D is Data + 'static
+////pub(crate) struct WindowState {
+    pub(crate) handle: WindowHandle<DruidHandler<D>>, ////
+    ////pub(crate) handle: WindowHandle,
     ////prev_paint_time: Option<Instant>,
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<'a, T: Data + 'static> { ////
+struct SingleWindowState<'a, T: Data + 'static + Default> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     window: WindowBox<T>, ////
     ////window: &'a mut Window<T>,
-    state: &'a mut WindowState,
+    state: &'a mut WindowState<T>, ////
+    ////state: &'a mut WindowState,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     data: &'a mut T,
     env: &'a Env,
@@ -105,8 +108,9 @@ struct SingleWindowState<'a, T: Data + 'static> { ////
 
 impl<T: Data + 'static> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
-    fn connect(&mut self, id: WindowId, handle: WindowHandle) {
-        let state = WindowState {
+    fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
+    ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
+            let state = WindowState {
             handle,
             ////prev_paint_time: None,
         };
@@ -120,7 +124,8 @@ impl<T: Data + 'static> Windows<T> { ////
         ////self.windows.insert(id, window);
     }
 
-    fn remove(&mut self, id: WindowId) -> Option<WindowHandle> {
+    fn remove(&mut self, id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
+    ////fn remove(&mut self, id: WindowId) -> Option<WindowHandle> {
         ////self.windows.remove(&id);
         ////self.state.remove(&id).map(|state| state.handle)
         ////Some(self.state[0].handle) ////
@@ -410,8 +415,9 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     ////pub(crate) fn add_window(&mut self, id: WindowId, window: Window<T>) {
         self.windows.add(id, window);
     }
-
-    fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {
+    
+    fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
+    ////fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {
         let res = self.windows.remove(id);
         /* ////
         self.with_delegate(id, |del, data, env, ctx| {
@@ -666,9 +672,10 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static + Default> WinHandler for DruidHandler<T> { ////
+impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
 ////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
-    fn connect(&mut self, handle: &WindowHandle) {
+    fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
+    ////fn connect(&mut self, handle: &WindowHandle) {
         ////TODO
         ////self.app_state
             ////.borrow_mut()

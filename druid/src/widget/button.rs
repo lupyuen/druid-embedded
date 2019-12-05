@@ -28,10 +28,11 @@ use crate::{Point, RenderContext, WindowBox}; ////
 
 /// A button with a text label.
 #[derive(Clone)] ////
-pub struct Button<T> {
+pub struct Button<T: Data + 'static> { ////
+////pub struct Button<T> {
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.
-    action: fn(&mut EventCtx, &mut T, &Env), ////
+    action: fn(&mut EventCtx<T>, &mut T, &Env), ////
     ////action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
 }
 
@@ -40,7 +41,7 @@ impl<T: Data + 'static> Button<T> {
     /// is clicked.
     pub fn new(
         text: impl Into<LabelText<T>>,
-        action: fn(&mut EventCtx, &mut T, &Env), ////
+        action: fn(&mut EventCtx<T>, &mut T, &Env), ////
         ////action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
     ) -> Button<T> {
         Button {
@@ -139,7 +140,8 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
         self.label.layout(layout_ctx, bc, data, env)
     }
 
-    fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
+    fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env) { ////
+    ////fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
         match event {
             Event::MouseDown(_) => {
                 ctx.set_active(true);
@@ -161,8 +163,9 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
         }
     }
 
-    fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env) {
-        self.label.update(ctx, old_data, data, env)
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, old_data: Option<&T>, data: &T, env: &Env) { ////
+    ////fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env) {
+            self.label.update(ctx, old_data, data, env)
     }
 
     fn to_type(&mut self) -> WidgetType<T> { ////

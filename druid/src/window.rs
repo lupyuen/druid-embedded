@@ -34,7 +34,7 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
-#[derive(Clone, Default)] ////
+#[derive(Clone, Copy, Default)] ////
 pub struct Window<T: Data + 'static, W: Widget<T> + 'static> { ////
 ////pub struct Window<T: Data> {
     pub(crate) root: WidgetPod<T, W>, ////
@@ -67,7 +67,8 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
         }
     }
 
-    pub fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
+    pub fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env) { ////
+    ////pub fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
         if let Event::Size(size) = event {
             self.size = *size;
         }
@@ -80,7 +81,8 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
         */ ////
     }
 
-    pub fn update(&mut self, update_ctx: &mut UpdateCtx, data: &T, env: &Env) {
+    pub fn update(&mut self, update_ctx: &mut UpdateCtx<T>, data: &T, env: &Env) {
+    ////pub fn update(&mut self, update_ctx: &mut UpdateCtx, data: &T, env: &Env) {
         ////self.update_title(&update_ctx.window, data, env);
         self.root.update(update_ctx, data, env);
     }

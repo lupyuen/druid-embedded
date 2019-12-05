@@ -230,7 +230,8 @@ pub trait Widget<T: Data + 'static> { ////
     /// [`Event`]: struct.Event.html
     /// [`EventCtx`]: struct.EventCtx.html
     /// [`Command`]: struct.Command.html
-    fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env);
+    fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env); ////
+    ////fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env);
 
     /// Handle a change of data.
     ///
@@ -247,7 +248,8 @@ pub trait Widget<T: Data + 'static> { ////
 
     // Consider a no-op default impl. One reason against is that containers might
     // inadvertently forget to propagate.
-    fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, old_data: Option<&T>, data: &T, env: &Env); ////
+    ////fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
 
     /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
     fn to_type(&mut self) -> WidgetType<T>; ////
@@ -380,7 +382,7 @@ pub struct LayoutCtx<'a, 'b: 'a> {
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct EventCtx<'a, 'b, THandler> { ////
+pub struct EventCtx<'a, 'b, D: Data + 'static> { ////  D is Data + 'static
 ////pub struct EventCtx<'a, 'b> {
     // Note: there's a bunch of state that's just passed down, might
     // want to group that into a single struct.
@@ -390,7 +392,7 @@ pub struct EventCtx<'a, 'b, THandler> { ////
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     window_id: WindowId,
     // TODO: migrate most usage of `WindowHandle` to `WinCtx` instead.
-    window: &'a WindowHandle<THandler>, ////
+    window: &'a WindowHandle<DruidHandler<D>>, ////
     ////window: &'a WindowHandle,
     base_state: &'a mut BaseState,
     had_active: bool,
@@ -404,10 +406,10 @@ pub struct EventCtx<'a, 'b, THandler> { ////
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct UpdateCtx<'a, 'b: 'a, THandler> { ////
+pub struct UpdateCtx<'a, 'b: 'a, D: Data + 'static> { ////  D is Data + 'static
 ////pub struct UpdateCtx<'a, 'b: 'a> {
     text_factory: &'a mut Text<'b>,
-    window: &'a WindowHandle<THandler>, ////
+    window: &'a WindowHandle<DruidHandler<D>>, ////
     ////window: &'a WindowHandle,
     // Discussion: we probably want to propagate more fine-grained
     // invalidations, which would mean a structure very much like
@@ -439,7 +441,7 @@ pub struct BoxConstraints {
 
 impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
 ////impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
-        /// Create a new widget pod.
+    /// Create a new widget pod.
     ///
     /// In a widget hierarchy, each widget is wrapped in a `WidgetPod`
     /// so it can participate in layout and event flow. The process of
@@ -568,7 +570,8 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
     /// the event.
     ///
     /// [`event`]: trait.Widget.html#method.event
-    pub fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
+    pub fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env) { ////
+    ////pub fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
         // TODO: factor as much logic as possible into monomorphic functions.
         if ctx.is_handled || !event.recurse() {
             // This function is called by containers to propagate an event from
@@ -692,7 +695,8 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
     /// method.
     ///
     /// [`update`]: trait.Widget.html#method.update
-    pub fn update(&mut self, ctx: &mut UpdateCtx, data: &T, env: &Env) {
+    pub fn update(&mut self, ctx: &mut UpdateCtx<T>, data: &T, env: &Env) { ////
+    ////pub fn update(&mut self, ctx: &mut UpdateCtx, data: &T, env: &Env) {
         let data_same = if let Some(ref old_data) = self.old_data {
             old_data.same(data)
         } else {
@@ -878,7 +882,8 @@ impl BoxConstraints {
     }
 }
 
-impl<'a, 'b> EventCtx<'a, 'b> {
+impl<'a, 'b, D: Data + 'static> EventCtx<'a, 'b, D> { ////  D is Data + 'static
+////impl<'a, 'b> EventCtx<'a, 'b> {
     /// Invalidate.
     ///
     /// Right now, it just invalidates the entire window, but we'll want
@@ -945,7 +950,8 @@ impl<'a, 'b> EventCtx<'a, 'b> {
     /// provided by the window handle in mutable contexts instead. If you're
     /// considering a new use of this method, try adding it to `WinCtx` and
     /// plumbing it through instead.
-    pub fn window(&self) -> &WindowHandle {
+    pub fn window(&self) -> &WindowHandle<DruidHandler<D>> { ////
+    ////pub fn window(&self) -> &WindowHandle {
         &self.window
     }
 
@@ -1032,7 +1038,8 @@ impl<'a, 'b> LayoutCtx<'a, 'b> {
     }
 }
 
-impl<'a, 'b> UpdateCtx<'a, 'b> {
+impl<'a, 'b, D: Data + 'static> UpdateCtx<'a, 'b, D> {  ////  D is Data + 'static
+////impl<'a, 'b> UpdateCtx<'a, 'b> {
     /// Invalidate.
     ///
     /// See [`EventCtx::invalidate`](struct.EventCtx.html#method.invalidate) for
@@ -1051,7 +1058,8 @@ impl<'a, 'b> UpdateCtx<'a, 'b> {
     /// Note: For the most part we're trying to migrate `WindowHandle`
     /// functionality to `WinCtx`, but the update flow is the exception, as
     /// it's shared across multiple windows.
-    pub fn window(&self) -> &WindowHandle {
+    pub fn window(&self) -> &WindowHandle<DruidHandler<D>> { ////
+    ////pub fn window(&self) -> &WindowHandle {
         &self.window
     }
 

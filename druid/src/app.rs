@@ -196,7 +196,8 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
         &self,
         state: &mut AppState<T> ////
         ////state: &Rc<RefCell<AppState<T>>>,
-    ) -> Result<WindowHandle, PlatformError> {
+    ) -> Result<WindowHandle<DruidHandler<T>>, PlatformError> { ////
+    ////) -> Result<WindowHandle, PlatformError> {
         /* ////
         let mut title = self
             .title
