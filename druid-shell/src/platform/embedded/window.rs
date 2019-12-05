@@ -77,15 +77,16 @@ use crate::Error;
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle {
-    pub(crate) state: WindowState, ////
+pub struct WindowHandle<THandler> { ////
+////pub struct WindowHandle {
+    pub(crate) state: WindowState<THandler>, ////
     ////pub(crate) state: Weak<WindowState>,
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<T> { ////
+pub struct WindowBuilder<THandler> { ////
 ////pub struct WindowBuilder {
-    handler: Option<T>, ////
+    handler: Option<THandler>, ////
     ////handler: Option<&'static mut dyn WinHandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,
     ////title: String,
@@ -102,7 +103,8 @@ pub struct WindowBuilder<T> { ////
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState {
+pub(crate) struct WindowState<THandler> {
+    handler: Option<THandler>, ////
     ////pub(crate) handler: Option<&'static mut dyn WinHandler>, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
@@ -116,7 +118,7 @@ pub(crate) struct WindowState {
     }
 */ ////
 
-impl<T> WindowBuilder<T> { ////
+impl<THandler> WindowBuilder<THandler> { ////
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -132,7 +134,7 @@ impl<T> WindowBuilder<T> { ////
         }
     }
 
-    pub fn set_handler(&mut self, handler: T) { ////
+    pub fn set_handler(&mut self, handler: THandler) { ////
     ////pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.handler = Some(handler);
@@ -152,7 +154,8 @@ impl<T> WindowBuilder<T> { ////
     }
     */ ////
 
-    pub fn build(self) -> Result<WindowHandle, Error> {
+    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
+    ////pub fn build(self) -> Result<WindowHandle, Error> {
         let handler = self
             .handler
             .expect("Tried to build a window without setting the handler");
@@ -179,7 +182,7 @@ impl<T> WindowBuilder<T> { ////
         */
 
         let win_state = WindowState {
-            ////TODO: handler: Some(handler)
+            handler: Some(handler)
         };
 
         /*
@@ -413,13 +416,12 @@ impl<T> WindowBuilder<T> { ////
     }
 }
 
-impl WindowHandle {
+impl<THandler> WindowHandle<THandler> { ////
+////impl WindowHandle {
     pub fn show(&self) {
-        /*
         if let Some(state) = self.state.upgrade() {
             state.window.show_all();
         }
-        */
     }
 
     /// Close the window.

@@ -74,9 +74,11 @@ impl IdleHandle {
 /// A handle to a platform window object.
 #[derive(Clone, Copy, Default)] ////
 ////#[derive(Clone, Default)]
-pub struct WindowHandle(platform::WindowHandle);
+pub struct WindowHandle<THandler>(platform::WindowHandle<THandler>); ////
+////pub struct WindowHandle(platform::WindowHandle);
 
-impl WindowHandle {
+impl<THandler> WindowHandle<THandler> { ////
+////impl WindowHandle {
     /// Make this window visible.
     ///
     /// This is part of the initialization process; it should only be called
@@ -134,13 +136,13 @@ impl WindowHandle {
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<T>(
-    platform::WindowBuilder::<T> ////
+pub struct WindowBuilder<THandler>(
+    platform::WindowBuilder::<THandler> ////
     ////platform::WindowBuilder
 ); ////
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<T> WindowBuilder<T> { ////
+impl<THandler> WindowBuilder<THandler> { ////
 ////impl WindowBuilder {
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
@@ -152,7 +154,7 @@ impl<T> WindowBuilder<T> { ////
     /// callbacks from this window.
     ///
     /// [`WinHandler`]: trait.WinHandler.html
-    pub fn set_handler(&mut self, handler: T) { ////
+    pub fn set_handler(&mut self, handler: THandler) { ////
     ////pub fn set_handler(&mut self, handler: WinHandler) { ////
     ////TODO1 pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
@@ -180,7 +182,8 @@ impl<T> WindowBuilder<T> { ////
     /// Attempt to construct the platform window.
     ///
     /// If this fails, your application should exit.
-    pub fn build(self) -> Result<WindowHandle, Error> {
+    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
+    ////pub fn build(self) -> Result<WindowHandle, Error> {
         self.0.build().map(WindowHandle).map_err(Into::into)
     }
 }
@@ -226,10 +229,12 @@ pub trait WinCtx<'a> {
 /// The methods are non-mut because the window procedure can be called
 /// recursively; implementers are expected to use `RefCell` or the like,
 /// but should be careful to keep the lifetime of the borrow short.
-pub trait WinHandler {
+pub trait WinHandler<THandler> { ////
+////pub trait WinHandler {
     /// Provide the handler with a handle to the window so that it can
     /// invalidate or make other requests.
-    fn connect(&mut self, handle: &WindowHandle);
+    fn connect(&mut self, handle: &WindowHandle<THandler>); ////
+    ////fn connect(&mut self, handle: &WindowHandle);
 
     /// Called when the size of the window is changed. Note that size
     /// is in physical pixels.
@@ -317,8 +322,10 @@ pub trait WinHandler {
     */ ////
 }
 
-impl From<platform::WindowHandle> for WindowHandle {
-    fn from(src: platform::WindowHandle) -> WindowHandle {
+impl<THandler> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
+////impl From<platform::WindowHandle> for WindowHandle {
+    fn from(src: platform::WindowHandle<THandler>) -> Self { ////
+    ////fn from(src: platform::WindowHandle) -> WindowHandle {
         WindowHandle(src)
     }
 }
