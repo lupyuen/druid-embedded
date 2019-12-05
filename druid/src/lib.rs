@@ -256,9 +256,9 @@ pub trait Widget<T: Data + 'static + Default> { ////
 
     /// Wrap this `Widget` in a `WindowBox`
     fn new_window(self) -> WindowBox<T>; ////
- 
-    //fn to_window_type(window: &mut Window<T, Flex<T>>) -> WindowType<T>; ////
-    //fn to_window_type<W: Widget<T>>(window: &mut Window<T, W>) -> WindowType<T>; ////
+
+    /// Return the unique ID for this `Widget`
+    fn get_id(self) -> u32; ////
 }
 
 /*

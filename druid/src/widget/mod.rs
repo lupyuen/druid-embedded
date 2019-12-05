@@ -14,6 +14,16 @@
 
 //! Common widgets.
 
+/// Unique Widget ID
+static mut WIDGET_ID: u32 = 0; ////
+
+/// Assign a unique Widget ID
+fn get_widget_id() -> u32 { ////
+    let id = WIDGET_ID;
+    WIDGET_ID += 1;
+    id
+}
+
 mod widgetbox; ////
 pub use crate::widget::widgetbox::{WidgetBox, WidgetType}; ////
 

@@ -30,6 +30,7 @@ use crate::{Point, RenderContext, WindowBox}; ////
 #[derive(Clone)] ////
 pub struct Button<T: Data + 'static + Default> { ////
 ////pub struct Button<T> {
+    id: u32, //// Unique Widget ID
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.
     action: fn(&mut EventCtx<T>, &mut T, &Env), ////
@@ -46,6 +47,7 @@ impl<T: Data + 'static + Default> Button<T> { ////
         ////action: impl Fn(&mut EventCtx, &mut T, &Env) + 'static,
     ) -> Button<T> {
         Button {
+            id: super::get_widget_id(), ////
             label: Label::aligned(text, UnitPoint::CENTER),
             action, ////
             ////action: Box::new(action),
@@ -175,5 +177,9 @@ impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
 
     fn new_window(self) -> WindowBox<T> { ////
         WindowBox::new()
+    }
+
+    fn get_id(self) -> u32 { ////
+        self.id
     }
 }

@@ -7,6 +7,9 @@ use crate::{
     widget::{Button, Flex, Label},
 };
 
+type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
+static mut ALL_WIDGETS: Option<heapless::Vec::<WidgetType<u32>, MAX_WIDGETS>> = None;
+
 /// Boxed version of a `Widget`
 #[derive(Clone, Default)]
 pub struct WidgetBox<D: Data + 'static + Default>(
@@ -31,6 +34,7 @@ impl<D: Data + 'static + Default> Default for WidgetType<D> {
 impl<D: Data + 'static + Default> WidgetBox<D> {
     /// Create a new box for the `Widget`
     pub fn new<W: Widget<D>>(widget: &mut W) -> Self {
+        unsafe { ALL_WIDGETS = Some(heapless::Vec::new()); } ////
         WidgetBox(
             widget.to_type(),
             PhantomData,
