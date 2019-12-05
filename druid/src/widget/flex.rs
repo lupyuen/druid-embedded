@@ -45,6 +45,7 @@ type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 #[derive(Clone)] ////
 pub struct Flex<T: Data + 'static + Default> { ////
 ////pub struct Flex<T: Data> {
+    id: u32, //// Unique Widget ID
     direction: Axis,
     children: Vec<ChildWidget<T>>, ////
     ////children: Vec<ChildWidget<T>>,
@@ -99,6 +100,7 @@ impl Row {
     pub fn new<T: Data + 'static + Default>() -> Flex<T> { ////
     ////pub fn new<T: Data>() -> Flex<T> {
         Flex {
+            id: super::get_widget_id(), ////
             direction: Axis::Horizontal,
 
             children: Vec::new(),
@@ -113,6 +115,7 @@ impl Column {
     pub fn new<T: Data + 'static + Default>() -> Flex<T> { ////
     ////pub fn new<T: Data>() -> Flex<T> {
         Flex {
+            id: super::get_widget_id(), ////
             direction: Axis::Vertical,
 
             children: Vec::new(),
@@ -268,10 +271,7 @@ impl<T: Data + 'static + Default> Widget<T> for Flex<T> { ////
         window_box
     }
 
-    /*
-    fn to_window_type(window: &mut Window<T, Flex<T>>) -> WindowType<T> { ////
-    ////TODO fn to_window_type<W: Widget<T>>(window: &mut Window<T, W>) -> WindowType<T> { ////
-        WindowType::Flex(*window)
-    } 
-    */
+    fn get_id(self) -> u32 { ////
+        self.id
+    }
 }

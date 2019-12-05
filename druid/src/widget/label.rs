@@ -45,6 +45,7 @@ pub enum LabelText<T> {
 /// A label that displays some text.
 #[derive(Clone)] ////
 pub struct Label<T> {
+    id: u32, //// Unique Widget ID
     text: LabelText<T>,
     align: UnitPoint,
 }
@@ -66,6 +67,7 @@ impl<T: Data + 'static + Default> Label<T> { ////
     /// widget (with WidgetPod)?
     pub fn new(text: impl Into<LabelText<T>>) -> Self {
         Label {
+            id: super::get_widget_id(), ////
             text: text.into(),
             align: UnitPoint::LEFT,
         }
@@ -73,6 +75,7 @@ impl<T: Data + 'static + Default> Label<T> { ////
 
     pub fn aligned(text: impl Into<LabelText<T>>, align: UnitPoint) -> Self {
         Label {
+            id: super::get_widget_id(), ////
             text: text.into(),
             align,
         }
@@ -144,6 +147,10 @@ impl<T: Data + 'static + Default> Widget<T> for Label<T> { ////
 
     fn new_window(self) -> WindowBox<T> { ////
         WindowBox::new()
+    }
+
+    fn get_id(self) -> u32 { ////
+        self.id
     }
 }
 

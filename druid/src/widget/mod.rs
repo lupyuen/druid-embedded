@@ -19,8 +19,8 @@ static mut WIDGET_ID: u32 = 0; ////
 
 /// Assign a unique Widget ID
 fn get_widget_id() -> u32 { ////
-    let id = WIDGET_ID;
-    WIDGET_ID += 1;
+    let id = unsafe { WIDGET_ID };
+    unsafe { WIDGET_ID += 1; }
     id
 }
 

@@ -111,4 +111,13 @@ impl<D: Data + 'static + Default> Widget<D> for WidgetBox<D> {
     fn new_window(self) -> WindowBox<D> {
         WindowBox::new()
     }
+
+    fn get_id(self) -> u32 { ////
+        match self.0 {
+            WidgetType::Button(w) => w.get_id(),
+            ////WidgetType::Flex(w)   => w.get_id(),
+            WidgetType::Label(w)  => w.get_id(),
+            WidgetType::None => panic!("no id")
+        }
+    }
 }
