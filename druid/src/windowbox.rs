@@ -9,14 +9,14 @@ use crate::{
 
 /// Boxed version of a `Window`
 #[derive(Clone, Default)]
-pub struct WindowBox<D: Data + 'static + Default>(
+pub struct WindowBox<D: Data + 'static>(
     pub WindowType<D>,
     pub PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
 /// Enum to store each `Window`
 #[derive(Clone)]
-pub enum WindowType<D: Data + 'static + Default> {
+pub enum WindowType<D: Data + 'static> {
     None,
     Flex(Window<D, Flex<D>>),
 }
@@ -26,7 +26,7 @@ impl<D: Data + 'static + Default> Default for WindowType<D> {
 }
 
 /// Generic implementation of `WindowBox`
-impl<D: Data + 'static + Default> WindowBox<D> {
+impl<D: Data + 'static> WindowBox<D> {
     /// Create a new empty box without a `Window`
     pub fn new() -> Self {
         WindowBox(
@@ -37,7 +37,7 @@ impl<D: Data + 'static + Default> WindowBox<D> {
 }
 
 /// Implementation of `WindowBox`. We just forward to the inner `Window`.
-impl<D: Data + 'static + Default> WindowBox<D> {
+impl<D: Data + 'static> WindowBox<D> {
     pub fn event(
         &mut self, 
         ctx: &mut EventCtx<D>, 

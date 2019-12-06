@@ -58,9 +58,13 @@ pub(crate) static mut APP_STATE: AppState<u32> = AppState {
     widgets: None,
 };
 
-impl AppState<u32> { ////
+pub trait GlobalState<T: Data + 'static> {
+    fn get_global_state(&mut self) -> &'static mut AppState<T>;
+}
+
+impl GlobalState<u32> for AppState<u32> { ////
     /// Fetch the global AppState for the Data type
-    fn get_global_state() -> &'static mut Self { ////
+    fn get_global_state(&mut self) -> &'static mut AppState<u32> { ////
         if let None = APP_STATE.widgets {
             let widgets = heapless::Vec::new(); ////
             loop { ////
@@ -73,6 +77,15 @@ impl AppState<u32> { ////
         return &mut APP_STATE;
     }
 }
+
+/*
+impl<T: Data + 'static> GlobalState<T> for AppState<T> { ////
+    /// Fetch the global AppState for the Data type
+    fn get_global_state(&mut self) -> &'static mut AppState<T> { ////
+        panic!("no global state")
+    }
+}
+*/
 
 /*
 /// Fetch the global AppState for the Data type
@@ -97,7 +110,7 @@ fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
 #[derive(Clone, Default)] ////
-pub struct DruidHandler<T: Data + 'static + Default> { ////
+pub struct DruidHandler<T: Data + 'static> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
     ////app_state: AppState<T>, //// Causes loop
@@ -110,7 +123,7 @@ pub struct DruidHandler<T: Data + 'static + Default> { ////
 
 /// State shared by all windows in the UI.
 #[derive(Clone)] ////
-pub(crate) struct AppState<T: Data + 'static + Default> { ////
+pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ////command_queue: VecDeque<(WindowId, Command)>,
@@ -129,7 +142,7 @@ pub(crate) struct AppState<T: Data + 'static + Default> { ////
 
 /// All active windows.
 #[derive(Clone)] ////
-struct Windows<T: Data + 'static + Default> { ////
+struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
     windows: Option<WindowBox<T>>, //// Only 1 window supported
     ////windows: HashMap<WindowId, Window<T>>,
@@ -139,7 +152,7 @@ struct Windows<T: Data + 'static + Default> { ////
 
 /// Per-window state not owned by user code.
 #[derive(Clone, Default)] ////
-pub(crate) struct WindowState<D: Data + 'static + Default> { ////  D is Data + 'static
+pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 ////pub(crate) struct WindowState {
     pub(crate) handle: WindowHandle<DruidHandler<D>>, ////
     ////pub(crate) handle: WindowHandle,
@@ -147,7 +160,7 @@ pub(crate) struct WindowState<D: Data + 'static + Default> { ////  D is Data + '
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<'a, T: Data + 'static + Default> { ////
+struct SingleWindowState<'a, T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     window: WindowBox<T>, ////
@@ -159,7 +172,7 @@ struct SingleWindowState<'a, T: Data + 'static + Default> { ////
     env: &'a Env,
 }
 
-impl<T: Data + 'static + Default> Windows<T> { ////
+impl<T: Data + 'static> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
@@ -231,7 +244,7 @@ impl<T: Data + 'static + Default> Windows<T> { ////
     }
 }
 
-impl<'a, T: Data + 'static + Default> SingleWindowState<'a, T> {
+impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);
@@ -395,7 +408,7 @@ impl<'a, T: Data + 'static + Default> SingleWindowState<'a, T> {
     }
 }
 
-impl<T: Data + 'static + Default> AppState<T> { ////
+impl<T: Data + 'static> AppState<T> { ////
 ////impl<T: Data + 'static> AppState<T> {
     pub(crate) fn new(
         data: T,
@@ -582,15 +595,15 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     }
 
     /// Add a Widget to the application
-    pub(crate) fn add_widget(id: u32, widget: WidgetType<T>) { ////
-        let mut state = AppState::<T>::get_global_state();
+    pub(crate) fn add_widget(&mut self, id: u32, widget: WidgetType<T>) { ////
+        let mut state: &'static mut AppState<T> = self.get_global_state();
         let mut widgets = state.widgets.unwrap();
         widgets[id as usize] = widget;
     }
 
     /// Fetch a Widget by Widget ID
-    pub(crate) fn get_widget(id: u32) -> WidgetType<T> { ////
-        let mut state = AppState::<T>::get_global_state();
+    pub(crate) fn get_widget(&mut self, id: u32) -> WidgetType<T> { ////
+        let mut state: &'static mut AppState<T> = self.get_global_state();
         let widgets = state.widgets.unwrap();
         widgets[id as usize]
     }
@@ -603,7 +616,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     */
 }
 
-impl<T: Data + 'static + Default> DruidHandler<T> { ////
+impl<T: Data + 'static> DruidHandler<T> { ////
 ////impl<T: Data + 'static> DruidHandler<T> {
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
@@ -757,7 +770,7 @@ impl<T: Data + 'static + Default> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
+impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
 ////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, handle: &WindowHandle) {
@@ -836,7 +849,7 @@ impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T
     */ ////
 }
 
-impl<T: Data + 'static + Default> Default for Windows<T> { ////
+impl<T: Data + 'static> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {

@@ -86,7 +86,7 @@ use win_handler::AppState; ////
 ///
 /// [`update`]: trait.Widget.html#tymethod.update
 #[derive(Clone, Copy, Default)] ////
-pub struct WidgetPod<T: Data + 'static + Default, W: Widget<T>> { ////
+pub struct WidgetPod<T: Data + 'static, W: Widget<T>> { ////
 ////pub struct WidgetPod<T: Data, W: Widget<T>> {
     state: BaseState,
     old_data: Option<T>,
@@ -185,7 +185,7 @@ pub struct BaseState {
 /// [`update`]: #tymethod.update
 /// [`Data`]: trait.Data.html
 /// [`WidgetPod`]: struct.WidgetPod.html
-pub trait Widget<T: Data + 'static + Default> { ////
+pub trait Widget<T: Data + 'static> { ////
 ////pub trait Widget<T> {
     /// Paint the widget appearance.
     ///
@@ -383,7 +383,7 @@ pub struct LayoutCtx<'a, 'b: 'a> {
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct EventCtx<'a, 'b, D: Data + 'static + Default> { ////
+pub struct EventCtx<'a, 'b, D: Data + 'static> { ////
 ////pub struct EventCtx<'a, 'b> {
     // Note: there's a bunch of state that's just passed down, might
     // want to group that into a single struct.
@@ -407,7 +407,7 @@ pub struct EventCtx<'a, 'b, D: Data + 'static + Default> { ////
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct UpdateCtx<'a, 'b: 'a, D: Data + 'static + Default> { ////
+pub struct UpdateCtx<'a, 'b: 'a, D: Data + 'static> { ////
 ////pub struct UpdateCtx<'a, 'b: 'a> {
     text_factory: &'a mut Text<'b>,
     window: &'a WindowHandle<DruidHandler<D>>, ////
@@ -440,7 +440,7 @@ pub struct BoxConstraints {
     max: Size,
 }
 
-impl<T: Data + 'static + Default, W: Widget<T>> WidgetPod<T, W> { ////
+impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
 ////impl<T: Data, W: Widget<T>> WidgetPod<T, W> {
     /// Create a new widget pod.
     ///
@@ -883,7 +883,7 @@ impl BoxConstraints {
     }
 }
 
-impl<'a, 'b, D: Data + 'static + Default> EventCtx<'a, 'b, D> { ////
+impl<'a, 'b, D: Data + 'static> EventCtx<'a, 'b, D> { ////
 ////impl<'a, 'b> EventCtx<'a, 'b> {
     /// Invalidate.
     ///
@@ -1039,7 +1039,7 @@ impl<'a, 'b> LayoutCtx<'a, 'b> {
     }
 }
 
-impl<'a, 'b, D: Data + 'static + Default> UpdateCtx<'a, 'b, D> {  ////
+impl<'a, 'b, D: Data + 'static> UpdateCtx<'a, 'b, D> {  ////
 ////impl<'a, 'b> UpdateCtx<'a, 'b> {
     /// Invalidate.
     ///

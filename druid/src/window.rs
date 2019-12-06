@@ -35,8 +35,8 @@ static mut WINDOW_ID_COUNTER: u32 = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
-#[derive(Clone, Copy, Default)] ////
-pub struct Window<T: Data + 'static + Default, W: Widget<T> + 'static> { ////
+#[derive(Clone)] ////
+pub struct Window<T: Data + 'static, W: Widget<T> + 'static> { ////
 ////pub struct Window<T: Data> {
     pub(crate) root: WidgetPod<T, W>, ////
     ////pub(crate) root: WidgetPod<T, Box<dyn Widget<T>>>,
@@ -48,7 +48,7 @@ pub struct Window<T: Data + 'static + Default, W: Widget<T> + 'static> { ////
     // delegate?
 }
 
-impl<T: Data + 'static + Default, W: Widget<T> + 'static> Window<T, W> { ////
+impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
 ////impl<T: Data> Window<T> {
     pub fn new(
         root: W,

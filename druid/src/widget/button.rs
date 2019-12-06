@@ -28,7 +28,7 @@ use crate::{Point, RenderContext, WindowBox}; ////
 
 /// A button with a text label.
 #[derive(Clone)] ////
-pub struct Button<T: Data + 'static + Default> { ////
+pub struct Button<T: Data + 'static> { ////
 ////pub struct Button<T> {
     id: u32, //// Unique Widget ID
     label: Label<T>,
@@ -37,7 +37,7 @@ pub struct Button<T: Data + 'static + Default> { ////
     ////action: Box<dyn Fn(&mut EventCtx, &mut T, &Env)>,
 }
 
-impl<T: Data + 'static + Default> Button<T> { ////
+impl<T: Data + 'static> Button<T> { ////
 ////impl<T: Data + 'static> Button<T> {
     /// Create a new button. The closure provided will be called when the button
     /// is clicked.
@@ -87,7 +87,7 @@ impl<T: Data + 'static + Default> Button<T> { ////
 }
 
 
-impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
+impl<T: Data + 'static> Widget<T> for Button<T> { ////
 ////impl<T: Data> Widget<T> for Button<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, data: &T, env: &Env) {
         let is_active = base_state.is_active();
