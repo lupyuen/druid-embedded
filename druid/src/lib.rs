@@ -71,7 +71,7 @@ pub use win_handler::{DruidHandler}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 use crate::widget::WidgetType; ////
-use win_handler::APP_STATE; ////
+use win_handler::AppState; ////
 
 /// A container for one widget in the hierarchy.
 ///

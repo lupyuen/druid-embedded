@@ -71,7 +71,7 @@ impl<D: Data + 'static + Default> WidgetBox<D> {
         let mut widgets = ALL_WIDGETS.unwrap();
         */
         let id = widget.get_id();
-        crate::APP_STATE.add_widget(id, widget.to_type());
+        crate::AppState::<D>::add_widget(id, widget.to_type());
         //widgets.set(id, widget.to_type());
         WidgetBox(
             id,

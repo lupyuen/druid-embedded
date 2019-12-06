@@ -58,6 +58,38 @@ pub(crate) static mut APP_STATE: AppState<u32> = AppState {
     widgets: None,
 };
 
+impl AppState<u32> { ////
+    /// Fetch the global AppState for the Data type
+    fn get_global_state() -> &'static mut Self { ////
+        if let None = APP_STATE.widgets {
+            let widgets = heapless::Vec::new(); ////
+            loop { ////
+                if let Err(_) = widgets.push(WidgetType::None) {
+                    break;
+                }
+            }    
+            APP_STATE.widgets = Some(widgets);
+        }
+        return &mut APP_STATE;
+    }
+}
+
+/*
+/// Fetch the global AppState for the Data type
+fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
+    if let None = APP_STATE.widgets {
+        let widgets = heapless::Vec::new(); ////
+        loop { ////
+            if let Err(_) = widgets.push(WidgetType::None) {
+                break;
+            }
+        }    
+        APP_STATE.widgets = Some(widgets);
+    }
+    return &mut APP_STATE;
+}
+*/
+
 /// The struct implements the druid-shell `WinHandler` trait.
 ///
 /// One `DruidHandler` exists per window.
@@ -211,29 +243,29 @@ impl<'a, T: Data + 'static + Default> SingleWindowState<'a, T> {
     }
 
     /* ////
-    fn do_anim_frame(&mut self, ctx: &mut dyn WinCtx) -> bool {
-        // TODO: this calculation uses wall-clock time of the paint call, which
-        // potentially has jitter.
-        //
-        // See https://github.com/xi-editor/druid/issues/85 for discussion.
-        let this_paint_time = Instant::now();
-        let prev_paint_time = self.state.prev_paint_time;
-        let interval = if let Some(last) = prev_paint_time {
-            let duration = this_paint_time.duration_since(last);
-            1_000_000_000 * duration.as_secs() + u64::from(duration.subsec_nanos())
-        } else {
-            0
-        };
-        let anim_frame_event = Event::AnimFrame(interval);
-        let (_, _, request_anim) = self.do_event_inner(anim_frame_event, ctx);
-        let prev = if request_anim {
-            Some(this_paint_time)
-        } else {
-            None
-        };
-        self.state.prev_paint_time = prev;
-        request_anim
-    }
+        fn do_anim_frame(&mut self, ctx: &mut dyn WinCtx) -> bool {
+            // TODO: this calculation uses wall-clock time of the paint call, which
+            // potentially has jitter.
+            //
+            // See https://github.com/xi-editor/druid/issues/85 for discussion.
+            let this_paint_time = Instant::now();
+            let prev_paint_time = self.state.prev_paint_time;
+            let interval = if let Some(last) = prev_paint_time {
+                let duration = this_paint_time.duration_since(last);
+                1_000_000_000 * duration.as_secs() + u64::from(duration.subsec_nanos())
+            } else {
+                0
+            };
+            let anim_frame_event = Event::AnimFrame(interval);
+            let (_, _, request_anim) = self.do_event_inner(anim_frame_event, ctx);
+            let prev = if request_anim {
+                Some(this_paint_time)
+            } else {
+                None
+            };
+            self.state.prev_paint_time = prev;
+            request_anim
+        }
     */ ////
 
     fn do_layout(&mut self, piet: &mut Piet) {
@@ -309,32 +341,32 @@ impl<'a, T: Data + 'static + Default> SingleWindowState<'a, T> {
     }
 
     /* ////
-    fn set_menu(&mut self, cmd: &Command) {
-        let mut menu = match cmd.get_object::<MenuDesc<T>>() {
-            Some(menu) => menu.to_owned(),
-            None => {
-                warn!("set-menu command is missing menu object");
-                return;
-            }
-        };
+        fn set_menu(&mut self, cmd: &Command) {
+            let mut menu = match cmd.get_object::<MenuDesc<T>>() {
+                Some(menu) => menu.to_owned(),
+                None => {
+                    warn!("set-menu command is missing menu object");
+                    return;
+                }
+            };
 
-        let platform_menu = menu.build_window_menu(&self.data, &self.env);
-        self.state.handle.set_menu(platform_menu);
-        self.window.menu = Some(menu.to_owned());
-    }
+            let platform_menu = menu.build_window_menu(&self.data, &self.env);
+            self.state.handle.set_menu(platform_menu);
+            self.window.menu = Some(menu.to_owned());
+        }
 
-    fn show_context_menu(&mut self, cmd: &Command) {
-        let (mut menu, point) = match cmd.get_object::<ContextMenu<T>>() {
-            Some(ContextMenu { menu, location }) => (menu.to_owned(), *location),
-            None => {
-                warn!("show-context-menu command is missing menu object.");
-                return;
-            }
-        };
-        let platform_menu = menu.build_popup_menu(&self.data, &self.env);
-        self.state.handle.show_context_menu(platform_menu, point);
-        self.window.context_menu = Some(menu);
-    }
+        fn show_context_menu(&mut self, cmd: &Command) {
+            let (mut menu, point) = match cmd.get_object::<ContextMenu<T>>() {
+                Some(ContextMenu { menu, location }) => (menu.to_owned(), *location),
+                None => {
+                    warn!("show-context-menu command is missing menu object.");
+                    return;
+                }
+            };
+            let platform_menu = menu.build_popup_menu(&self.data, &self.env);
+            self.state.handle.show_context_menu(platform_menu, point);
+            self.window.context_menu = Some(menu);
+        }
     */ ////
 
     fn window_got_focus(&mut self) {
@@ -390,53 +422,53 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     }
 
     /* ////
-    fn get_menu_cmd(&self, window_id: WindowId, cmd_id: u32) -> Option<Command> {
-        self.windows
-            .windows
-            .get(&window_id)
-            .and_then(|w| w.get_menu_cmd(cmd_id))
-    }
-
-    /// A helper fn for setting up the `DelegateCtx`. Takes a closure with
-    /// an arbitrary return type `R`, and returns `Some(R)` if an `AppDelegate`
-    /// is configured.
-    fn with_delegate<R, F>(&mut self, id: WindowId, f: F) -> Option<R>
-    where
-        F: FnOnce(&mut Box<dyn AppDelegate<T>>, &mut T, &Env, &mut DelegateCtx) -> R,
-    {
-        let AppState {
-            ref mut delegate,
-            ref mut command_queue,
-            ref mut data,
-            ref env,
-            ..
-        } = self;
-        let mut ctx = DelegateCtx {
-            source_id: id,
-            command_queue,
-        };
-        if let Some(delegate) = delegate {
-            Some(f(delegate, data, env, &mut ctx))
-        } else {
-            None
+        fn get_menu_cmd(&self, window_id: WindowId, cmd_id: u32) -> Option<Command> {
+            self.windows
+                .windows
+                .get(&window_id)
+                .and_then(|w| w.get_menu_cmd(cmd_id))
         }
-    }
 
-    fn delegate_event(&mut self, id: WindowId, event: Event) -> Option<Event> {
-        if self.delegate.is_some() {
-            self.with_delegate(id, |del, data, env, ctx| del.event(event, data, env, ctx))
-                .unwrap()
-        } else {
-            Some(event)
+        /// A helper fn for setting up the `DelegateCtx`. Takes a closure with
+        /// an arbitrary return type `R`, and returns `Some(R)` if an `AppDelegate`
+        /// is configured.
+        fn with_delegate<R, F>(&mut self, id: WindowId, f: F) -> Option<R>
+        where
+            F: FnOnce(&mut Box<dyn AppDelegate<T>>, &mut T, &Env, &mut DelegateCtx) -> R,
+        {
+            let AppState {
+                ref mut delegate,
+                ref mut command_queue,
+                ref mut data,
+                ref env,
+                ..
+            } = self;
+            let mut ctx = DelegateCtx {
+                source_id: id,
+                command_queue,
+            };
+            if let Some(delegate) = delegate {
+                Some(f(delegate, data, env, &mut ctx))
+            } else {
+                None
+            }
         }
-    }
 
-    fn connect(&mut self, id: WindowId, handle: WindowHandle) {
-        self.windows.connect(id, handle);
-        self.with_delegate(id, |del, data, env, ctx| {
-            del.window_added(id, data, env, ctx)
-        });
-    }
+        fn delegate_event(&mut self, id: WindowId, event: Event) -> Option<Event> {
+            if self.delegate.is_some() {
+                self.with_delegate(id, |del, data, env, ctx| del.event(event, data, env, ctx))
+                    .unwrap()
+            } else {
+                Some(event)
+            }
+        }
+
+        fn connect(&mut self, id: WindowId, handle: WindowHandle) {
+            self.windows.connect(id, handle);
+            self.with_delegate(id, |del, data, env, ctx| {
+                del.window_added(id, data, env, ctx)
+            });
+        }
     */ ////
 
     pub(crate) fn add_window(&mut self, id: WindowId, window: WindowBox<T>) { ////
@@ -549,15 +581,26 @@ impl<T: Data + 'static + Default> AppState<T> { ////
             .map(SingleWindowState::window_got_focus);
     }
 
-    pub(crate) fn add_widget(&mut self, id: u32, widget: WidgetType<T>) { ////
-        let mut widgets = self.widgets.unwrap();
+    /// Add a Widget to the application
+    pub(crate) fn add_widget(id: u32, widget: WidgetType<T>) { ////
+        let mut state = AppState::<T>::get_global_state();
+        let mut widgets = state.widgets.unwrap();
         widgets[id as usize] = widget;
     }
 
-    pub(crate) fn get_widget(&mut self, id: u32) -> WidgetType<T> { ////
-        let widgets = self.widgets.unwrap();
+    /// Fetch a Widget by Widget ID
+    pub(crate) fn get_widget(id: u32) -> WidgetType<T> { ////
+        let mut state = AppState::<T>::get_global_state();
+        let widgets = state.widgets.unwrap();
         widgets[id as usize]
     }
+
+    /*
+    /// Fetch the global AppState for the Data type
+    fn get_global_state() -> &'static mut Self { ////
+        panic!("no global state")
+    }
+    */
 }
 
 impl<T: Data + 'static + Default> DruidHandler<T> { ////
