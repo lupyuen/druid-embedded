@@ -1,5 +1,4 @@
 //! `WidgetBox` contains a `Widget`. Allows for dynamic dispatch with static `Widgets` in `[no_std]`.
-
 use core::marker::PhantomData;
 use crate::kurbo::{Rect, Size};
 use crate::{
@@ -7,36 +6,35 @@ use crate::{
     widget::{Button, Flex, Label},
 };
 
-const MAX_WIDGETS: usize = 5;  //  Max number of `Widgets`
+/// Max number of `Widgets` on embedded platforms
+const MAX_WIDGETS: usize = 5;
 
+/// Static list of `Widgets` just for embedded platforms
 static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = 
     [ WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None ];
 
+/// Specialised Trait for handling static `Widgets` on embedded platforms
 pub trait GlobalState<D: Data + 'static> {
-    /// Fetch the global WidgetState for the Data type
+    /// Fetch the static `Widgets` for the Data type
     fn get_global_state(&self) -> &'static mut [ WidgetType<D> ];
-    /// Add a Widget to the application
+    /// Add a `Widget` for the Data type
     fn add_widget(&self, widget: WidgetType<D>);
 }
 
+/// Default trait will not have static `Widgets`
 impl<D: Data + 'static> GlobalState<D> for WidgetBox<D> {
-    default fn get_global_state(&self) -> &'static mut [ WidgetType<D> ] {
-        panic!("no global state")
-    }
-
-    default fn add_widget(&self, _widget: WidgetType<D>) {
-        panic!("no global state")
-    }
+    default fn get_global_state(&self) -> &'static mut [ WidgetType<D> ] { panic!("no global state") }
+    default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global state") }
 }
 
+/// Specialised Trait will store `Widgets` statically on embedded platforms
 impl GlobalState<u32> for WidgetBox<u32> {
-    /// Fetch the global WidgetState for the Data type
+    /// Fetch the static `Widgets` for the Data type
     fn get_global_state(&self) -> &'static mut [ WidgetType<u32> ] {
         unsafe { &mut WIDGET_STATE_U32 }
     }
-
-    /// Add a Widget to the application
-    fn add_widget(&self, widget: WidgetType<u32>) { ////
+    /// Add a `Widget` for the Data type
+    fn add_widget(&self, widget: WidgetType<u32>) {
         unsafe { WIDGET_STATE_U32[self.0 as usize] = widget; }
     }    
 }
