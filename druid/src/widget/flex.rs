@@ -139,7 +139,7 @@ impl<T: Data + 'static + Default> Flex<T> { ////
         let params = Params { flex };
         let child = ChildWidget {
             widget: WidgetPod::new(
-                WidgetBox::<T>::new(&mut child.clone())
+                WidgetBox::<T>::new(child)
             ),
             ////widget: WidgetPod::new(child).boxed(),
             params,
@@ -257,8 +257,8 @@ impl<T: Data + 'static> Widget<T> for Flex<T> { ////
         }
     }
 
-    fn to_type(&mut self) -> WidgetType<T> { ////
-        ////WidgetType::Flex(self.clone())
+    fn to_type(self) -> WidgetType<T> { ////
+        ////WidgetType::Flex(self)
         WidgetType::None
     }
 

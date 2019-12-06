@@ -141,8 +141,8 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
         }
     }
 
-    fn to_type(&mut self) -> WidgetType<T> { ////
-        WidgetType::Label(self.clone())
+    fn to_type(self) -> WidgetType<T> { ////
+        WidgetType::Label(self)
     }
 
     fn new_window(self) -> WindowBox<T> { ////

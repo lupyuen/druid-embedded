@@ -7,38 +7,39 @@ use crate::{
     widget::{Button, Flex, Label},
 };
 
-/*
-type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
-static mut ALL_WIDGETS: Option<WidgetVec<u32>> = None;
+const MAX_WIDGETS: usize = 5;  //  Max number of `Widgets`
 
-struct WidgetVec<D: Data + 'static + Default> {
-    /// widgets[i] contains the Widget with ID i
-    widgets: heapless::Vec::<WidgetType<D>, MAX_WIDGETS>,
+static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = 
+    [ WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None ];
+
+pub trait GlobalState<D: Data + 'static> {
+    /// Fetch the global WidgetState for the Data type
+    fn get_global_state(&self) -> &'static mut [ WidgetType<D> ];
+    /// Add a Widget to the application
+    fn add_widget(&self, widget: WidgetType<D>);
 }
 
-impl<D: Data + 'static + Default> WidgetVec<D> {
-    fn new() -> Self {
-        //  Fill the Widget list with None.
-        let widgets = heapless::Vec::new();
-        loop {
-            if let Err(_) = widgets.push(WidgetType::None) {
-                break;
-            }
-        }
-        WidgetVec{
-            widgets,
-        }
+impl<D: Data + 'static> GlobalState<D> for WidgetBox<D> {
+    default fn get_global_state(&self) -> &'static mut [ WidgetType<D> ] {
+        panic!("no global state")
     }
 
-    fn set(&mut self, id: u32, widget: WidgetType<D>) {
-        self.widgets[id as usize] = widget;
-    }
-
-    fn get(&mut self, id: u32) -> WidgetType<D> {
-        self.widgets[id as usize]
+    default fn add_widget(&self, _widget: WidgetType<D>) {
+        panic!("no global state")
     }
 }
-*/
+
+impl GlobalState<u32> for WidgetBox<u32> {
+    /// Fetch the global WidgetState for the Data type
+    fn get_global_state(&self) -> &'static mut [ WidgetType<u32> ] {
+        unsafe { &mut WIDGET_STATE_U32 }
+    }
+
+    /// Add a Widget to the application
+    fn add_widget(&self, widget: WidgetType<u32>) { ////
+        unsafe { WIDGET_STATE_U32[self.0 as usize] = widget; }
+    }    
+}
 
 /// Boxed version of a `Widget`
 #[derive(Clone, Default)]
@@ -63,20 +64,15 @@ impl<D: Data + 'static> Default for WidgetType<D> {
 /// Generic implementation of `WidgetBox`
 impl<D: Data + 'static> WidgetBox<D> {
     /// Create a new box for the `Widget`
-    pub fn new<W: Widget<D>>(widget: &mut W) -> Self {
-        /*
-        if let None = ALL_WIDGETS {
-            ALL_WIDGETS = Some(WidgetVec::new());
-        }
-        let mut widgets = ALL_WIDGETS.unwrap();
-        */
-        let id = widget.get_id();
-        crate::AppState::<D>::add_widget(id, widget.to_type());
-        //widgets.set(id, widget.to_type());
-        WidgetBox(
+    pub fn new<W: Widget<D> + Clone>(widget: W) -> Self {
+        let id = widget.clone().get_id();
+        let widget_type: WidgetType<D> = widget.clone().to_type();
+        let widget_box: WidgetBox<D> = WidgetBox(
             id,
             PhantomData,
-        )
+        );
+        widget_box.clone().add_widget(widget_type);
+        widget_box.clone()
     }
 }
 
@@ -89,7 +85,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D, 
         env: &Env
     ) {
-        match &mut crate::APP_STATE.get_widget(self.0) {
+        match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.paint(paint_ctx, base_state, data, env),
             ////WidgetType::Flex(w)   => w.paint(paint_ctx, base_state, data, env),
             WidgetType::Label(w)  => w.paint(paint_ctx, base_state, data, env),
@@ -104,7 +100,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D,
         env: &Env,
     ) -> Size {
-        match &mut crate::APP_STATE.get_widget(self.0) {
+        match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.layout(layout_ctx, bc, data, env),
             ////WidgetType::Flex(w)   => w.layout(layout_ctx, bc, data, env),
             WidgetType::Label(w)  => w.layout(layout_ctx, bc, data, env),
@@ -119,7 +115,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &mut D, 
         env: &Env
     ) {
-        match &mut crate::APP_STATE.get_widget(self.0) {
+        match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.event(ctx, event, data, env),
             ////WidgetType::Flex(w)   => w.event(ctx, event, data, env),
             WidgetType::Label(w)  => w.event(ctx, event, data, env),
@@ -134,7 +130,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D, 
         env: &Env
     ) {
-        match &mut crate::APP_STATE.get_widget(self.0) {
+        match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.update(ctx, old_data, data, env),
             ////WidgetType::Flex(w)   => w.update(ctx, old_data, data, env),
             WidgetType::Label(w)  => w.update(ctx, old_data, data, env),
@@ -142,7 +138,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         };
     }
 
-    fn to_type(&mut self) -> WidgetType<D> {
+    fn to_type(self) -> WidgetType<D> {
         WidgetType::None
     }
 
@@ -151,10 +147,10 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     }
 
     fn get_id(self) -> u32 {
-        match crate::APP_STATE.get_widget(self.0) {
-            WidgetType::Button(w) => w.get_id(),
-            ////WidgetType::Flex(w)   => w.get_id(),
-            WidgetType::Label(w)  => w.get_id(),
+        match &mut self.get_global_state()[self.0 as usize] {
+            WidgetType::Button(w) => w.clone().get_id(),
+            ////WidgetType::Flex(w)   => w.clone().get_id(),
+            WidgetType::Label(w)  => w.clone().get_id(),
             WidgetType::None => panic!("no id")
         }
     }

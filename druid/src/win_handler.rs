@@ -48,58 +48,80 @@ use crate::{
 
 type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
 
-pub(crate) static mut APP_STATE: AppState<u32> = AppState {
+pub(crate) static mut APP_STATE_U32: AppState<u32> = AppState {
     windows: Windows::<u32> {
         windows: None,
         state: None,
     },
     env: Env {},
     data: 0,
-    widgets: None,
 };
 
+/*
 pub trait GlobalState<T: Data + 'static> {
     fn get_global_state(&mut self) -> &'static mut AppState<T>;
+}
+
+impl<T: Data + 'static> GlobalState<T> for AppState<T> { ////
+    /// Fetch the global AppState for the Data type
+    default fn get_global_state(&mut self) -> &'static mut AppState<T> { ////
+        panic!("no global state")
+    }
 }
 
 impl GlobalState<u32> for AppState<u32> { ////
     /// Fetch the global AppState for the Data type
     fn get_global_state(&mut self) -> &'static mut AppState<u32> { ////
-        if let None = APP_STATE.widgets {
+        if let None = APP_STATE_U32.widgets {
             let widgets = heapless::Vec::new(); ////
             loop { ////
                 if let Err(_) = widgets.push(WidgetType::None) {
                     break;
                 }
             }    
-            APP_STATE.widgets = Some(widgets);
+            APP_STATE_U32.widgets = Some(widgets);
         }
-        return &mut APP_STATE;
+        return &mut APP_STATE_U32;
     }
 }
+*/
 
 /*
-impl<T: Data + 'static> GlobalState<T> for AppState<T> { ////
-    /// Fetch the global AppState for the Data type
-    fn get_global_state(&mut self) -> &'static mut AppState<T> { ////
-        panic!("no global state")
-    }
+struct Special
+{
+    x : usize,
+    y : usize
+}
+
+trait MyTrait
+{
+    fn myfunc(&self);
+}
+
+impl<T> MyTrait for T
+{
+    default fn myfunc(&self) { println!("hi"); }
+}
+
+impl MyTrait for Special
+{
+    fn myfunc(&self) { println!("I'm special"); }
 }
 */
 
 /*
 /// Fetch the global AppState for the Data type
 fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
-    if let None = APP_STATE.widgets {
+    if let None = APP_STATE_U32.widgets {
         let widgets = heapless::Vec::new(); ////
         loop { ////
             if let Err(_) = widgets.push(WidgetType::None) {
                 break;
             }
         }    
-        APP_STATE.widgets = Some(widgets);
+        APP_STATE_U32.widgets = Some(widgets);
     }
-    return &mut APP_STATE;
+    return &mut APP_STATE_U32;
 }
 */
 
@@ -113,8 +135,8 @@ fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
 pub struct DruidHandler<T: Data + 'static> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
-    ////app_state: AppState<T>, //// Causes loop
-    ////app_state: Rc<RefCell<AppState<T>>>,
+    ////app_state_U32: AppState<T>, //// Causes loop
+    ////app_state_U32: Rc<RefCell<AppState<T>>>,
 
     /// The id for the current window.
     window_id: WindowId,
@@ -131,13 +153,6 @@ pub(crate) struct AppState<T: Data + 'static> { ////
     ////windows: Windows<T>,
     pub(crate) env: Env,
     pub(crate) data: T,
-    /// widgets[i] contains the Widget with ID i
-    pub(crate) widgets: Option<
-        heapless::Vec::<
-            WidgetType<T>, 
-            MAX_WIDGETS
-        >
-    >, ////
 }
 
 /// All active windows.
@@ -416,13 +431,6 @@ impl<T: Data + 'static> AppState<T> { ////
         ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ) -> Self { ////
     ////) -> Rc<RefCell<Self>> {
-        //  Fill the Widget list with None
-        let widgets = heapless::Vec::new(); ////
-        loop { ////
-            if let Err(_) = widgets.push(WidgetType::None) {
-                break;
-            }
-        }
         AppState { ////
         ////Rc::new(RefCell::new(AppState {
             ////delegate,
@@ -430,7 +438,6 @@ impl<T: Data + 'static> AppState<T> { ////
             data,
             env,
             windows: Windows::default(),
-            widgets: Some(widgets), ////
         } ////))
     }
 
@@ -594,6 +601,7 @@ impl<T: Data + 'static> AppState<T> { ////
             .map(SingleWindowState::window_got_focus);
     }
 
+    /*
     /// Add a Widget to the application
     pub(crate) fn add_widget(&mut self, id: u32, widget: WidgetType<T>) { ////
         let mut state: &'static mut AppState<T> = self.get_global_state();
@@ -607,12 +615,6 @@ impl<T: Data + 'static> AppState<T> { ////
         let widgets = state.widgets.unwrap();
         widgets[id as usize]
     }
-
-    /*
-    /// Fetch the global AppState for the Data type
-    fn get_global_state() -> &'static mut Self { ////
-        panic!("no global state")
-    }
     */
 }
 
@@ -621,15 +623,15 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
     pub(crate) fn new_shared(
-        app_state: AppState<T>, ////
-        ////TODO1 app_state: &'static mut AppState<T>, ////
-        ////app_state: Rc<RefCell<AppState<T>>>,
+        app_state_U32: AppState<T>, ////
+        ////TODO1 app_state_U32: &'static mut AppState<T>, ////
+        ////app_state_U32: Rc<RefCell<AppState<T>>>,
         window_id: WindowId,
     ) -> DruidHandler<T> { ////
     ////) -> DruidHandler<T> {
         DruidHandler {
-            ////app_state: app_state.clone(),
-            ////TODO1 app_state,
+            ////app_state_U32: app_state_U32.clone(),
+            ////TODO1 app_state_U32,
             window_id,
             phantomData: PhantomData, ////
         }
@@ -642,9 +644,9 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     /// This is principally because in certain cases (such as keydown on Windows)
     /// the OS needs to know if an event was handled.
     fn do_event(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
-        let result = unsafe { APP_STATE ////
+        let result = unsafe { APP_STATE_U32 ////
             ////self
-            ////.app_state
+            ////.app_state_U32
             ////.borrow_mut()
             .do_event(self.window_id, event, win_ctx)
             } ////
@@ -656,7 +658,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     /* ////
     fn process_commands(&mut self, win_ctx: &mut dyn WinCtx) {
         loop {
-            let next_cmd = self.app_state.borrow_mut().command_queue.pop_front();
+            let next_cmd = self.app_state_U32.borrow_mut().command_queue.pop_front();
             match next_cmd {
                 Some((id, cmd)) => self.handle_cmd(id, cmd, win_ctx),
                 None => break,
@@ -665,10 +667,10 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     }
 
     fn handle_system_cmd(&mut self, cmd_id: u32, win_ctx: &mut dyn WinCtx) {
-        let cmd = self.app_state.borrow().get_menu_cmd(self.window_id, cmd_id);
+        let cmd = self.app_state_U32.borrow().get_menu_cmd(self.window_id, cmd_id);
         match cmd {
             Some(cmd) => self
-                .app_state
+                .app_state_U32
                 .borrow_mut()
                 .command_queue
                 .push_back((self.window_id, cmd)),
@@ -693,7 +695,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
             sel => {
                 info!("handle_cmd {}", sel);
                 let event = Event::Command(cmd);
-                self.app_state
+                self.app_state_U32
                     .borrow_mut()
                     .do_event(window_id, event, win_ctx);
             }
@@ -708,7 +710,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
         let result = win_ctx.open_file_sync(options);
         if let Some(info) = result {
             let event = Event::OpenFile(info);
-            self.app_state
+            self.app_state_U32
                 .borrow_mut()
                 .do_event(window_id, event, win_ctx);
         }
@@ -723,7 +725,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
             }
         };
 
-        let window = match desc.build_native(&self.app_state) {
+        let window = match desc.build_native(&self.app_state_U32) {
             Ok(win) => win,
             Err(e) => {
                 ////error!("failed to create window: '{:?}'", e);
@@ -735,8 +737,8 @@ impl<T: Data + 'static> DruidHandler<T> { ////
 
     fn close_window(&mut self, /* cmd: Command, */ window_id: WindowId) { ////
         let id = cmd.get_object().unwrap_or(&window_id);
-        let handle = self.app_state.remove_window(*id); ////
-        ////let handle = self.app_state.borrow_mut().remove_window(*id);
+        let handle = self.app_state_U32.remove_window(*id); ////
+        ////let handle = self.app_state_U32.borrow_mut().remove_window(*id);
         if let Some(handle) = handle {
             handle.close();
         }
@@ -746,12 +748,12 @@ impl<T: Data + 'static> DruidHandler<T> { ////
         let id: WindowId = *cmd
             .get_object()
             .expect("show window selector missing window id");
-        self.app_state.borrow_mut().show_window(id);
+        self.app_state_U32.borrow_mut().show_window(id);
     }
 
     fn do_paste(&mut self, window_id: WindowId, ctx: &mut dyn WinCtx) {
         let event = Event::Paste(Application::clipboard());
-        self.app_state.borrow_mut().do_event(window_id, event, ctx);
+        self.app_state_U32.borrow_mut().do_event(window_id, event, ctx);
     }
 
     fn quit(&self) {
@@ -775,14 +777,14 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, handle: &WindowHandle) {
         ////TODO
-        ////self.app_state
+        ////self.app_state_U32
             ////.borrow_mut()
             ////.connect(self.window_id, handle.clone());
     }
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
-        unsafe { APP_STATE.paint(self.window_id, piet, ctx) } ////
-        ////self.app_state.borrow_mut().paint(self.window_id, piet, ctx)
+        unsafe { APP_STATE_U32.paint(self.window_id, piet, ctx) } ////
+        ////self.app_state_U32.borrow_mut().paint(self.window_id, piet, ctx)
     }
 
     fn size(&mut self, width: u32, height: u32, ctx: &mut dyn WinCtx) {
@@ -831,8 +833,8 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     */ ////
 
     fn got_focus(&mut self, ctx: &mut dyn WinCtx) {
-        unsafe { APP_STATE ////
-        ////self.app_state
+        unsafe { APP_STATE_U32 ////
+        ////self.app_state_U32
             ////.borrow_mut()
             .window_got_focus(self.window_id, ctx);
         } ////

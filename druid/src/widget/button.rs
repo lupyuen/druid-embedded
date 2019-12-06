@@ -171,8 +171,8 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
             self.label.update(ctx, old_data, data, env)
     }
 
-    fn to_type(&mut self) -> WidgetType<T> { ////
-        WidgetType::Button(self.clone())
+    fn to_type(self) -> WidgetType<T> { ////
+        WidgetType::Button(self)
     }
 
     fn new_window(self) -> WindowBox<T> { ////

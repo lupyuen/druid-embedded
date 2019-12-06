@@ -15,6 +15,7 @@
 //! Simple data-oriented GUI.
 
 #![no_std] ////
+#![feature(specialization)] ////
 #![deny(intra_doc_link_resolution_failure)] ////
 ////#![deny(intra_doc_link_resolution_failure, unsafe_code)]
 #![allow(clippy::new_ret_no_self)]
@@ -253,7 +254,7 @@ pub trait Widget<T: Data + 'static> { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
 
     /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
-    fn to_type(&mut self) -> WidgetType<T>; ////
+    fn to_type(self) -> WidgetType<T>; ////
 
     /// Wrap this `Widget` in a `WindowBox`
     fn new_window(self) -> WindowBox<T>; ////
