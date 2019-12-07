@@ -65,4 +65,4 @@ pub use error::Error;
 pub use mouse::{Cursor, MouseButton, MouseEvent};
 ////pub use runloop::RunLoop;
 pub use window::{Text, TimerToken, WinCtx, WinHandler, WindowBuilder, WindowHandle};
-pub use platform::{ start_display, show_touch }; ////
+pub use platform::{ start_display, test_display, show_touch }; ////

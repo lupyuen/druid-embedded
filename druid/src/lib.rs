@@ -73,7 +73,7 @@ pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 use crate::widget::WidgetType; ////
 use win_handler::AppState; ////
-pub use shell::{ start_display, show_touch }; ////
+pub use shell::{ start_display, test_display, show_touch }; ////
 
 /// A container for one widget in the hierarchy.
 ///
