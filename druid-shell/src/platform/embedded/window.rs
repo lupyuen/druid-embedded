@@ -87,7 +87,6 @@ pub struct WindowHandle<THandler> { ////
 pub struct WindowBuilder<THandler> { ////
 ////pub struct WindowBuilder {
     handler: Option<THandler>, ////
-    ////handler: Option<&'static mut dyn WinHandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,
     ////title: String,
     ////menu: Option<Menu>,
