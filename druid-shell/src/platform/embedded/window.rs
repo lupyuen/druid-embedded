@@ -77,14 +77,14 @@ use crate::Error;
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle<THandler> { ////
+pub struct WindowHandle<THandler: WinHandler> { ////
 ////pub struct WindowHandle {
     pub(crate) state: WindowState<THandler>, ////
     ////pub(crate) state: Weak<WindowState>,
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<THandler> { ////
+pub struct WindowBuilder<THandler: WinHandler> { ////
 ////pub struct WindowBuilder {
     handler: Option<THandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,
@@ -102,7 +102,7 @@ pub struct WindowBuilder<THandler> { ////
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState<THandler> {
+pub(crate) struct WindowState<THandler: WinHandler> {
     handler: Option<THandler>, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
@@ -116,7 +116,7 @@ pub(crate) struct WindowState<THandler> {
     }
 */ ////
 
-impl<THandler> WindowBuilder<THandler> { ////
+impl<THandler: WinHandler> WindowBuilder<THandler> { ////
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -334,9 +334,10 @@ impl<THandler> WindowBuilder<THandler> { ////
     }
 }
 
-impl<THandler> WindowHandle<THandler> { ////
+impl<THandler: WinHandler> WindowHandle<THandler> { ////
 ////impl WindowHandle {
     pub fn show(&self) {
+        /*
         let mut context = context.clone();
         let mut piet_context = Piet::new(&mut context);
         let handler = self.state.handler.unwrap();
@@ -344,6 +345,7 @@ impl<THandler> WindowHandle<THandler> { ////
         if let Err(_) = piet_context.finish() {
             panic!("piet error on render");
         }
+        */
     }
 
     /// Close the window.

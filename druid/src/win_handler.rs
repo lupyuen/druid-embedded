@@ -772,15 +772,16 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
-////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
-    fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
-    ////fn connect(&mut self, handle: &WindowHandle) {
-        ////TODO
-        ////self.app_state_U32
-            ////.borrow_mut()
-            ////.connect(self.window_id, handle.clone());
-    }
+impl<T: Data + 'static> WinHandler for DruidHandler<T> {
+    /* ////
+        fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
+        ////fn connect(&mut self, handle: &WindowHandle) {
+            ////TODO
+            ////self.app_state_U32
+                ////.borrow_mut()
+                ////.connect(self.window_id, handle.clone());
+        }
+    */ ////
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         unsafe { APP_STATE_U32.paint(self.window_id, piet, ctx) } ////
@@ -793,9 +794,9 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     }
 
     /* ////
-    fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {
-        self.handle_system_cmd(id, ctx);
-    }
+        fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {
+            self.handle_system_cmd(id, ctx);
+        }
     */ ////
 
     fn mouse_down(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
@@ -818,18 +819,18 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     }
 
     /* ////
-    fn key_down(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) -> bool {
-        self.do_event(Event::KeyDown(event), ctx)
-    }
+        fn key_down(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) -> bool {
+            self.do_event(Event::KeyDown(event), ctx)
+        }
 
-    fn key_up(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) {
-        self.do_event(Event::KeyUp(event), ctx);
-    }
+        fn key_up(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) {
+            self.do_event(Event::KeyUp(event), ctx);
+        }
 
-    fn wheel(&mut self, delta: Vec2, mods: KeyModifiers, ctx: &mut dyn WinCtx) {
-        let event = Event::Wheel(WheelEvent { delta, mods });
-        self.do_event(event, ctx);
-    }
+        fn wheel(&mut self, delta: Vec2, mods: KeyModifiers, ctx: &mut dyn WinCtx) {
+            let event = Event::Wheel(WheelEvent { delta, mods });
+            self.do_event(event, ctx);
+        }
     */ ////
 
     fn got_focus(&mut self, ctx: &mut dyn WinCtx) {
@@ -841,13 +842,13 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     }
 
     /* ////
-    fn timer(&mut self, token: TimerToken, ctx: &mut dyn WinCtx) {
-        self.do_event(Event::Timer(token), ctx);
-    }
+        fn timer(&mut self, token: TimerToken, ctx: &mut dyn WinCtx) {
+            self.do_event(Event::Timer(token), ctx);
+        }
 
-    fn as_any(&mut self) -> &mut dyn Any {
-        self
-    }
+        fn as_any(&mut self) -> &mut dyn Any {
+            self
+        }
     */ ////
 }
 

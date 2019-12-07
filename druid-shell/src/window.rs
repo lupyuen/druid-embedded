@@ -72,12 +72,14 @@ impl TimerToken {
 */ ////
 
 /// A handle to a platform window object.
-#[derive(Clone, Copy, Default)] ////
+#[derive(Clone, Default)] ////
 ////#[derive(Clone, Default)]
-pub struct WindowHandle<THandler>(platform::WindowHandle<THandler>); ////  THandler is DruidHandler<Data + 'static + Default>
+pub struct WindowHandle<THandler: WinHandler>(
+    platform::WindowHandle<THandler>
+); ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowHandle(platform::WindowHandle);
 
-impl<THandler> WindowHandle<THandler> { ////  THandler is Data + 'static + Default
+impl<THandler: WinHandler> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowHandle {
     /// Make this window visible.
     ///
@@ -136,13 +138,13 @@ impl<THandler> WindowHandle<THandler> { ////  THandler is Data + 'static + Defau
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<THandler>(  //// THandler is Data + 'static + Default
+pub struct WindowBuilder<THandler: WinHandler>(  //// THandler is DruidHandler<Data + 'static + Default>
     platform::WindowBuilder::<THandler> ////
     ////platform::WindowBuilder
 ); ////
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler> WindowBuilder<THandler> { ////  THandler is Data + 'static + Default
+impl<THandler: WinHandler> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowBuilder {
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
@@ -226,11 +228,10 @@ pub trait WinCtx<'a> {
 /// The methods are non-mut because the window procedure can be called
 /// recursively; implementers are expected to use `RefCell` or the like,
 /// but should be careful to keep the lifetime of the borrow short.
-pub trait WinHandler<THandler> { ////
-////pub trait WinHandler {
+pub trait WinHandler {
     /// Provide the handler with a handle to the window so that it can
     /// invalidate or make other requests.
-    fn connect(&mut self, handle: &WindowHandle<THandler>); ////
+    ////TODO: Remove THandler from fn connect(&mut self, handle: &WindowHandle<THandler>); ////
     ////fn connect(&mut self, handle: &WindowHandle);
 
     /// Called when the size of the window is changed. Note that size
@@ -314,12 +315,12 @@ pub trait WinHandler<THandler> { ////
     fn destroy(&mut self, ctx: &mut dyn WinCtx) {}
 
     /* ////
-    /// Get a reference to the handler state. Used mostly by idle handlers.
-    fn as_any(&mut self) -> &mut dyn Any;
+        /// Get a reference to the handler state. Used mostly by idle handlers.
+        fn as_any(&mut self) -> &mut dyn Any;
     */ ////
 }
 
-impl<THandler> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
+impl<THandler: WinHandler> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
 ////impl From<platform::WindowHandle> for WindowHandle {
     fn from(src: platform::WindowHandle<THandler>) -> Self { ////
     ////fn from(src: platform::WindowHandle) -> WindowHandle {
