@@ -44,6 +44,25 @@ use crate::mouse::{Cursor, MouseButton, MouseEvent};
 use crate::window::{Text, TimerToken, WinCtx, WinHandler};
 use crate::Error;
 
+////  TODO: Change to generic display
+type Display = st7735_lcd::ST7735<mynewt::SPI, mynewt::GPIO, mynewt::GPIO>;
+//  type Display = embedded_graphics::mock_display::MockDisplay<Rgb565>;
+
+static mut DRUID_CONTEXT: DruidContext = mynewt::fill_zero!(DruidContext);
+static mut PIET_CONTEXT: Piet = mynewt::fill_zero!(Piet);
+
+pub fn set_display(display: &'static mut Display) {
+    unsafe { DRUID_CONTEXT = DruidContext{}; }
+    unsafe { PIET_CONTEXT = Piet::new(display); }
+}
+
+struct DruidContext {}
+impl<'a> WinCtx<'a> for DruidContext {
+    fn invalidate(&mut self) {}
+    fn text_factory(&mut self) -> &mut Text<'a> { panic!("no text factory") }
+    fn set_cursor(&mut self, _cursor: &Cursor) { panic!("no set cursor") }
+}
+
 /*
     /// Taken from https://gtk-rs.org/docs-src/tutorial/closures
     /// It is used to reduce the boilerplate of setting up gtk callbacks
@@ -337,11 +356,9 @@ impl<THandler: WinHandler> WindowBuilder<THandler> { ////
 impl<THandler: WinHandler> WindowHandle<THandler> { ////
 ////impl WindowHandle {
     pub fn show(&self) {
-        let mut context = context.clone();
-        let mut piet_context = Piet::new(&mut context);
-        let handler = self.state.handler.unwrap();
-        handler.paint(&mut piet_context, &mut ctx);
-        if let Err(_) = piet_context.finish() {
+        let handler = &mut self.state.handler.unwrap();
+        unsafe { handler.paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
+        if let Err(_) = unsafe { PIET_CONTEXT.finish() } {
             panic!("piet error on render");
         }
     }
