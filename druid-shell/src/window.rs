@@ -50,25 +50,25 @@ impl TimerToken {
 }
 
 /* ////
-//NOTE: this has a From<platform::Handle> impl for construction
-/// A handle that can enqueue tasks on the window loop.
-#[derive(Clone)]
-pub struct IdleHandle(platform::IdleHandle);
+    //NOTE: this has a From<platform::Handle> impl for construction
+    /// A handle that can enqueue tasks on the window loop.
+    #[derive(Clone)]
+    pub struct IdleHandle(platform::IdleHandle);
 
-impl IdleHandle {
-    /// Add an idle handler, which is called (once) when the message loop
-    /// is empty. The idle handler will be run from the main UI thread, and
-    /// won't be scheduled if the associated view has been dropped.
-    ///
-    /// Note: the name "idle" suggests that it will be scheduled with a lower
-    /// priority than other UI events, but that's not necessarily the case.
-    pub fn add_idle<F>(&self, callback: F)
-    where
-        F: FnOnce(&dyn Any) + Send + 'static,
-    {
-        self.0.add_idle(callback)
+    impl IdleHandle {
+        /// Add an idle handler, which is called (once) when the message loop
+        /// is empty. The idle handler will be run from the main UI thread, and
+        /// won't be scheduled if the associated view has been dropped.
+        ///
+        /// Note: the name "idle" suggests that it will be scheduled with a lower
+        /// priority than other UI events, but that's not necessarily the case.
+        pub fn add_idle<F>(&self, callback: F)
+        where
+            F: FnOnce(&dyn Any) + Send + 'static,
+        {
+            self.0.add_idle(callback)
+        }
     }
-}
 */ ////
 
 /// A handle to a platform window object.
@@ -103,35 +103,35 @@ impl<THandler> WindowHandle<THandler> { ////  THandler is Data + 'static + Defau
     }
 
     /* ////
-    /// Set the title for this menu.
-    pub fn set_title(&self, title: &str) {
-        self.0.set_title(title)
-    }
+        /// Set the title for this menu.
+        pub fn set_title(&self, title: &str) {
+            self.0.set_title(title)
+        }
 
-    /// Set the top-level menu for this window.
-    pub fn set_menu(&self, menu: Menu) {
-        self.0.set_menu(menu.into_inner())
-    }
+        /// Set the top-level menu for this window.
+        pub fn set_menu(&self, menu: Menu) {
+            self.0.set_menu(menu.into_inner())
+        }
 
-    /// Display a pop-up menu at the given position.
-    ///
-    /// `Point` is in the coordinate space of the window.
-    pub fn show_context_menu(&self, menu: Menu, pos: Point) {
-        self.0.show_context_menu(menu.into_inner(), pos)
-    }
+        /// Display a pop-up menu at the given position.
+        ///
+        /// `Point` is in the coordinate space of the window.
+        pub fn show_context_menu(&self, menu: Menu, pos: Point) {
+            self.0.show_context_menu(menu.into_inner(), pos)
+        }
 
-    /// Get a handle that can be used to schedule an idle task.
-    pub fn get_idle_handle(&self) -> Option<IdleHandle> {
-        self.0.get_idle_handle().map(IdleHandle)
-    }
+        /// Get a handle that can be used to schedule an idle task.
+        pub fn get_idle_handle(&self) -> Option<IdleHandle> {
+            self.0.get_idle_handle().map(IdleHandle)
+        }
 
-    /// Get the dpi of the window.
-    ///
-    /// TODO: we want to migrate this from dpi (with 96 as nominal) to a scale
-    /// factor (with 1 as nominal).
-    pub fn get_dpi(&self) -> f32 {
-        self.0.get_dpi()
-    }
+        /// Get the dpi of the window.
+        ///
+        /// TODO: we want to migrate this from dpi (with 96 as nominal) to a scale
+        /// factor (with 1 as nominal).
+        pub fn get_dpi(&self) -> f32 {
+            self.0.get_dpi()
+        }
     */ ////
 }
 
@@ -155,11 +155,8 @@ impl<THandler> WindowBuilder<THandler> { ////  THandler is Data + 'static + Defa
     ///
     /// [`WinHandler`]: trait.WinHandler.html
     pub fn set_handler(&mut self, handler: THandler) { ////
-    ////pub fn set_handler(&mut self, handler: WinHandler) { ////
-    ////TODO1 pub fn set_handler(&mut self, handler: &'static mut dyn WinHandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
-        self.0.set_handler(handler) ////
-        ////self.0.set_handler(handler)
+        self.0.set_handler(handler)
     }
 
     /// Set the window's initial size.
@@ -168,15 +165,15 @@ impl<THandler> WindowBuilder<THandler> { ////  THandler is Data + 'static + Defa
     }
 
     /* ////
-    /// Set the window's initial title.
-    pub fn set_title(&mut self, title: impl Into<String>) {
-        self.0.set_title(title)
-    }
+        /// Set the window's initial title.
+        pub fn set_title(&mut self, title: impl Into<String>) {
+            self.0.set_title(title)
+        }
 
-    /// Set the window's menu.
-    pub fn set_menu(&mut self, menu: Menu) {
-        self.0.set_menu(menu.into_inner())
-    }
+        /// Set the window's menu.
+        pub fn set_menu(&mut self, menu: Menu) {
+            self.0.set_menu(menu.into_inner())
+        }
     */ ////
 
     /// Attempt to construct the platform window.
@@ -202,24 +199,24 @@ pub trait WinCtx<'a> {
     fn set_cursor(&mut self, cursor: &Cursor);
 
     /* ////
-    /// Schedule a timer.
-    ///
-    /// This causes a [`WinHandler::timer()`] call at the deadline. The
-    /// return value is a token that can be used to associate the request
-    /// with the handler call.
-    ///
-    /// Note that this is not a precise timer. On Windows, the typical
-    /// resolution is around 10ms. Therefore, it's best used for things
-    /// like blinking a cursor or triggering tooltips, not for anything
-    /// requiring precision.
-    ///
-    /// [`WinHandler::timer()`]: trait.WinHandler.html#tymethod.timer
-    fn request_timer(&mut self, deadline: std::time::Instant) -> TimerToken;
+        /// Schedule a timer.
+        ///
+        /// This causes a [`WinHandler::timer()`] call at the deadline. The
+        /// return value is a token that can be used to associate the request
+        /// with the handler call.
+        ///
+        /// Note that this is not a precise timer. On Windows, the typical
+        /// resolution is around 10ms. Therefore, it's best used for things
+        /// like blinking a cursor or triggering tooltips, not for anything
+        /// requiring precision.
+        ///
+        /// [`WinHandler::timer()`]: trait.WinHandler.html#tymethod.timer
+        fn request_timer(&mut self, deadline: std::time::Instant) -> TimerToken;
 
-    /// Prompt the user to chose a file to open.
-    ///
-    /// Blocks while the user picks the file.
-    fn open_file_sync(&mut self, options: FileDialogOptions) -> Option<FileInfo>;
+        /// Prompt the user to chose a file to open.
+        ///
+        /// Blocks while the user picks the file.
+        fn open_file_sync(&mut self, options: FileDialogOptions) -> Option<FileInfo>;
     */ ////
 }
 
@@ -247,41 +244,41 @@ pub trait WinHandler<THandler> { ////
     fn paint(&mut self, piet: &mut piet_common::Piet, ctx: &mut dyn WinCtx) -> bool;
 
     /* ////
-    /// Called when the resources need to be rebuilt.
-    ///
-    /// Discussion: this function is mostly motivated by using
-    /// `GenericRenderTarget` on Direct2D. If we move to `DeviceContext`
-    /// instead, then it's possible we don't need this.
-    #[allow(unused_variables)]
-    fn rebuild_resources(&mut self, ctx: &mut dyn WinCtx) {}
+        /// Called when the resources need to be rebuilt.
+        ///
+        /// Discussion: this function is mostly motivated by using
+        /// `GenericRenderTarget` on Direct2D. If we move to `DeviceContext`
+        /// instead, then it's possible we don't need this.
+        #[allow(unused_variables)]
+        fn rebuild_resources(&mut self, ctx: &mut dyn WinCtx) {}
 
-    /// Called when a menu item is selected.
-    #[allow(unused_variables)]
-    fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {}
+        /// Called when a menu item is selected.
+        #[allow(unused_variables)]
+        fn command(&mut self, id: u32, ctx: &mut dyn WinCtx) {}
 
-    /// Called on a key down event.
-    ///
-    /// Return `true` if the event is handled.
-    #[allow(unused_variables)]
-    fn key_down(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) -> bool {
-        false
-    }
+        /// Called on a key down event.
+        ///
+        /// Return `true` if the event is handled.
+        #[allow(unused_variables)]
+        fn key_down(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) -> bool {
+            false
+        }
 
-    /// Called when a key is released. This corresponds to the WM_KEYUP message
-    /// on Windows, or keyUp(withEvent:) on macOS.
-    #[allow(unused_variables)]
-    fn key_up(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) {}
+        /// Called when a key is released. This corresponds to the WM_KEYUP message
+        /// on Windows, or keyUp(withEvent:) on macOS.
+        #[allow(unused_variables)]
+        fn key_up(&mut self, event: KeyEvent, ctx: &mut dyn WinCtx) {}
 
-    /// Called on a mouse wheel event.
-    ///
-    /// The polarity is the amount to be added to the scroll position,
-    /// in other words the opposite of the direction the content should
-    /// move on scrolling. This polarity is consistent with the
-    /// deltaX and deltaY values in a web [WheelEvent].
-    ///
-    /// [WheelEvent]: https://w3c.github.io/uievents/#event-type-wheel
-    #[allow(unused_variables)]
-    fn wheel(&mut self, delta: Vec2, mods: KeyModifiers, ctx: &mut dyn WinCtx) {}
+        /// Called on a mouse wheel event.
+        ///
+        /// The polarity is the amount to be added to the scroll position,
+        /// in other words the opposite of the direction the content should
+        /// move on scrolling. This polarity is consistent with the
+        /// deltaX and deltaY values in a web [WheelEvent].
+        ///
+        /// [WheelEvent]: https://w3c.github.io/uievents/#event-type-wheel
+        #[allow(unused_variables)]
+        fn wheel(&mut self, delta: Vec2, mods: KeyModifiers, ctx: &mut dyn WinCtx) {}
     */ ////
 
     /// Called when the mouse moves.

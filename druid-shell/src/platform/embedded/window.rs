@@ -337,11 +337,13 @@ impl<THandler> WindowBuilder<THandler> { ////
 impl<THandler> WindowHandle<THandler> { ////
 ////impl WindowHandle {
     pub fn show(&self) {
-        /* ////
-        if let Some(state) = self.state.upgrade() {
-            state.window.show_all();
+        let mut context = context.clone();
+        let mut piet_context = Piet::new(&mut context);
+        let handler = self.state.handler.unwrap();
+        handler.paint(&mut piet_context, &mut ctx);
+        if let Err(_) = piet_context.finish() {
+            panic!("piet error on render");
         }
-        */ ////
     }
 
     /// Close the window.
