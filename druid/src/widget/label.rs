@@ -86,8 +86,8 @@ impl<T: Data + 'static> Label<T> { ////
         let font_size = crate::env::TEXT_SIZE_NORMAL; ////env.get(theme::TEXT_SIZE_NORMAL);
         let text = self.text.display_text();
         // TODO: caching of both the format and the layout
-        let font = t.new_font_by_name(font_name, font_size).build().unwrap();
-        t.new_text_layout(&font, text).build().unwrap()
+        let font = t.new_font_by_name(font_name, font_size).build().expect("get layout fail"); //// .unwrap();
+        t.new_text_layout(&font, text).build().expect("get layout fail") ///// .unwrap()
     }
 }
 
@@ -245,7 +245,7 @@ impl<T> From<String> for LabelText<T> {
 
 impl<T> From<&str> for LabelText<T> {
     fn from(src: &str) -> LabelText<T> {
-        LabelText::Specific(String::from_str(src).unwrap()) ////
+        LabelText::Specific(String::from_str(src).expect("label text fail")) ////
         ////LabelText::Specific(src.to_string())
     }
 }

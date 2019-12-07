@@ -600,22 +600,7 @@ impl<T: Data + 'static> AppState<T> { ////
             .as_mut()
             .map(SingleWindowState::window_got_focus);
     }
-
-    /*
-    /// Add a Widget to the application
-    pub(crate) fn add_widget(&mut self, id: u32, widget: WidgetType<T>) { ////
-        let mut state: &'static mut AppState<T> = self.get_global_state();
-        let mut widgets = state.widgets.unwrap();
-        widgets[id as usize] = widget;
-    }
-
-    /// Fetch a Widget by Widget ID
-    pub(crate) fn get_widget(&mut self, id: u32) -> WidgetType<T> { ////
-        let mut state: &'static mut AppState<T> = self.get_global_state();
-        let widgets = state.widgets.unwrap();
-        widgets[id as usize]
-    }
-    */
+    
 }
 
 impl<T: Data + 'static> DruidHandler<T> { ////
