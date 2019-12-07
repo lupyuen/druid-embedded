@@ -48,19 +48,22 @@ use crate::Error;
 type Display = st7735_lcd::ST7735<mynewt::SPI, mynewt::GPIO, mynewt::GPIO>;
 //  type Display = embedded_graphics::mock_display::MockDisplay<Rgb565>;
 static mut DISPLAY: Display = mynewt::fill_zero!(Display);
+static mut TEXT: crate::piet::PietText = crate::piet::PietText{};
 
 //type EmbedText = Piet::PietText<'static>;
 
+/*
 static mut DRUID_CONTEXT: DruidContext = mynewt::fill_zero!(DruidContext);
 static mut PIET_CONTEXT: Piet = Piet {
     display: &mut DISPLAY,
-    text: &mut Piet::PietText,
+    text: &mut TEXT,
 };
 
 pub fn set_display(display: &'static mut Display) {
     unsafe { DRUID_CONTEXT = DruidContext{}; }
     unsafe { PIET_CONTEXT = Piet::new(display); }
 }
+*/
 
 struct DruidContext {}
 impl<'a> WinCtx<'a> for DruidContext {
