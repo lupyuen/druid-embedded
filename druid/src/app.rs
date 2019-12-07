@@ -74,7 +74,8 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
     pub fn with_window(window: WindowDesc<T, W>) -> Self { ////
     ////pub fn with_window(window: WindowDesc<T>) -> Self {
         let mut windows = Vec::new(); ////
-        windows.push(window); ////
+        windows.push(window)
+            .expect("with window failed"); ////
         AppLauncher {
             windows, ////
             ////windows: vec![window],
@@ -246,4 +247,12 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
         self
     }
     */ ////
+}
+
+/// Implement formatted output for WindowDesc
+impl<T: Data + Default, W: Widget<T>> core::fmt::Debug for WindowDesc<T, W> { ////
+    fn fmt(&self, _fmt: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        //  TODO
+        Ok(())
+    }
 }

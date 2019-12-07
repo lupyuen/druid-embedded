@@ -357,7 +357,8 @@ impl<T: Data> LocalizedString<T> {
     ) -> Self {
         self.args
             .get_or_insert(Vec::new())
-            .push((key, ArgSource(f))); ////
+            .push((key, ArgSource(f)))
+            .expect("with arg failed"); ////
             ////.push((key, ArgSource(Arc::new(f))));
         self
     }
@@ -461,3 +462,11 @@ mod tests {
     }
 }
 */
+
+/// Implement formatted output for ArgSource
+impl<T> core::fmt::Debug for ArgSource<T> { ////
+    fn fmt(&self, _fmt: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        //  TODO
+        Ok(())
+    }
+}

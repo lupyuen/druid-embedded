@@ -144,7 +144,9 @@ impl<T: Data + 'static> Flex<T> { ////
             ////widget: WidgetPod::new(child).boxed(),
             params,
         };
-        self.children.push(child);
+        self.children.push(child)
+            .expect("add child fail"); ////
+        ////self.children.push(child);
     }
 }
 
@@ -273,5 +275,13 @@ impl<T: Data + 'static> Widget<T> for Flex<T> { ////
 
     fn get_id(self) -> u32 { ////
         self.id
+    }
+}
+
+/// Implement formatted output for ChildWidget
+impl<T: Data> core::fmt::Debug for ChildWidget<T> { ////
+    fn fmt(&self, _fmt: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
+        //  TODO
+        Ok(())
     }
 }
