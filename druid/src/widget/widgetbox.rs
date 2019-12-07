@@ -64,13 +64,13 @@ impl<D: Data + 'static> WidgetBox<D> {
     /// Create a new box for the `Widget`
     pub fn new<W: Widget<D> + Clone>(widget: W) -> Self {
         let id = widget.clone().get_id();
-        let widget_type: WidgetType<D> = widget.clone().to_type();
+        let widget_type: WidgetType<D> = widget.to_type();
         let widget_box: WidgetBox<D> = WidgetBox(
             id,
             PhantomData,
         );
         widget_box.clone().add_widget(widget_type);
-        widget_box.clone()
+        widget_box
     }
 }
 

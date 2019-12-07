@@ -214,7 +214,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder: WindowBuilder<DruidHandler<T>> = WindowBuilder::new();
-        builder.set_handler(handler.clone()); ////
+        builder.set_handler(handler); ////
         ////builder.set_handler(Box::new(handler));
         if let Some(size) = self.size {
             builder.set_size(size);

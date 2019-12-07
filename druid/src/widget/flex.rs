@@ -123,7 +123,7 @@ impl Column {
     }
 }
 
-impl<T: Data + 'static + Default> Flex<T> { ////
+impl<T: Data + 'static> Flex<T> { ////
 ////impl<T: Data> Flex<T> {
     /// Add a child widget.
     ///
@@ -150,7 +150,7 @@ impl<T: Data + 'static + Default> Flex<T> { ////
 
 impl<T: Data + 'static> Widget<T> for Flex<T> { ////
 ////impl<T: Data> Widget<T> for Flex<T> {
-        fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
+    fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         for child in &mut self.children {
             child.widget.paint_with_offset(paint_ctx, data, env);
         }

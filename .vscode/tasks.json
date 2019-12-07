@@ -19,6 +19,19 @@
             "presentation": {
                 "clear": true
             }
+        },
+        {
+            "label": "Clippy",
+            "type": "shell",
+            //  Normal Build: "command": "cargo build -v --target thumbv7em-none-eabihf --example hello",
+            //  Do not build in parallel: 
+            "command": "cargo clippy -v --jobs 1 --target thumbv7em-none-eabihf --example hello",
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "presentation": {
+                "clear": true
+            }
         }
     ]
 }
