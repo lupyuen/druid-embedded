@@ -222,9 +222,9 @@ impl<T: Data + 'static> Windows<T> { ////
         env: &'a Env,
     ) -> Option<SingleWindowState<'a, T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
-        let state = self.state.clone().unwrap(); ////
+        let state = self.state.clone().expect("no state"); ////
         ////let state = self.state.get_mut(&window_id);
-        let window = self.windows.clone().unwrap(); ////
+        let window = self.windows.clone().expect("no window"); ////
         ////let window = self.windows.get_mut(&window_id);
         Some(SingleWindowState { ////
             window_id,
@@ -508,7 +508,7 @@ impl<T: Data + 'static> AppState<T> { ////
     }
 
     fn show_window(&mut self, id: WindowId) {
-        let state = self.windows.state.clone().unwrap(); ////
+        let state = self.windows.state.clone().expect("no window"); ////
         ////if let Some(state) = self.windows.state.get(&id) {
             state.handle.bring_to_front_and_focus();
         ////}
