@@ -62,3 +62,5 @@ embedded-graphics = { version = "0.5.2", optional = true }
 
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
 embedded-graphics = "0.5.2"
+st7735-lcd        = { version = "0.6.1", features = [ "graphics" ] }
+mynewt            = { path = "../../stm32bluepill-mynewt-sensor/rust/mynewt" } # Import mynewt library
