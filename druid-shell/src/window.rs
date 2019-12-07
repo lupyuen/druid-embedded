@@ -74,12 +74,12 @@ impl TimerToken {
 /// A handle to a platform window object.
 #[derive(Clone, Default)] ////
 ////#[derive(Clone, Default)]
-pub struct WindowHandle<THandler: WinHandler>(
+pub struct WindowHandle<THandler: WinHandler + Clone>(
     platform::WindowHandle<THandler>
 ); ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowHandle(platform::WindowHandle);
 
-impl<THandler: WinHandler> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
+impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowHandle {
     /// Make this window visible.
     ///
@@ -138,13 +138,13 @@ impl<THandler: WinHandler> WindowHandle<THandler> { ////  THandler is DruidHandl
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<THandler: WinHandler>(  //// THandler is DruidHandler<Data + 'static + Default>
+pub struct WindowBuilder<THandler: WinHandler + Clone>(  //// THandler is DruidHandler<Data + 'static + Default>
     platform::WindowBuilder::<THandler> ////
     ////platform::WindowBuilder
 ); ////
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler: WinHandler> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
+impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowBuilder {
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
@@ -320,7 +320,7 @@ pub trait WinHandler {
     */ ////
 }
 
-impl<THandler: WinHandler> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
+impl<THandler: WinHandler + Clone> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
 ////impl From<platform::WindowHandle> for WindowHandle {
     fn from(src: platform::WindowHandle<THandler>) -> Self { ////
     ////fn from(src: platform::WindowHandle) -> WindowHandle {

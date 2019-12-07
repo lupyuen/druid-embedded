@@ -47,9 +47,15 @@ use crate::Error;
 ////  TODO: Change to generic display
 type Display = st7735_lcd::ST7735<mynewt::SPI, mynewt::GPIO, mynewt::GPIO>;
 //  type Display = embedded_graphics::mock_display::MockDisplay<Rgb565>;
+static mut DISPLAY: Display = mynewt::fill_zero!(Display);
+
+//type EmbedText = Piet::PietText<'static>;
 
 static mut DRUID_CONTEXT: DruidContext = mynewt::fill_zero!(DruidContext);
-static mut PIET_CONTEXT: Piet = mynewt::fill_zero!(Piet);
+static mut PIET_CONTEXT: Piet = Piet {
+    display: &mut DISPLAY,
+    text: &mut Piet::PietText,
+};
 
 pub fn set_display(display: &'static mut Display) {
     unsafe { DRUID_CONTEXT = DruidContext{}; }
@@ -96,14 +102,14 @@ impl<'a> WinCtx<'a> for DruidContext {
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle<THandler: WinHandler> { ////
+pub struct WindowHandle<THandler: WinHandler + Clone> { ////
 ////pub struct WindowHandle {
     pub(crate) state: WindowState<THandler>, ////
     ////pub(crate) state: Weak<WindowState>,
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<THandler: WinHandler> { ////
+pub struct WindowBuilder<THandler: WinHandler + Clone> { ////
 ////pub struct WindowBuilder {
     handler: Option<THandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,
@@ -121,8 +127,8 @@ pub struct WindowBuilder<THandler: WinHandler> { ////
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState<THandler: WinHandler> {
-    handler: Option<THandler>, ////
+pub(crate) struct WindowState<THandler: WinHandler + Clone> {
+    pub(crate) handler: THandler, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,
@@ -135,7 +141,7 @@ pub(crate) struct WindowState<THandler: WinHandler> {
     }
 */ ////
 
-impl<THandler: WinHandler> WindowBuilder<THandler> { ////
+impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -188,7 +194,7 @@ impl<THandler: WinHandler> WindowBuilder<THandler> { ////
         */
 
         let win_state = WindowState {
-            handler: Some(handler)
+            handler,
         };
 
         /*
@@ -353,10 +359,10 @@ impl<THandler: WinHandler> WindowBuilder<THandler> { ////
     }
 }
 
-impl<THandler: WinHandler> WindowHandle<THandler> { ////
+impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////
 ////impl WindowHandle {
     pub fn show(&self) {
-        let handler = &mut self.state.handler.unwrap();
+        let handler = &mut self.state.clone().handler;
         unsafe { handler.paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
         if let Err(_) = unsafe { PIET_CONTEXT.finish() } {
             panic!("piet error on render");
