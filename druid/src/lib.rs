@@ -292,9 +292,9 @@ impl<T> Widget<T> for Box<dyn Widget<T>> {
 /// This struct is expected to grow, for example to include the
 /// "damage region" indicating that only a subset of the entire
 /// widget hierarchy needs repainting.
-pub struct PaintCtx<'a, 'b: 'a> {
+pub struct PaintCtx<'a> {
     /// The render context for actually painting.
-    pub render_ctx: &'a mut Piet<'b>,
+    pub render_ctx: &'a mut Piet,
     pub window_id: WindowId,
     /// The currently visible region.
     pub(crate) region: Region,
@@ -339,7 +339,7 @@ impl<'a, 'b: 'a> DerefMut for PaintCtx<'a, 'b> {
 }
 */ ////
 
-impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
+impl<'a> PaintCtx<'a> {
     /// Returns the currently visible [`Region`].
     ///
     /// [`Region`]: struct.Region.html
@@ -373,8 +373,8 @@ impl<'a, 'b: 'a> PaintCtx<'a, 'b> {
 /// As of now, the main service provided is access to a factory for
 /// creating text layout objects, which are likely to be useful
 /// during widget layout.
-pub struct LayoutCtx<'a, 'b: 'a> {
-    text_factory: &'a mut Text<'b>,
+pub struct LayoutCtx<'a> {
+    text_factory: &'a mut Text,
     window_id: WindowId,
 }
 
@@ -384,11 +384,11 @@ pub struct LayoutCtx<'a, 'b: 'a> {
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct EventCtx<'a, 'b, D: Data + 'static> { ////
+pub struct EventCtx<'a, D: Data + 'static> { ////
 ////pub struct EventCtx<'a, 'b> {
     // Note: there's a bunch of state that's just passed down, might
     // want to group that into a single struct.
-    win_ctx: &'a mut dyn WinCtx<'b>,
+    win_ctx: &'a mut dyn WinCtx,
     /////cursor: &'a mut Option<Cursor>,
     /// Commands submitted to be run after this event.
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -408,9 +408,9 @@ pub struct EventCtx<'a, 'b, D: Data + 'static> { ////
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct UpdateCtx<'a, 'b: 'a, D: Data + 'static> { ////
+pub struct UpdateCtx<'a, D: Data + 'static> { ////
 ////pub struct UpdateCtx<'a, 'b: 'a> {
-    text_factory: &'a mut Text<'b>,
+    text_factory: &'a mut Text,
     window: &'a WindowHandle<DruidHandler<D>>, ////
     ////window: &'a WindowHandle,
     // Discussion: we probably want to propagate more fine-grained
@@ -884,7 +884,7 @@ impl BoxConstraints {
     }
 }
 
-impl<'a, 'b, D: Data + 'static> EventCtx<'a, 'b, D> { ////
+impl<'a, D: Data + 'static> EventCtx<'a, D> { ////
 ////impl<'a, 'b> EventCtx<'a, 'b> {
     /// Invalidate.
     ///
@@ -900,7 +900,7 @@ impl<'a, 'b, D: Data + 'static> EventCtx<'a, 'b, D> { ////
     }
 
     /// Get an object which can create text layouts.
-    pub fn text(&mut self) -> &mut Text<'b> {
+    pub fn text(&mut self) -> &mut Text {
         self.win_ctx.text_factory()
     }
 
@@ -1028,9 +1028,9 @@ impl<'a, 'b, D: Data + 'static> EventCtx<'a, 'b, D> { ////
     }
 }
 
-impl<'a, 'b> LayoutCtx<'a, 'b> {
+impl<'a, 'b> LayoutCtx<'a> {
     /// Get an object which can create text layouts.
-    pub fn text(&mut self) -> &mut Text<'b> {
+    pub fn text(&mut self) -> &mut Text {
         &mut self.text_factory
     }
 
@@ -1040,7 +1040,7 @@ impl<'a, 'b> LayoutCtx<'a, 'b> {
     }
 }
 
-impl<'a, 'b, D: Data + 'static> UpdateCtx<'a, 'b, D> {  ////
+impl<'a, D: Data + 'static> UpdateCtx<'a, D> {  ////
 ////impl<'a, 'b> UpdateCtx<'a, 'b> {
     /// Invalidate.
     ///
@@ -1051,7 +1051,7 @@ impl<'a, 'b, D: Data + 'static> UpdateCtx<'a, 'b, D> {  ////
     }
 
     /// Get an object which can create text layouts.
-    pub fn text(&mut self) -> &mut Text<'b> {
+    pub fn text(&mut self) -> &mut Text {
         self.text_factory
     }
 

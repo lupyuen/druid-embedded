@@ -29,7 +29,7 @@ use crate::platform::window as platform;
 // It's possible we'll want to make this type alias at a lower level,
 // see https://github.com/linebender/piet/pull/37 for more discussion.
 /// The platform text factory, reexported from piet.
-pub type Text<'a> = <piet_common::Piet<'a> as piet_common::RenderContext>::Text;
+pub type Text = <piet_common::Piet as piet_common::RenderContext>::Text;
 
 /// A token that uniquely identifies a running timer.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Hash)]
@@ -188,14 +188,14 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
 }
 
 /// A context supplied to most `WinHandler` methods.
-pub trait WinCtx<'a> {
+pub trait WinCtx {
     /// Invalidate the entire window.
     ///
     /// TODO: finer grained invalidation.
     fn invalidate(&mut self);
 
     /// Get a reference to an object that can do text layout.
-    fn text_factory(&mut self) -> &mut Text<'a>;
+    fn text_factory(&mut self) -> &mut Text;
 
     /// Set the cursor icon.
     fn set_cursor(&mut self, cursor: &Cursor);

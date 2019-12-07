@@ -50,25 +50,13 @@ type Display = st7735_lcd::ST7735<mynewt::SPI, mynewt::GPIO, mynewt::GPIO>;
 static mut DISPLAY: Display = mynewt::fill_zero!(Display);
 static mut TEXT: crate::piet::PietText = crate::piet::PietText{};
 
-//type EmbedText = Piet::PietText<'static>;
-
-/*
-static mut DRUID_CONTEXT: DruidContext = mynewt::fill_zero!(DruidContext);
-static mut PIET_CONTEXT: Piet = Piet {
-    display: &mut DISPLAY,
-    text: &mut TEXT,
-};
-
-pub fn set_display(display: &'static mut Display) {
-    unsafe { DRUID_CONTEXT = DruidContext{}; }
-    unsafe { PIET_CONTEXT = Piet::new(display); }
-}
-*/
+static mut DRUID_CONTEXT: DruidContext = DruidContext {};
+static mut PIET_CONTEXT: Piet = Piet {};
 
 struct DruidContext {}
-impl<'a> WinCtx<'a> for DruidContext {
+impl WinCtx for DruidContext {
     fn invalidate(&mut self) {}
-    fn text_factory(&mut self) -> &mut Text<'a> { panic!("no text factory") }
+    fn text_factory(&mut self) -> &mut Text { panic!("no text factory") }
     fn set_cursor(&mut self, _cursor: &Cursor) { panic!("no set cursor") }
 }
 
