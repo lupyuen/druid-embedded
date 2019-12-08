@@ -134,13 +134,13 @@ impl WindowHandle {
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<THandler>(  ////  THandler is DruidHandler<T: Data + 'static>
+pub struct WindowBuilder<THandler: WinHandler<THandler>>(  ////  THandler is DruidHandler<T: Data + 'static>
     platform::WindowBuilder<THandler>, ////
     PhantomData<THandler>,  ////  Needed to do compile-time checking for `THandler`
 );
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler> WindowBuilder<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
+impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -225,7 +225,8 @@ pub trait WinCtx {
 /// The methods are non-mut because the window procedure can be called
 /// recursively; implementers are expected to use `RefCell` or the like,
 /// but should be careful to keep the lifetime of the borrow short.
-pub trait WinHandler {
+pub trait WinHandler<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
+////pub trait WinHandler {
     /// Provide the handler with a handle to the window so that it can
     /// invalidate or make other requests.
     ////TODO1 fn connect(&mut self, handle: &WindowHandle);
@@ -312,6 +313,9 @@ pub trait WinHandler {
 
     /// Return the Window ID for this WinHandler
     fn get_window_id(&self) -> u32; ////
+
+    /// Add a Window Handler for the Data type
+    fn add_handler(&self, window_id: u32, handler: THandler); ////
 
     /* ////
         /// Get a reference to the handler state. Used mostly by idle handlers.

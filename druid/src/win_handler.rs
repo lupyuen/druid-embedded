@@ -835,7 +835,8 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static> WinHandler for DruidHandler<T> {
+impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
+////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     fn connect(&mut self, handle: &WindowHandle) { ////
     ////fn connect(&mut self, handle: &WindowHandle) {
         AppState::<T>::new().connect(self.window_id, handle.clone()); ////
@@ -901,6 +902,14 @@ impl<T: Data + 'static> WinHandler for DruidHandler<T> {
                 .borrow_mut()
                 .window_got_focus(self.window_id, ctx);
         */ ////
+    }
+
+    fn get_window_id(&self) -> u32 { ////
+        self.window_id
+    }
+
+    fn add_handler(&self, window_id: WindowId, handler: DruidHandler<T>) { ////
+        AppState::<T>::new().add_handler(window_id, handler);
     }
 
     /* ////

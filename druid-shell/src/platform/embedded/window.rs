@@ -100,7 +100,7 @@ pub struct WindowHandle {
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
+pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////pub struct WindowBuilder {
     window_id: u32, ////
     ////handler: Option<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
@@ -133,7 +133,7 @@ pub(crate) struct WindowState {
     }
 */ ////
 
-impl<THandler> WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
+impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
