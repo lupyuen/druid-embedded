@@ -74,9 +74,12 @@ impl TimerToken {
 
 /// A handle to a platform window object.
 #[derive(Clone, Default)]
-pub struct WindowHandle(platform::WindowHandle);
+pub struct WindowHandle<THandler: WinHandler<THandler>> (  ////  THandler is DruidHandler<T: Data + 'static>
+    pub platform::WindowHandle<THandler>
+);
+////pub struct WindowHandle(platform::WindowHandle);
 
-impl WindowHandle {
+impl<THandler: WinHandler<THandler> + Clone + Default> WindowHandle<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
     /// Make this window visible.
     ///
     /// This is part of the initialization process; it should only be called
@@ -140,7 +143,7 @@ pub struct WindowBuilder<THandler: WinHandler<THandler>>(  ////  THandler is Dru
 );
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
+impl<THandler: WinHandler<THandler> + Clone + Default> WindowBuilder<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -179,7 +182,8 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> { ////  THandler is
     /// Attempt to construct the platform window.
     ///
     /// If this fails, your application should exit.
-    pub fn build(self) -> Result<WindowHandle, Error> {
+    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
+    ////pub fn build(self) -> Result<WindowHandle, Error> {
         self.0.build().map(WindowHandle).map_err(Into::into)
     }
 }
@@ -323,8 +327,10 @@ pub trait WinHandler<THandler> {  ////  THandler is DruidHandler<T: Data + 'stat
     */ ////
 }
 
-impl From<platform::WindowHandle> for WindowHandle {
-    fn from(src: platform::WindowHandle) -> WindowHandle {
+impl<THandler: WinHandler<THandler>> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
+////impl From<platform::WindowHandle> for WindowHandle {
+    fn from(src: platform::WindowHandle<THandler>) -> WindowHandle<THandler> { ////
+    ////fn from(src: platform::WindowHandle) -> WindowHandle {
         WindowHandle(src)
     }
 }

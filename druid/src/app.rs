@@ -128,7 +128,8 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
         }
         */ ////
 
-        let mut state = AppState::new(data, Env{}); ////
+        let mut state = AppState::new(); ////
+        state.set_data(data); ////
         ////let state = AppState::new(data, env, self.delegate.take());
 
         for desc in self.windows {
@@ -211,7 +212,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let mut handler: DruidHandler<T> = DruidHandler::new_shared(state.clone(), self.id); ////
+        let mut handler: DruidHandler<T> = DruidHandler::new_shared(self.id); ////
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder: WindowBuilder<DruidHandler<T>> = WindowBuilder::new();

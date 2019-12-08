@@ -94,16 +94,18 @@ impl WinCtx for DruidContext {
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle {
+pub struct WindowHandle<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
     window_id: u32, ////
-    ////pub(crate) state: Weak<WindowState>,  ////  Replaced by ALL_HANDLERS
+    state: WindowState<THandler>, ////
+    ////pub(crate) state: Weak<WindowState>,  
 }
 
 /// Builder abstraction for creating new windows
 pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////pub struct WindowBuilder {
     window_id: u32, ////
-    ////handler: Option<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
+    handler: THandler, ////
+    ////handler: Option<Box<dyn WinHandler>>,  
     ////title: String,
     ////menu: Option<Menu>,
     size: Size,
@@ -119,9 +121,10 @@ pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is Dr
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState {
+pub(crate) struct WindowState<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
     window_id: u32, ////
-    ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
+    handler: THandler, ////
+    ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,
 }
@@ -133,7 +136,7 @@ pub(crate) struct WindowState {
     }
 */ ////
 
-impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
+impl<THandler: WinHandler<THandler> + Clone + Default> WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -143,7 +146,8 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler i
                 240., //// crate::env::WINDOW_WIDTH as f64, 
                 240., //// crate::env::WINDOW_HEIGHT as f64
             ), ////
-            phantomData: PhantomData,
+            phantomData: PhantomData, ////
+            handler: Default::default(), ////
             ////handler: None,
             ////title: String::new(),
             ////menu: None,
@@ -155,7 +159,8 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler i
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         let window_id = handler.get_window_id(); ////
         self.window_id = window_id; ////
-        handler.add_handler(window_id, handler); ////
+        handler.add_handler(window_id, handler.clone()); ////
+        self.handler = handler; ////
         ////self.handler = Some(handler);
     }
 
@@ -163,14 +168,17 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler i
         self.size = size;
     }
 
-    pub fn build(self) -> Result<WindowHandle, Error> { ////
+    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
     ////pub fn build(self) -> Result<WindowHandle, Error> {
         let window_id = self.window_id; ////
-        let win_state = WindowState {
+        let handler = self.handler; ////
+        let state = WindowState {
             window_id, ////
+            handler, ////
         };
         let handle = WindowHandle {
             window_id, ////
+            state, ////
         };
         ////TODO handler.connect(&mut handle.into()); ////
         Ok(handle)
@@ -348,9 +356,10 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler i
     }
 }
 
-impl WindowHandle {
+impl<THandler: WinHandler<THandler> + Clone + Default> WindowHandle<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
+////impl WindowHandle {
     pub fn show(&self) {
-        unsafe { self.handler_paint(self.window_id, &mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
+        unsafe { self.state.handler.clone().paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
         if let Err(_) = unsafe { PIET_CONTEXT.finish() } {
             panic!("piet error on render");
         }

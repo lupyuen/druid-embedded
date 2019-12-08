@@ -46,7 +46,8 @@ use crate::{
 
 ////use crate::command::sys as sys_cmd;
 
-/// Static storage for Windows, Window Data and Window Handlers, used for embedded platforms only
+//  Static storage for Windows, Window Handlers and Application Data, used for embedded platforms only
+ 
 /// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
 const MAX_WINDOWS: usize = 3; ////
 /// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
@@ -61,9 +62,8 @@ static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
     DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
     DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
 ];
-/// ALL_DATA[i] is the Window Data for the Window with window ID i. i=0 is not used.
-static mut ALL_DATA_U32: [ u32; MAX_WINDOWS ] = ////
-    [ 0; MAX_WINDOWS ];
+/// DATA is the Application Data
+static mut DATA_U32: u32 = 0; ////
 
 /// Specialised Trait for handling static Windows, Window Data and Window Handlers on embedded platforms
 trait GlobalWindows<D: Data + 'static> { ////
@@ -71,6 +71,8 @@ trait GlobalWindows<D: Data + 'static> { ////
     fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
     /// Add a Window Handler for the Data type
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>);
+    /// Set the application data
+    fn set_data(&self, data: D);
     fn window_event(
         &mut self, 
         window_id: WindowId,
@@ -80,7 +82,7 @@ trait GlobalWindows<D: Data + 'static> { ////
     fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx<D>, 
+        ctx: &mut UpdateCtx, 
     );
     fn window_layout(
         &mut self,
@@ -104,6 +106,8 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
         { panic!("no global windows") }
     default fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>)
         { panic!("no global windows") }
+    default fn set_data(&self, data: D)
+        { panic!("no global windows") }
     default fn window_event(
         &mut self, 
         window_id: WindowId,
@@ -113,7 +117,7 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
     default fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx<D>, 
+        ctx: &mut UpdateCtx, 
     ) { panic!("no global windows") }
     default fn window_layout(
         &mut self,
@@ -139,6 +143,9 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
         unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
     }
+    fn set_data(&self, data: u32) {
+        unsafe { DATA_U32 = data; }
+    }
     fn window_event(
         &mut self, 
         window_id: WindowId,
@@ -149,7 +156,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
             ALL_WINDOWS_U32[window_id.0 as usize].event(
                 ctx, 
                 event, 
-                &mut ALL_DATA_U32[window_id.0 as usize],  //  Data
+                &mut DATA_U32,  //  Data
                 &Env {}  //  Env
             );
         }
@@ -157,12 +164,12 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx<u32>, 
+        ctx: &mut UpdateCtx, 
     ) {
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].update(
                 ctx,
-                &ALL_DATA_U32[window_id.0 as usize],  //  Data
+                &mut DATA_U32,  //  Data
                 &Env {}  //  Env
             ); 
         }
@@ -175,7 +182,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].layout(
                 layout_ctx, 
-                &ALL_DATA_U32[window_id.0 as usize],  //  Data
+                &mut DATA_U32,  //  Data
                 &Env {}  //  Env
             ); 
         }
@@ -188,7 +195,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].paint(
                 paint_ctx, 
-                &ALL_DATA_U32[window_id.0 as usize],  //  Data
+                &mut DATA_U32,  //  Data
                 &Env {}  //  Env
             ); 
         }
@@ -267,7 +274,7 @@ impl<T: Data + 'static> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
-        self.add_handler(id, handle.0); //// TODO1
+        ////AppState::<T>::new().add_handler(id, handle.0); //// TODO1
         /* ////
         let state = WindowState {
             handle,
@@ -279,7 +286,7 @@ impl<T: Data + 'static> Windows<T> { ////
 
     fn add(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
-        self.add_window(id, window); ////
+        AppState::<T>::new().add_window(id, window); ////
         ////self.windows.insert(id, window);
     }
 
@@ -302,8 +309,9 @@ impl<T: Data + 'static> Windows<T> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
         ////let state = self.state.get_mut(&window_id);
         ////let window = self.windows.get_mut(&window_id);
-        Some(SingleWindowState { ////
+        Some( SingleWindowState { ////
             window_id,
+            phantomData: PhantomData,
         })
         /* ////
             match (self.state, self.windows) { ////
@@ -372,7 +380,7 @@ impl<T: Data + 'static> SingleWindowState<T> {
             text_factory: piet.text(),
             window_id: self.window_id,
         };
-        self.window_layout(self.window_id, &mut layout_ctx); ////
+        AppState::<T>::new().window_layout(self.window_id, &mut layout_ctx); ////
         ////self.window.layout(&mut layout_ctx, self.data, self.env);
     }
 
@@ -382,7 +390,7 @@ impl<T: Data + 'static> SingleWindowState<T> {
             window_id: self.window_id,
             region: Rect::ZERO.into(),
         };
-        self.window_paint(self.window_id, &mut paint_ctx); ////
+        AppState::<T>::new().window_paint(self.window_id, &mut paint_ctx); ////
         ////self.window.paint(&mut paint_ctx, self.data, self.env);
     }
 
@@ -419,16 +427,17 @@ impl<T: Data + 'static> SingleWindowState<T> {
             is_root: true,
             had_active: false, ////TODO self.window.has_active(),
             ////had_active: self.window.root.state.has_active,
-            window: &self.state.handle,
+            ////window: &self.state.handle,
             window_id: self.window_id,
+            phantom: PhantomData, ////
         };
-        self.window_event(self.window_id, &mut ctx, &event); ////
+        AppState::<T>::new().window_event(self.window_id, &mut ctx, &event); ////
         ////self.window.event(&mut ctx, &event, self.data, self.env);
 
         let is_handled = ctx.is_handled;
         if ctx.base_state.request_focus {
             let focus_event = Event::FocusChanged(true);
-            self.window_event(self.window_id, &mut ctx, &focus_event); ////
+            AppState::<T>::new().window_event(self.window_id, &mut ctx, &focus_event); ////
             ////self.window
                 ////.event(&mut ctx, &focus_event, self.data, self.env);
         }
@@ -707,7 +716,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     /// This is principally because in certain cases (such as keydown on Windows)
     /// the OS needs to know if an event was handled.
     fn do_event(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
-        self.window_event(self.window_id, win_ctx, event)
+        AppState::<T>::new().do_event(self.window_id, event, win_ctx)
         /* ////
             let result = self
                 .app_state
@@ -837,13 +846,15 @@ impl<T: Data + 'static> DruidHandler<T> { ////
 
 impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
 ////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
-    fn connect(&mut self, handle: &WindowHandle) { ////
+    /* //// TODO1
+    fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, handle: &WindowHandle) {
         AppState::<T>::new().connect(self.window_id, handle.clone()); ////
         ////self.app_state_U32
             ////.borrow_mut()
             ////.connect(self.window_id, handle.clone());
     }
+    */ ////
 
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         AppState::<T>::new().paint(self.window_id, piet, ctx) ////
@@ -905,11 +916,11 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     }
 
     fn get_window_id(&self) -> u32 { ////
-        self.window_id
+        self.window_id.0
     }
 
-    fn add_handler(&self, window_id: WindowId, handler: DruidHandler<T>) { ////
-        AppState::<T>::new().add_handler(window_id, handler);
+    fn add_handler(&self, window_id: u32, handler: DruidHandler<T>) { ////
+        AppState::<T>::new().add_handler(WindowId(window_id), handler);
     }
 
     /* ////
