@@ -29,6 +29,7 @@
     use gtk::prelude::*;
     use gtk::{AccelGroup, ApplicationWindow};
 */
+use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Size, Vec2};
 use crate::piet::{Piet, RenderContext};
 
@@ -41,7 +42,7 @@ use crate::piet::{Piet, RenderContext};
 ////use crate::dialog::{FileDialogOptions, FileInfo};
 ////use crate::keyboard;
 use crate::mouse::{Cursor, MouseButton, MouseEvent};
-use crate::window::{Text, TimerToken, WinCtx, WinHandler};
+use crate::window::{Text, TimerToken, WinCtx, WinHandler, WindowId}; ////
 use crate::Error;
 
 ////  TODO: Change to generic display
@@ -145,6 +146,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
                 240., //// crate::env::WINDOW_WIDTH as f64, 
                 240., //// crate::env::WINDOW_HEIGHT as f64
             ), ////
+            phantomData: PhantomData, ////
             ////handler: None,
             ////title: String::new(),
             ////menu: None,
@@ -166,6 +168,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
     ////pub fn build(self) -> Result<WindowHandle, Error> {
         let handle = WindowHandle { ////
             window_id: self.window_id,
+            phantomData: PhantomData, ////
         };
 
         ////TODO1 handler.connect(&mut handle.into()); ////
