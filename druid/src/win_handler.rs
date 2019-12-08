@@ -46,21 +46,156 @@ use crate::{
 
 ////use crate::command::sys as sys_cmd;
 
-/// Global storage for Windows and Window Handler
+/// Static storage for Windows and Window Handlers, used for embedded platforms only
 /// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
-const MAX_WINDOWS: usize = 3;
+const MAX_WINDOWS: usize = 3; ////
 /// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
-static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ 
+static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ ////
     WindowBox::<u32>( WindowType::None ), 
     WindowBox::<u32>( WindowType::None ), 
     WindowBox::<u32>( WindowType::None ), 
 ];
 /// ALL_HANDLERS[i] is the Window Handler for the Window with window ID i. i=0 is not used.
-static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ 
+static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
     DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
     DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
     DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
 ];
+
+/// Specialised Trait for handling static Windows and Window Handlers on embedded platforms
+trait GlobalWindows<D: Data + 'static> { ////
+    /// Add a WindowBox for the Data type
+    fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
+    /// Add a Window Handler for the Data type
+    fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>);
+    fn window_event(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut EventCtx<D>, 
+        event: &Event, 
+        data: &mut D, 
+        env: &Env
+    );
+    fn window_update(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut UpdateCtx<D>, 
+        data: &D, 
+        env: &Env
+    );
+    fn window_layout(
+        &mut self,
+        window_id: WindowId,
+        layout_ctx: &mut LayoutCtx,
+        data: &D,
+        env: &Env,
+    );
+    fn window_paint(
+        &mut self, 
+        window_id: WindowId,
+        paint_ctx: &mut PaintCtx, 
+        data: &D, 
+        env: &Env
+    );
+    fn window_has_active(
+        &mut self,
+        window_id: WindowId,
+    ) -> bool;
+}
+
+/// Default Trait will not have static Windows and Window Handlers
+impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
+    default fn add_window(&self, window_id: WindowId, window: WindowBox<D>)
+        { panic!("no global windows") }
+    default fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>)
+        { panic!("no global windows") }
+    default fn window_event(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut EventCtx<D>, 
+        event: &Event, 
+        data: &mut D, 
+        env: &Env
+    ) { panic!("no global windows") }
+    default fn window_update(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut UpdateCtx<D>, 
+        data: &D, 
+        env: &Env
+    ) { panic!("no global windows") }
+    default fn window_layout(
+        &mut self,
+        window_id: WindowId,
+        layout_ctx: &mut LayoutCtx,
+        data: &D,
+        env: &Env,
+    ) { panic!("no global windows") }
+    default fn window_paint(
+        &mut self, 
+        window_id: WindowId,
+        paint_ctx: &mut PaintCtx, 
+        data: &D, 
+        env: &Env
+    ) { panic!("no global windows") }
+    default fn window_has_active(
+        &mut self,
+        window_id: WindowId,
+    ) -> bool { panic!("no global windows") }
+}
+
+/// Specialised Trait will store Windows and Window Handlers statically on embedded platforms
+impl GlobalWindows<u32> for AppState<u32> { ////
+    fn add_window(&self, window_id: WindowId, window: WindowBox<u32>) {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize] = window; }
+    }
+    fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
+        unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
+    }
+    fn window_event(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut EventCtx<u32>, 
+        event: &Event, 
+        data: &mut u32, 
+        env: &Env
+    ) {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize].event(ctx, event, data, env); }
+    }
+    fn window_update(
+        &mut self, 
+        window_id: WindowId,
+        ctx: &mut UpdateCtx<u32>, 
+        data: &u32, 
+        env: &Env
+    ) {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize].update(ctx, data, env); }
+    }
+    fn window_layout(
+        &mut self,
+        window_id: WindowId,
+        layout_ctx: &mut LayoutCtx,
+        data: &u32,
+        env: &Env,
+    ) {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize].layout(layout_ctx, data, env); }
+    }
+    fn window_paint(
+        &mut self, 
+        window_id: WindowId,
+        paint_ctx: &mut PaintCtx, 
+        data: &u32, 
+        env: &Env
+    ) {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize].paint(paint_ctx, data, env); }
+    }
+    fn window_has_active(
+        &mut self,
+        window_id: WindowId,
+    ) -> bool {
+        unsafe { ALL_WINDOWS_U32[window_id.0 as usize].has_active() }
+    }
+}
 
 pub(crate) static mut APP_STATE_U32: AppState<u32> = AppState {
     windows: Windows::<u32> {
@@ -181,12 +316,13 @@ impl<T: Data + 'static> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
+        /* ////
         let state = WindowState {
             handle,
             ////prev_paint_time: None,
         };
-        self.state = Some(state); ////
-        ////self.state.insert(id, state);
+        self.state.insert(id, state);
+        */ ////
     }
 
     fn add(&mut self, id: WindowId, window: WindowBox<T>) { ////

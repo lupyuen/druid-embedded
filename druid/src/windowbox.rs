@@ -88,9 +88,9 @@ impl<D: Data + 'static> WindowBox<D> {
     }
 
     pub fn has_active(
-        self,
+        &mut self,
     ) -> bool {
-        match self.0 {
+        match &mut self.0 {
             WindowType::Flex(w)   => w.root.state.has_active,
             WindowType::None => false
         }        

@@ -21,7 +21,7 @@ pub trait GlobalState<D: Data + 'static> {
     fn add_widget(&self, widget: WidgetType<D>);
 }
 
-/// Default trait will not have static `Widgets`
+/// Default Trait will not have static `Widgets`
 impl<D: Data + 'static> GlobalState<D> for WidgetBox<D> {
     default fn get_global_state(&self) -> &'static mut [ WidgetType<D> ] { panic!("no global state") }
     default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global state") }
