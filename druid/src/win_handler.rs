@@ -46,12 +46,21 @@ use crate::{
 
 ////use crate::command::sys as sys_cmd;
 
-/// Global storage for windows and state
+/// Global storage for Windows and Window Handler
+/// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
 const MAX_WINDOWS: usize = 3;
-static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = 
-    [ WindowBox::<u32>( WindowType::None ), WindowBox::<u32>( WindowType::None ), WindowBox::<u32>( WindowType::None ), ];
-
-type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
+/// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
+static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ 
+    WindowBox::<u32>( WindowType::None ), 
+    WindowBox::<u32>( WindowType::None ), 
+    WindowBox::<u32>( WindowType::None ), 
+];
+/// ALL_HANDLERS[i] is the Window Handler for the Window with window ID i. i=0 is not used.
+static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ 
+    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
+    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
+    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
+];
 
 pub(crate) static mut APP_STATE_U32: AppState<u32> = AppState {
     windows: Windows::<u32> {
@@ -63,20 +72,37 @@ pub(crate) static mut APP_STATE_U32: AppState<u32> = AppState {
 };
 
 /*
-pub trait GlobalState<T: Data + 'static> {
-    fn get_global_state(&mut self) -> &'static mut AppState<T>;
-}
-
-impl<T: Data + 'static> GlobalState<T> for AppState<T> { ////
-    /// Fetch the global AppState for the Data type
-    default fn get_global_state(&mut self) -> &'static mut AppState<T> { ////
-        panic!("no global state")
+    pub trait GlobalState<T: Data + 'static> {
+        fn get_global_state(&mut self) -> &'static mut AppState<T>;
     }
-}
 
-impl GlobalState<u32> for AppState<u32> { ////
+    impl<T: Data + 'static> GlobalState<T> for AppState<T> { ////
+        /// Fetch the global AppState for the Data type
+        default fn get_global_state(&mut self) -> &'static mut AppState<T> { ////
+            panic!("no global state")
+        }
+    }
+
+    impl GlobalState<u32> for AppState<u32> { ////
+        /// Fetch the global AppState for the Data type
+        fn get_global_state(&mut self) -> &'static mut AppState<u32> { ////
+            if let None = APP_STATE_U32.widgets {
+                let widgets = heapless::Vec::new(); ////
+                loop { ////
+                    if let Err(_) = widgets.push(WidgetType::None) {
+                        break;
+                    }
+                }    
+                APP_STATE_U32.widgets = Some(widgets);
+            }
+            return &mut APP_STATE_U32;
+        }
+    }
+*/
+
+/*
     /// Fetch the global AppState for the Data type
-    fn get_global_state(&mut self) -> &'static mut AppState<u32> { ////
+    fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
         if let None = APP_STATE_U32.widgets {
             let widgets = heapless::Vec::new(); ////
             loop { ////
@@ -88,46 +114,6 @@ impl GlobalState<u32> for AppState<u32> { ////
         }
         return &mut APP_STATE_U32;
     }
-}
-*/
-
-/*
-struct Special
-{
-    x : usize,
-    y : usize
-}
-
-trait MyTrait
-{
-    fn myfunc(&self);
-}
-
-impl<T> MyTrait for T
-{
-    default fn myfunc(&self) { println!("hi"); }
-}
-
-impl MyTrait for Special
-{
-    fn myfunc(&self) { println!("I'm special"); }
-}
-*/
-
-/*
-/// Fetch the global AppState for the Data type
-fn get_global_state<u32>() -> &'static mut AppState<u32> { ////
-    if let None = APP_STATE_U32.widgets {
-        let widgets = heapless::Vec::new(); ////
-        loop { ////
-            if let Err(_) = widgets.push(WidgetType::None) {
-                break;
-            }
-        }    
-        APP_STATE_U32.widgets = Some(widgets);
-    }
-    return &mut APP_STATE_U32;
-}
 */
 
 /// The struct implements the druid-shell `WinHandler` trait.
