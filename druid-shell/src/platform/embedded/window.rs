@@ -93,7 +93,7 @@ impl WinCtx for DruidContext {
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle<THandler: WinHandler + Clone> { ////
+pub struct WindowHandle<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowHandle {
     window_id: WindowId,  ////
     ////pub(crate) state: Weak<WindowState>,  //// Replaced by ALL_DATA and ALL_HANDLERS
@@ -101,7 +101,7 @@ pub struct WindowHandle<THandler: WinHandler + Clone> { ////
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<THandler: WinHandler + Clone> { ////
+pub struct WindowBuilder<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowBuilder {
     window_id: WindowId,  ////
     ////handler: Option<Box<dyn WinHandler>>,  //// Replaced by ALL_HANDLERS
@@ -120,7 +120,7 @@ pub struct WindowBuilder<THandler: WinHandler + Clone> { ////
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState<THandler: WinHandler + Clone> {
+pub(crate) struct WindowState<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
     window_id: WindowId,  ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  //// Replaced by ALL_HANDLERS
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
@@ -135,7 +135,7 @@ pub(crate) struct WindowState<THandler: WinHandler + Clone> {
     }
 */ ////
 
-impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////
+impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
@@ -346,7 +346,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////
     }
 }
 
-impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////
+impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////impl WindowHandle {
     pub fn show(&self) {
         let handler = &mut self.state.clone().handler;
