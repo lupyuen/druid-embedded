@@ -836,7 +836,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
 }
 
 impl<T: Data + 'static> WinHandler for DruidHandler<T> {
-    fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
+    fn connect(&mut self, handle: &WindowHandle) { ////
     ////fn connect(&mut self, handle: &WindowHandle) {
         AppState::<T>::new().connect(self.window_id, handle.clone()); ////
         ////self.app_state_U32

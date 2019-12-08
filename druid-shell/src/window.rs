@@ -74,9 +74,9 @@ impl TimerToken {
 /// A handle to a platform window object.
 #[derive(Clone, Default)] ////
 ////#[derive(Clone, Default)]
-pub struct WindowHandle<THandler: WinHandler + Clone>(
+pub struct WindowHandle<THandler: WinHandler + Clone>( ////  THandler is DruidHandler<Data + 'static + Default>
     platform::WindowHandle<THandler>
-); ////  THandler is DruidHandler<Data + 'static + Default>
+);
 ////pub struct WindowHandle(platform::WindowHandle);
 
 impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
@@ -231,8 +231,7 @@ pub trait WinCtx {
 pub trait WinHandler {
     /// Provide the handler with a handle to the window so that it can
     /// invalidate or make other requests.
-    ////TODO: Remove THandler from fn connect(&mut self, handle: &WindowHandle<THandler>); ////
-    ////fn connect(&mut self, handle: &WindowHandle);
+    fn connect(&mut self, handle: &WindowHandle);
 
     /// Called when the size of the window is changed. Note that size
     /// is in physical pixels.
