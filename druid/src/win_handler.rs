@@ -41,10 +41,15 @@ use crate::window::Window;
 use crate::{
     BaseState, /* Command, */ Data, Env, Event, EventCtx, /* KeyEvent, KeyModifiers, */ LayoutCtx, /* MenuDesc, */ ////
     PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, */ WindowDesc, WindowId,
-    Widget, WindowBox, widget::WidgetType, ////
+    Widget, WindowBox, WindowType, widget::WidgetType, ////
 };
 
 ////use crate::command::sys as sys_cmd;
+
+/// Global storage for windows and state
+const MAX_WINDOWS: usize = 3;
+static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = 
+    [ WindowBox::<u32>( WindowType::None ), WindowBox::<u32>( WindowType::None ), WindowBox::<u32>( WindowType::None ), ];
 
 type MAX_WIDGETS = heapless::consts::U5;  //  Max number of `Widgets`
 
@@ -149,8 +154,7 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ////command_queue: VecDeque<(WindowId, Command)>,
-    windows: Windows<T>, ////
-    ////windows: Windows<T>,
+    windows: Windows<T>,
     pub(crate) env: Env,
     pub(crate) data: T,
 }
@@ -600,7 +604,7 @@ impl<T: Data + 'static> AppState<T> { ////
             .as_mut()
             .map(SingleWindowState::window_got_focus);
     }
-    
+
 }
 
 impl<T: Data + 'static> DruidHandler<T> { ////

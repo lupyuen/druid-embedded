@@ -268,7 +268,7 @@ impl<T: Data + 'static> Widget<T> for Flex<T> { ////
         let window = Window::new(self);
         let window_box = WindowBox(
             WindowType::Flex(window),
-            PhantomData,
+            //PhantomData,
         );
         window_box
     }

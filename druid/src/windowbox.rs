@@ -11,7 +11,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct WindowBox<D: Data + 'static>(
     pub WindowType<D>,
-    pub PhantomData<D>,  //  Needed to do compile-time checking for `Data`
+    //pub PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
 /// Enum to store each `Window`
@@ -31,7 +31,7 @@ impl<D: Data + 'static> WindowBox<D> {
     pub fn new() -> Self {
         WindowBox(
             WindowType::None,
-            PhantomData,
+            //PhantomData,
         )
     }
 }
