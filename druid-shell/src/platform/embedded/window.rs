@@ -350,7 +350,7 @@ impl<THandler: WinHandler<THandler>> WindowBuilder<THandler> {  ////  THandler i
 
 impl WindowHandle {
     pub fn show(&self) {
-        unsafe { self.handler_paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
+        unsafe { self.handler_paint(self.window_id, &mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
         if let Err(_) = unsafe { PIET_CONTEXT.finish() } {
             panic!("piet error on render");
         }
