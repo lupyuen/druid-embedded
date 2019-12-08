@@ -246,13 +246,13 @@ struct Windows<T: Data + 'static> { ////
 pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 ////pub(crate) struct WindowState {
     window_id: WindowId,  ////
-    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    phantomData: PhantomData<D>,  ////  Needed to do compile-time checking for `Data`
     ////pub(crate) handle: WindowHandle,  //// Replaced by ALL_HANDLERS
     ////prev_paint_time: Option<Instant>,
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<'a, T: Data + 'static> { ////
+struct SingleWindowState<T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
@@ -298,7 +298,7 @@ impl<T: Data + 'static> Windows<T> { ////
         ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
         data: &'a mut T,
         env: &'a Env,
-    ) -> Option<SingleWindowState<'a, T>> { ////
+    ) -> Option<SingleWindowState<T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
         ////let state = self.state.get_mut(&window_id);
         ////let window = self.windows.get_mut(&window_id);
@@ -330,7 +330,7 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 }
 
-impl<'a, T: Data + 'static> SingleWindowState<'a, T> {
+impl<T: Data + 'static> SingleWindowState<T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);
@@ -507,6 +507,7 @@ impl<T: Data + 'static> AppState<T> { ////
     ) -> Self { ////
     ////) -> Rc<RefCell<Self>> {
         AppState { ////
+            phantomData: PhantomData, ////
         ////Rc::new(RefCell::new(AppState {
             ////delegate,
             ////command_queue: VecDeque::new(),
@@ -590,10 +591,11 @@ impl<T: Data + 'static> AppState<T> { ////
         ////}
     }
 
-    fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> { ////
+    fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<T>> { ////
     ////fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> {
         Some( SingleWindowState { 
             window_id, 
+            phantomData: PhantomData,
         } )
         /* ////
             let AppState {
@@ -916,6 +918,7 @@ impl<T: Data + 'static> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
+            phantomData: PhantomData, ////
             ////windows: HashMap::new(),
             ////state: HashMap::new(),
         }
