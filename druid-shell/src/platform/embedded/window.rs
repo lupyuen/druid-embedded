@@ -95,15 +95,17 @@ impl WinCtx for DruidContext {
 #[derive(Clone, Copy, Default)]
 pub struct WindowHandle<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowHandle {
-    pub(crate) state: WindowState<THandler>, ////
+    window_id: u32, ////
+    pub(crate) state: WindowState<THandler>,  ////  Replaced by ALL_HANDLERS
     ////pub(crate) state: Weak<WindowState>,
 }
 
 /// Builder abstraction for creating new windows
 pub struct WindowBuilder<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
 ////pub struct WindowBuilder {
+    window_id: u32, ////
     handler: Option<THandler>, ////
-    ////handler: Option<Box<dyn WinHandler>>,
+    ////handler: Option<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
     ////title: String,
     ////menu: Option<Menu>,
     size: Size,
@@ -119,8 +121,9 @@ pub struct WindowBuilder<THandler: WinHandler + Clone> { ////  THandler is Druid
 
 #[derive(Clone, Copy, Default)]
 pub(crate) struct WindowState<THandler: WinHandler + Clone> {  ////  THandler is DruidHandler<Data + 'static + Default>
+    window_id: u32, ////
     pub(crate) handler: THandler, ////
-    ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,
+    ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,
 }
@@ -138,12 +141,13 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
     ////pub fn new() -> WindowBuilder {
         WindowBuilder  {
             handler: None,
-            ////title: String::new(),
-            ////menu: None,
+            window_id: 0, ////
             size: Size::new( ////
                 240., //// crate::env::WINDOW_WIDTH as f64, 
                 240., //// crate::env::WINDOW_HEIGHT as f64
             ), ////
+            ////title: String::new(),
+            ////menu: None,
             ////size: Size::new(500.0, 400.0),
         }
     }
@@ -151,6 +155,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
     pub fn set_handler(&mut self, handler: THandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
         self.handler = Some(handler);
+        self.window_id = handler.get_window_id(); ////
     }
 
     pub fn set_size(&mut self, size: Size) {
@@ -162,6 +167,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
         let handler = self
             .handler
             .expect("Tried to build a window without setting the handler");
+        let window_id = handler.get_window_id(); ////
 
         /*
             let window = with_application(|app| ApplicationWindow::new(&app));
@@ -186,6 +192,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
 
         let win_state = WindowState {
             handler,
+            window_id, ////
         };
 
         /*
@@ -201,6 +208,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
 
         let handle = WindowHandle {
             state: win_state,
+            window_id, ////
         };
 
         /*

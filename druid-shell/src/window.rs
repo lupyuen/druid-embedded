@@ -231,7 +231,7 @@ pub trait WinCtx {
 pub trait WinHandler {
     /// Provide the handler with a handle to the window so that it can
     /// invalidate or make other requests.
-    fn connect(&mut self, handle: &WindowHandle);
+    ////TODO1 fn connect(&mut self, handle: &WindowHandle);
 
     /// Called when the size of the window is changed. Note that size
     /// is in physical pixels.
@@ -312,6 +312,9 @@ pub trait WinHandler {
     /// WM_NCDESTROY).
     #[allow(unused_variables)]
     fn destroy(&mut self, ctx: &mut dyn WinCtx) {}
+
+    /// Return the Window ID for this WinHandler
+    fn get_window_id(&self) -> u32; ////
 
     /* ////
         /// Get a reference to the handler state. Used mostly by idle handlers.
