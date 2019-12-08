@@ -17,6 +17,7 @@
 #![allow(deprecated)] // for the three items that have moved
 
 ////use std::any::Any;
+use core::marker::PhantomData; ////
 
 ////use crate::dialog::{FileDialogOptions, FileInfo};
 use crate::error::Error;
@@ -72,15 +73,10 @@ impl TimerToken {
 */ ////
 
 /// A handle to a platform window object.
-#[derive(Clone, Default)] ////
-////#[derive(Clone, Default)]
-pub struct WindowHandle<THandler: WinHandler + Clone>( ////  THandler is DruidHandler<Data + 'static + Default>
-    platform::WindowHandle<THandler>
-);
-////pub struct WindowHandle(platform::WindowHandle);
+#[derive(Clone, Default)]
+pub struct WindowHandle(platform::WindowHandle);
 
-impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
-////impl WindowHandle {
+impl WindowHandle {
     /// Make this window visible.
     ///
     /// This is part of the initialization process; it should only be called
@@ -138,18 +134,20 @@ impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////  THandler is Dr
 }
 
 /// A builder type for creating new windows.
-pub struct WindowBuilder<THandler: WinHandler + Clone>(  //// THandler is DruidHandler<Data + 'static + Default>
-    platform::WindowBuilder::<THandler> ////
-    ////platform::WindowBuilder
-); ////
+pub struct WindowBuilder<THandler>(  ////  THandler is DruidHandler<T: Data + 'static>
+    platform::WindowBuilder<THandler>, ////
+    PhantomData<THandler>,  ////  Needed to do compile-time checking for `THandler`
+);
 ////pub struct WindowBuilder(platform::WindowBuilder);
 
-impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
-////impl WindowBuilder {
+impl<THandler> WindowBuilder<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
     /// Create a new `WindowBuilder`
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
-        WindowBuilder(platform::WindowBuilder::new())
+        WindowBuilder(
+            platform::WindowBuilder::new(),
+            PhantomData
+        )
     }
 
     /// Set the [`WinHandler`]. This is the object that will receive
@@ -181,8 +179,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
     /// Attempt to construct the platform window.
     ///
     /// If this fails, your application should exit.
-    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
-    ////pub fn build(self) -> Result<WindowHandle, Error> {
+    pub fn build(self) -> Result<WindowHandle, Error> {
         self.0.build().map(WindowHandle).map_err(Into::into)
     }
 }
@@ -322,10 +319,8 @@ pub trait WinHandler {
     */ ////
 }
 
-impl<THandler: WinHandler + Clone> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////
-////impl From<platform::WindowHandle> for WindowHandle {
-    fn from(src: platform::WindowHandle<THandler>) -> Self { ////
-    ////fn from(src: platform::WindowHandle) -> WindowHandle {
+impl From<platform::WindowHandle> for WindowHandle {
+    fn from(src: platform::WindowHandle) -> WindowHandle {
         WindowHandle(src)
     }
 }

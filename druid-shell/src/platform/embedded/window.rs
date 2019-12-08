@@ -29,6 +29,7 @@
     use gtk::prelude::*;
     use gtk::{AccelGroup, ApplicationWindow};
 */
+use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Size, Vec2};
 use crate::piet::{Piet, RenderContext};
 
@@ -93,22 +94,20 @@ impl WinCtx for DruidContext {
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub struct WindowHandle<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
-////pub struct WindowHandle {
+pub struct WindowHandle {
     window_id: u32, ////
-    pub(crate) state: WindowState<THandler>,  ////  Replaced by ALL_HANDLERS
-    ////pub(crate) state: Weak<WindowState>,
+    ////pub(crate) state: Weak<WindowState>,  ////  Replaced by ALL_HANDLERS
 }
 
 /// Builder abstraction for creating new windows
-pub struct WindowBuilder<THandler: WinHandler + Clone> { ////  THandler is DruidHandler<Data + 'static + Default>
+pub struct WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////pub struct WindowBuilder {
     window_id: u32, ////
-    handler: Option<THandler>, ////
     ////handler: Option<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
     ////title: String,
     ////menu: Option<Menu>,
     size: Size,
+    phantomData: PhantomData<THandler>,  ////  Needed to do compile-time checking for `THandler`
 }
 
 /* ////
@@ -120,9 +119,8 @@ pub struct WindowBuilder<THandler: WinHandler + Clone> { ////  THandler is Druid
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState<THandler: WinHandler + Clone> {  ////  THandler is DruidHandler<Data + 'static + Default>
+pub(crate) struct WindowState {
     window_id: u32, ////
-    pub(crate) handler: THandler, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  ////  Replaced by ALL_HANDLERS
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,
@@ -135,17 +133,18 @@ pub(crate) struct WindowState<THandler: WinHandler + Clone> {  ////  THandler is
     }
 */ ////
 
-impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is DruidHandler<Data + 'static + Default>
+impl<THandler> WindowBuilder<THandler> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////impl WindowBuilder {
     pub fn new() -> Self { ////
     ////pub fn new() -> WindowBuilder {
         WindowBuilder  {
-            handler: None,
             window_id: 0, ////
             size: Size::new( ////
                 240., //// crate::env::WINDOW_WIDTH as f64, 
                 240., //// crate::env::WINDOW_HEIGHT as f64
             ), ////
+            phantomData: PhantomData,
+            ////handler: None,
             ////title: String::new(),
             ////menu: None,
             ////size: Size::new(500.0, 400.0),
@@ -154,22 +153,33 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
 
     pub fn set_handler(&mut self, handler: THandler) { ////
     ////pub fn set_handler(&mut self, handler: Box<dyn WinHandler>) {
-        self.handler = Some(handler);
-        self.window_id = handler.get_window_id(); ////
+        let window_id = handler.get_window_id(); ////
+        self.window_id = window_id; ////
+        handler.add_handler(window_id, handler); ////
+        ////self.handler = Some(handler);
     }
 
     pub fn set_size(&mut self, size: Size) {
         self.size = size;
     }
 
-    pub fn build(self) -> Result<WindowHandle<THandler>, Error> { ////
+    pub fn build(self) -> Result<WindowHandle, Error> { ////
     ////pub fn build(self) -> Result<WindowHandle, Error> {
-        let handler = self
-            .handler
-            .expect("Tried to build a window without setting the handler");
-        let window_id = handler.get_window_id(); ////
+        let window_id = self.window_id; ////
+        let win_state = WindowState {
+            window_id, ////
+        };
+        let handle = WindowHandle {
+            window_id, ////
+        };
+        ////TODO handler.connect(&mut handle.into()); ////
+        Ok(handle)
 
-        /*
+        /* ////
+            let handler = self
+                .handler
+                .expect("Tried to build a window without setting the handler");
+
             let window = with_application(|app| ApplicationWindow::new(&app));
 
             let dpi_scale = window
@@ -188,14 +198,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
 
             let vbox = gtk::Box::new(gtk::Orientation::Vertical, 0);
             window.add(&vbox);
-        */
 
-        let win_state = WindowState {
-            handler,
-            window_id, ////
-        };
-
-        /*
             with_application(|app| {
                 app.connect_shutdown(clone!(win_state => move |_| {
                     // this ties a clone of Arc<WindowState> to the ApplicationWindow to keep it alive
@@ -204,14 +207,7 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
                     let _ = &win_state;
                 }))
             });
-        */
 
-        let handle = WindowHandle {
-            state: win_state,
-            window_id, ////
-        };
-
-        /*
             if let Some(menu) = self.menu {
                 let menu = menu.into_gtk_menubar(&handle, &accel_group);
                 vbox.pack_start(&menu, false, false, 0);
@@ -342,27 +338,19 @@ impl<THandler: WinHandler + Clone> WindowBuilder<THandler> { ////  THandler is D
             }));
 
             vbox.pack_end(&drawing_area, true, true, 0);
-        */
 
-        ////TODO handler.connect(&mut handle.into()); ////
-
-        /* ////
             win_state
                 .handler
                 ////.borrow_mut()
                 .connect(&handle.into());
                 ////.connect(&handle.clone().into());
         */ ////
-
-        Ok(handle)
     }
 }
 
-impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////
-////impl WindowHandle {
+impl WindowHandle {
     pub fn show(&self) {
-        let handler = &mut self.state.clone().handler;
-        unsafe { handler.paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
+        unsafe { self.handler_paint(&mut PIET_CONTEXT, &mut DRUID_CONTEXT); }
         if let Err(_) = unsafe { PIET_CONTEXT.finish() } {
             panic!("piet error on render");
         }
@@ -370,13 +358,13 @@ impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////
 
     /// Close the window.
     pub fn close(&self) {
-        /*
-        if let Some(state) = self.state.upgrade() {
-            with_application(|app| {
-                app.remove_window(&state.window);
-            });
-        }
-        */
+        /* ////
+            if let Some(state) = self.state.upgrade() {
+                with_application(|app| {
+                    app.remove_window(&state.window);
+                });
+            }
+        */ ////
     }
 
     /// Bring this window to the front of the window stack and give it focus.
@@ -388,9 +376,9 @@ impl<THandler: WinHandler + Clone> WindowHandle<THandler> { ////
     // Request invalidation of the entire window contents.
     pub fn invalidate(&self) {
         /* ////
-        if let Some(state) = self.state.upgrade() {
-            state.window.queue_draw();
-        }
+            if let Some(state) = self.state.upgrade() {
+                state.window.queue_draw();
+            }
         */ ////
     }
     /* ////
