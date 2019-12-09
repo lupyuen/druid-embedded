@@ -51,7 +51,7 @@ pub struct WidgetBox<D: Data + 'static>(
 pub enum WidgetType<D: Data + 'static> {
     None,
     Button(Button<D>),
-    ////Flex(Flex<D>),
+    Flex(Flex<D>),
     Label(Label<D>),
 }
 
@@ -85,7 +85,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     ) {
         match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.paint(paint_ctx, base_state, data, env),
-            ////WidgetType::Flex(w)   => w.paint(paint_ctx, base_state, data, env),
+            WidgetType::Flex(w)   => w.paint(paint_ctx, base_state, data, env),
             WidgetType::Label(w)  => w.paint(paint_ctx, base_state, data, env),
             WidgetType::None => {}
         };
@@ -100,7 +100,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     ) -> Size {
         match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.layout(layout_ctx, bc, data, env),
-            ////WidgetType::Flex(w)   => w.layout(layout_ctx, bc, data, env),
+            WidgetType::Flex(w)   => w.layout(layout_ctx, bc, data, env),
             WidgetType::Label(w)  => w.layout(layout_ctx, bc, data, env),
             WidgetType::None => Size::ZERO,
         }
@@ -115,7 +115,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     ) {
         match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.event(ctx, event, data, env),
-            ////WidgetType::Flex(w)   => w.event(ctx, event, data, env),
+            WidgetType::Flex(w)   => w.event(ctx, event, data, env),
             WidgetType::Label(w)  => w.event(ctx, event, data, env),
             WidgetType::None => {}
         };
@@ -130,7 +130,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     ) {
         match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.update(ctx, old_data, data, env),
-            ////WidgetType::Flex(w)   => w.update(ctx, old_data, data, env),
+            WidgetType::Flex(w)   => w.update(ctx, old_data, data, env),
             WidgetType::Label(w)  => w.update(ctx, old_data, data, env),
             WidgetType::None => {}
         };
@@ -147,7 +147,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     fn get_id(self) -> u32 {
         match &mut self.get_global_state()[self.0 as usize] {
             WidgetType::Button(w) => w.clone().get_id(),
-            ////WidgetType::Flex(w)   => w.clone().get_id(),
+            WidgetType::Flex(w)   => w.clone().get_id(),
             WidgetType::Label(w)  => w.clone().get_id(),
             WidgetType::None => panic!("no id")
         }

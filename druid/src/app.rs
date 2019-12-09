@@ -128,7 +128,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
         }
         */ ////
 
-        let mut state = AppState::new(); ////
+        let mut state = AppState::<T>::new(); ////
         state.set_data(data); ////
         ////let state = AppState::new(data, env, self.delegate.take());
 

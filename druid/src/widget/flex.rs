@@ -260,8 +260,7 @@ impl<T: Data + 'static> Widget<T> for Flex<T> { ////
     }
 
     fn to_type(self) -> WidgetType<T> { ////
-        ////WidgetType::Flex(self)
-        WidgetType::None
+        WidgetType::Flex(self)
     }
 
     fn new_window(self) -> WindowBox<T> { ////
