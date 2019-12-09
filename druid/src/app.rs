@@ -23,8 +23,8 @@ use std::sync::Arc;
 use core::marker::PhantomData; ////
 use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
-use crate::win_handler::AppState;
-use crate::window::{Window, WindowId};
+use crate::win_handler::{AppState, GlobalWindows};
+use crate::window::{Window, WindowId}; ////
 use crate::{/* theme, AppDelegate, */ Data, DruidHandler, Env, LocalizedString, /* MenuDesc, */ Widget, WindowBox}; ////
 
 /////// A function that modifies the initial environment.

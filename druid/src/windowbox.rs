@@ -53,7 +53,7 @@ impl<D: Data + 'static> WindowBox<D> {
 
     pub fn update(
         &mut self, 
-        ctx: &mut UpdateCtx, 
+        ctx: &mut UpdateCtx<D>, 
         data: &D, 
         env: &Env
     ) {

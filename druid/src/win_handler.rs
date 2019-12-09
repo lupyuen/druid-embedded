@@ -66,7 +66,7 @@ static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
 static mut DATA_U32: u32 = 0; ////
 
 /// Specialised Trait for handling static Windows, Window Data and Window Handlers on embedded platforms
-trait GlobalWindows<D: Data + 'static> { ////
+pub trait GlobalWindows<D: Data + 'static> { ////
     /// Add a WindowBox for the Data type
     fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
     /// Add a Window Handler for the Data type
@@ -82,7 +82,7 @@ trait GlobalWindows<D: Data + 'static> { ////
     fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx, 
+        ctx: &mut UpdateCtx<D>, 
     );
     fn window_layout(
         &mut self,
@@ -117,7 +117,7 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
     default fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx, 
+        ctx: &mut UpdateCtx<D>, 
     ) { panic!("no global windows") }
     default fn window_layout(
         &mut self,
@@ -164,7 +164,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     fn window_update(
         &mut self, 
         window_id: WindowId,
-        ctx: &mut UpdateCtx, 
+        ctx: &mut UpdateCtx<u32>, 
     ) {
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].update(
@@ -254,17 +254,17 @@ pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 ////pub(crate) struct WindowState {
     window_id: WindowId,  ////
     phantomData: PhantomData<D>,  ////  Needed to do compile-time checking for `Data`
-    ////pub(crate) handle: WindowHandle,  //// Replaced by ALL_HANDLERS
+    pub(crate) handle: WindowHandle<DruidHandler<D>>,
     ////prev_paint_time: Option<Instant>,
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<T: Data + 'static> { ////
+struct SingleWindowState<'a, T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////window: &'a mut Window<T>,
-    ////state: &'a mut WindowState,
+    state: &'a mut WindowState<T>,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     ////data: &'a mut T, //// Replaced by ALL_DATA
     ////env: &'a Env, //// Replaced by Env{}
@@ -338,7 +338,8 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 }
 
-impl<T: Data + 'static> SingleWindowState<T> {
+impl<'a, T: Data + 'static> SingleWindowState<'a, T> { ////
+////impl<T: Data + 'static> SingleWindowState<T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);
@@ -427,9 +428,8 @@ impl<T: Data + 'static> SingleWindowState<T> {
             is_root: true,
             had_active: false, ////TODO self.window.has_active(),
             ////had_active: self.window.root.state.has_active,
-            ////window: &self.state.handle,
+            window: &self.state.handle,
             window_id: self.window_id,
-            phantom: PhantomData, ////
         };
         AppState::<T>::new().window_event(self.window_id, &mut ctx, &event); ////
         ////self.window.event(&mut ctx, &event, self.data, self.env);

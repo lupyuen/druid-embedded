@@ -123,7 +123,7 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
 
     fn update(
         &mut self, 
-        ctx: &mut UpdateCtx, 
+        ctx: &mut UpdateCtx<D>, 
         old_data: Option<&D>, 
         data: &D, 
         env: &Env

@@ -69,7 +69,7 @@ pub use event::{Event, /* WheelEvent */}; ////
 pub use localization::LocalizedString;
 ////pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
-pub use win_handler::{DruidHandler}; ////
+pub use win_handler::{DruidHandler, GlobalWindows}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 use crate::widget::WidgetType; ////
@@ -252,7 +252,7 @@ pub trait Widget<T: Data + 'static> { ////
 
     // Consider a no-op default impl. One reason against is that containers might
     // inadvertently forget to propagate.
-    fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env); ////
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, old_data: Option<&T>, data: &T, env: &Env); ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env);
 
     /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
@@ -396,12 +396,12 @@ pub struct EventCtx<'a, D: Data + 'static> { ////
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     window_id: WindowId,
     // TODO: migrate most usage of `WindowHandle` to `WinCtx` instead.
+    window: &'a WindowHandle<DruidHandler<D>>, ////
     ////window: &'a WindowHandle,
     base_state: &'a mut BaseState,
     had_active: bool,
     is_handled: bool,
     is_root: bool,
-    phantom: PhantomData<D>,
 }
 
 /// A mutable context provided to data update methods of widgets.
@@ -410,9 +410,10 @@ pub struct EventCtx<'a, D: Data + 'static> { ////
 /// in the widget's appearance, to schedule a repaint.
 ///
 /// [`invalidate`]: #method.invalidate
-pub struct UpdateCtx<'a> { ////
+pub struct UpdateCtx<'a, D: Data + 'static> { ////
 ////pub struct UpdateCtx<'a, 'b: 'a> {
     text_factory: &'a mut Text,
+    window: &'a WindowHandle<DruidHandler<D>>, ////
     ////window: &'a WindowHandle,
     // Discussion: we probably want to propagate more fine-grained
     // invalidations, which would mean a structure very much like
@@ -587,7 +588,7 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
             win_ctx: ctx.win_ctx,
             ////cursor: ctx.cursor,
             ////command_queue: ctx.command_queue,
-            ////window: &ctx.window,
+            window: &ctx.window,
             window_id: ctx.window_id,
             base_state: &mut self.state,
             had_active,
@@ -698,7 +699,7 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
     /// method.
     ///
     /// [`update`]: trait.Widget.html#method.update
-    pub fn update(&mut self, ctx: &mut UpdateCtx, data: &T, env: &Env) { ////
+    pub fn update(&mut self, ctx: &mut UpdateCtx<T>, data: &T, env: &Env) { ////
     ////pub fn update(&mut self, ctx: &mut UpdateCtx, data: &T, env: &Env) {
         let data_same = if let Some(ref old_data) = self.old_data {
             old_data.same(data)
@@ -1041,7 +1042,7 @@ impl<'a, 'b> LayoutCtx<'a> {
     }
 }
 
-impl<'a> UpdateCtx<'a> {  ////
+impl<'a, D: Data + 'static> UpdateCtx<'a, D> {  ////
 ////impl<'a, 'b> UpdateCtx<'a, 'b> {
     /// Invalidate.
     ///
