@@ -523,6 +523,7 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
         paint_if_not_visible: bool,
     ) {
         if !paint_if_not_visible && !paint_ctx.region().intersects(self.state.layout_rect) {
+            cortex_m::asm::bkpt(); ////
             return;
         }
 

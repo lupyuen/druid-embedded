@@ -65,7 +65,7 @@ static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
 /// DATA is the Application Data
 static mut DATA_U32: u32 = 0; ////
 
-/// Specialised Trait for handling static Windows, Window Data and Window Handlers on embedded platforms
+/// Specialised Trait for handling static Windows, Window Handlers and Application Data on embedded platforms
 pub trait GlobalWindows<D: Data + 'static> { ////
     /// Add a WindowBox for the Data type
     fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
@@ -75,27 +75,32 @@ pub trait GlobalWindows<D: Data + 'static> { ////
     fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<D>>;
     /// Set the application data
     fn set_data(&self, data: D);
+    /// Handle the Window event
     fn window_event(
         &mut self, 
         window_id: WindowId,
         ctx: &mut EventCtx<D>, 
         event: &Event, 
     );
+    /// Handle the Window update
     fn window_update(
         &mut self, 
         window_id: WindowId,
         ctx: &mut UpdateCtx<D>, 
     );
+    /// Handle the Window layout
     fn window_layout(
         &mut self,
         window_id: WindowId,
         layout_ctx: &mut LayoutCtx,
     );
+    /// Handle the Window painting
     fn window_paint(
         &mut self, 
         window_id: WindowId,
         paint_ctx: &mut PaintCtx, 
     );
+    /// Return true if Window is active
     fn window_has_active(
         &mut self,
         window_id: WindowId,
@@ -143,12 +148,15 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
 impl GlobalWindows<u32> for AppState<u32> { ////
     fn add_window(&self, window_id: WindowId, window: WindowBox<u32>) {
         unsafe { ALL_WINDOWS_U32[window_id.0 as usize] = window; }
+        cortex_m::asm::bkpt(); ////
     }
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
         unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
+        cortex_m::asm::bkpt(); ////
     }
     fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<u32>> {
         let handler = unsafe { ALL_HANDLERS_U32[window_id.0 as usize].clone() };
+        cortex_m::asm::bkpt(); ////
         WindowHandle(
             crate::shell::platform::window::WindowHandle {
                 window_id: window_id.0,
@@ -161,6 +169,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     }
     fn set_data(&self, data: u32) {
         unsafe { DATA_U32 = data; }
+        cortex_m::asm::bkpt(); ////
     }
     fn window_event(
         &mut self, 
@@ -168,6 +177,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         ctx: &mut EventCtx<u32>, 
         event: &Event, 
     ) {
+        cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].event(
                 ctx, 
@@ -182,6 +192,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         window_id: WindowId,
         ctx: &mut UpdateCtx<u32>, 
     ) {
+        cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].update(
                 ctx,
@@ -195,6 +206,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         window_id: WindowId,
         layout_ctx: &mut LayoutCtx,
     ) {
+        //cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].layout(
                 layout_ctx, 
@@ -208,6 +220,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         window_id: WindowId,
         paint_ctx: &mut PaintCtx, 
     ) {
+        cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].paint(
                 paint_ctx, 
