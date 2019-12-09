@@ -109,7 +109,7 @@ pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is Dr
     ////title: String,
     ////menu: Option<Menu>,
     size: Size,
-    phantomData: PhantomData<THandler>,  ////  Needed to do compile-time checking for `THandler`
+    phantom: PhantomData<THandler>,  ////  Needed to do compile-time checking for `THandler`
 }
 
 /* ////
@@ -146,7 +146,7 @@ impl<THandler: WinHandler<THandler> + Clone + Default> WindowBuilder<THandler> {
                 240., //// crate::env::WINDOW_WIDTH as f64, 
                 240., //// crate::env::WINDOW_HEIGHT as f64
             ), ////
-            phantomData: PhantomData, ////
+            phantom: PhantomData, ////
             handler: Default::default(), ////
             ////handler: None,
             ////title: String::new(),

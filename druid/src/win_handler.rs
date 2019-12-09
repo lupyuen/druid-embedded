@@ -58,9 +58,9 @@ static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ ////
 ];
 /// ALL_HANDLERS[i] is the Window Handler for the Window with window ID i. i=0 is not used.
 static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
-    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
-    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
-    DruidHandler::<u32> { window_id: WindowId(0), phantomData: PhantomData },
+    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
+    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
+    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
 ];
 /// DATA is the Application Data
 static mut DATA_U32: u32 = 0; ////
@@ -240,14 +240,14 @@ pub struct DruidHandler<T: Data + 'static> { ////
 
     /// The id for the current window.
     window_id: WindowId,
-    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
 }
 
 /// State shared by all windows in the UI.
 #[derive(Clone)] ////
 pub(crate) struct AppState<T: Data + 'static> { ////
 ////pub(crate) struct AppState<T: Data> {
-    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
     ////command_queue: VecDeque<(WindowId, Command)>,
     ////windows: Windows<T>,  //// Replaced by ALL_WINDOWS
@@ -259,7 +259,7 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 #[derive(Clone)] ////
 struct Windows<T: Data + 'static> { ////
 ////struct Windows<T: Data> {
-    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////windows: HashMap<WindowId, Window<T>>,  //// Replaced by ALL_WINDOWS
     ////state: HashMap<WindowId, WindowState>,  //// Replaced by ALL_DATA and ALL_HANDLERS
 }
@@ -269,7 +269,7 @@ struct Windows<T: Data + 'static> { ////
 pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 ////pub(crate) struct WindowState {
     window_id: WindowId,  ////
-    phantomData: PhantomData<D>,  ////  Needed to do compile-time checking for `Data`
+    phantom: PhantomData<D>,  ////  Needed to do compile-time checking for `Data`
     pub(crate) handle: WindowHandle<DruidHandler<D>>,
     ////prev_paint_time: Option<Instant>,
 }
@@ -278,7 +278,7 @@ pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 struct SingleWindowState<T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
-    phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////window: &'a mut Window<T>,
     ////state: &'a mut WindowState<T>,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
@@ -327,7 +327,7 @@ impl<T: Data + 'static> Windows<T> { ////
         ////let window = self.windows.get_mut(&window_id);
         Some( SingleWindowState { ////
             window_id,
-            phantomData: PhantomData,
+            phantom: PhantomData,
         })
         /* ////
             match (self.state, self.windows) { ////
@@ -533,7 +533,7 @@ impl<T: Data + 'static> AppState<T> { ////
     ) -> Self { ////
     ////) -> Rc<RefCell<Self>> {
         AppState { ////
-            phantomData: PhantomData, ////
+            phantom: PhantomData, ////
         ////Rc::new(RefCell::new(AppState {
             ////delegate,
             ////command_queue: VecDeque::new(),
@@ -623,7 +623,7 @@ impl<T: Data + 'static> AppState<T> { ////
     ////fn assemble_window_state(&mut self, window_id: WindowId) -> Option<SingleWindowState<'_, T>> {
         Some( SingleWindowState { 
             window_id, 
-            phantomData: PhantomData,
+            phantom: PhantomData,
         } )
         /* ////
             let AppState {
@@ -724,7 +724,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     ////) -> DruidHandler<T> {
         DruidHandler {
             window_id,
-            phantomData: PhantomData, ////
+            phantom: PhantomData, ////
         }
     }
 
@@ -957,7 +957,7 @@ impl<T: Data + 'static> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {
-            phantomData: PhantomData, ////
+            phantom: PhantomData, ////
             ////windows: HashMap::new(),
             ////state: HashMap::new(),
         }
