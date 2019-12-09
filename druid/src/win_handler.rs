@@ -148,15 +148,15 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
 impl GlobalWindows<u32> for AppState<u32> { ////
     fn add_window(&self, window_id: WindowId, window: WindowBox<u32>) {
         unsafe { ALL_WINDOWS_U32[window_id.0 as usize] = window; }
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
     }
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
         unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
     }
     fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<u32>> {
         let handler = unsafe { ALL_HANDLERS_U32[window_id.0 as usize].clone() };
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         WindowHandle(
             crate::shell::platform::window::WindowHandle {
                 window_id: window_id.0,
@@ -169,7 +169,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     }
     fn set_data(&self, data: u32) {
         unsafe { DATA_U32 = data; }
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
     }
     fn window_event(
         &mut self, 
@@ -177,7 +177,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         ctx: &mut EventCtx<u32>, 
         event: &Event, 
     ) {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].event(
                 ctx, 
@@ -192,7 +192,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         window_id: WindowId,
         ctx: &mut UpdateCtx<u32>, 
     ) {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].update(
                 ctx,

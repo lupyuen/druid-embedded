@@ -36,7 +36,7 @@ impl GlobalState<u32> for WidgetBox<u32> {
     /// Add a `Widget` for the Data type
     fn add_widget(&self, widget: WidgetType<u32>) {
         unsafe { WIDGET_STATE_U32[self.0 as usize] = widget; }        
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
     }    
 }
 
