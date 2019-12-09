@@ -95,8 +95,8 @@ impl WinCtx for DruidContext {
 
 #[derive(Clone, Copy, Default)]
 pub struct WindowHandle<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
-    window_id: u32, ////
-    state: WindowState<THandler>, ////
+    pub window_id: u32, ////
+    pub state: WindowState<THandler>, ////
     ////pub(crate) state: Weak<WindowState>,  
 }
 
@@ -121,9 +121,9 @@ pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is Dr
 */ ////
 
 #[derive(Clone, Copy, Default)]
-pub(crate) struct WindowState<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
-    window_id: u32, ////
-    handler: THandler, ////
+pub struct WindowState<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
+    pub window_id: u32, ////
+    pub handler: THandler, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,
     ////current_keyval: RefCell<Option<u32>>,

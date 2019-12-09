@@ -71,6 +71,8 @@ pub trait GlobalWindows<D: Data + 'static> { ////
     fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
     /// Add a Window Handler for the Data type
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>);
+    /// Return a Window Handle that wraps the Window Handler for the Data type
+    fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<D>>;
     /// Set the application data
     fn set_data(&self, data: D);
     fn window_event(
@@ -105,6 +107,8 @@ impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
     default fn add_window(&self, window_id: WindowId, window: WindowBox<D>)
         { panic!("no global windows") }
     default fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>)
+        { panic!("no global windows") }
+    default fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<D>>
         { panic!("no global windows") }
     default fn set_data(&self, data: D)
         { panic!("no global windows") }
@@ -142,6 +146,18 @@ impl GlobalWindows<u32> for AppState<u32> { ////
     }
     fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
         unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
+    }
+    fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<u32>> {
+        let handler = unsafe { ALL_HANDLERS_U32[window_id.0 as usize].clone() };
+        WindowHandle(
+            crate::shell::platform::window::WindowHandle {
+                window_id: window_id.0,
+                state: crate::shell::platform::window::WindowState {
+                    window_id: window_id.0,
+                    handler,                
+                }            
+            }
+        )
     }
     fn set_data(&self, data: u32) {
         unsafe { DATA_U32 = data; }
@@ -259,12 +275,12 @@ pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<'a, T: Data + 'static> { ////
+struct SingleWindowState<T: Data + 'static> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     phantomData: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////window: &'a mut Window<T>,
-    state: &'a mut WindowState<T>,
+    ////state: &'a mut WindowState<T>,
     ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
     ////data: &'a mut T, //// Replaced by ALL_DATA
     ////env: &'a Env, //// Replaced by Env{}
@@ -338,7 +354,7 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 }
 
-impl<'a, T: Data + 'static> SingleWindowState<'a, T> { ////
+impl<T: Data + 'static> SingleWindowState<T> { ////
 ////impl<T: Data + 'static> SingleWindowState<T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
@@ -428,7 +444,8 @@ impl<'a, T: Data + 'static> SingleWindowState<'a, T> { ////
             is_root: true,
             had_active: false, ////TODO self.window.has_active(),
             ////had_active: self.window.root.state.has_active,
-            window: &self.state.handle,
+            window: &AppState::<T>::new().get_handle(self.window_id),
+            ////window: &self.state.handle,
             window_id: self.window_id,
         };
         AppState::<T>::new().window_event(self.window_id, &mut ctx, &event); ////
@@ -576,11 +593,13 @@ impl<T: Data + 'static> AppState<T> { ////
         }
     */ ////
 
+    /* Already implemented in GlobalWindows
     pub(crate) fn add_window(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////pub(crate) fn add_window(&mut self, id: WindowId, window: Window<T>) {
         self.add_window(id, window); ////
         ////self.windows.add(id, window);
     }
+    */
     
     fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
     ////fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {
