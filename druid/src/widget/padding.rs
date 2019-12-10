@@ -18,13 +18,14 @@ use crate::kurbo::Insets; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Point, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
-    WidgetBox, ////
+    WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
 };
 
 /// A widget that just adds padding around its child.
 #[derive(Clone)] ////
 pub struct Padding<T: Data + 'static> { ////
 ////pub struct Padding<T: Data> {
+    id: u32, //// Unique Widget ID
     left: f64,
     right: f64,
     top: f64,
@@ -85,6 +86,7 @@ impl<T: Data + 'static> Padding<T> { ////
     ////pub fn new(insets: impl Into<Insets>, child: impl Widget<T> + 'static) -> Padding<T> {
         let insets = insets.into();
         Padding {
+            id: super::get_widget_id(), ////
             left: insets.x0,
             right: insets.x1,
             top: insets.y0,
@@ -131,5 +133,21 @@ impl<T: Data + 'static> Widget<T> for Padding<T> { ////
     fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
         self.child.update(ctx, data, env);
+    }
+
+    fn to_type(self) -> WidgetType<T> { ////
+        WidgetType::Padding(self)
+    }
+
+    fn new_window(self) -> WindowBox<T> { ////
+        let window = Window::new(self);
+        let window_box = WindowBox(
+            WindowType::Padding(window),
+        );
+        window_box
+    }
+
+    fn get_id(self) -> u32 { ////
+        self.id
     }
 }

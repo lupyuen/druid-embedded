@@ -258,7 +258,7 @@ pub trait Widget<T: Data + 'static> { ////
     /// Wrap this `Widget` in a `WidgetType` enum for boxing by `WidgetBox`
     fn to_type(self) -> WidgetType<T>; ////
 
-    /// Wrap this `Widget` in a `WindowBox`
+    /// Wrap this `Widget` in a `WindowBox` as the root of the `Window`
     fn new_window(self) -> WindowBox<T>; ////
 
     /// Return the unique ID for this `Widget`

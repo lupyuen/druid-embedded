@@ -17,7 +17,7 @@
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
-    WidgetBox, ////
+    WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
 };
 
 use crate::piet::UnitPoint;
@@ -26,6 +26,7 @@ use crate::piet::UnitPoint;
 #[derive(Clone)] ////
 pub struct Align<T: Data + 'static> { ////
 ////pub struct Align<T: Data> {
+    id: u32, //// Unique Widget ID
     align: UnitPoint,
     child: WidgetPod<T, WidgetBox<T>>, ////
     ////child: WidgetPod<T, Box<dyn Widget<T>>>,
@@ -43,6 +44,7 @@ impl<T: Data + 'static> Align<T> { ////
     pub fn new<W: Widget<T> + Clone>(align: UnitPoint, child: W) -> Align<T> { ////
     ////pub fn new(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
+            id: super::get_widget_id(), ////
             align,
             child: WidgetPod::new( ////
                 WidgetBox::<T>::new(child)
@@ -75,6 +77,7 @@ impl<T: Data + 'static> Align<T> { ////
     pub fn horizontal<W: Widget<T> + Clone>(align: UnitPoint, child: W) -> Align<T> { ////
     ////pub fn horizontal(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
+            id: super::get_widget_id(), ////
             align,
             child: WidgetPod::new( ////
                 WidgetBox::<T>::new(child)
@@ -89,6 +92,7 @@ impl<T: Data + 'static> Align<T> { ////
     pub fn vertical<W: Widget<T> + Clone>(align: UnitPoint, child: W) -> Align<T> { ////
     ////pub fn vertical(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
+            id: super::get_widget_id(), ////
             align,
             child: WidgetPod::new( ////
                 WidgetBox::<T>::new(child)
@@ -149,5 +153,21 @@ impl<T: Data + 'static> Widget<T> for Align<T> {
     fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
         self.child.update(ctx, data, env);
+    }
+
+    fn to_type(self) -> WidgetType<T> { ////
+        WidgetType::Align(self)
+    }
+
+    fn new_window(self) -> WindowBox<T> { ////
+        let window = Window::new(self);
+        let window_box = WindowBox(
+            WindowType::Align(window),
+        );
+        window_box
+    }
+
+    fn get_id(self) -> u32 { ////
+        self.id
     }
 }
