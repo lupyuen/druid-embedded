@@ -475,7 +475,7 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
     /// implementation.
     pub fn set_layout_rect(&mut self, layout_rect: Rect) {
         self.state.layout_rect = layout_rect;
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
     }
 
     /// Get the layout rectangle.
