@@ -43,6 +43,7 @@
 */ ////
 
 use core::str::FromStr; ////
+use core::fmt::Write; ////
 use crate::data::Data;
 use crate::env::Env;
 use crate::shell::Application;
@@ -329,18 +330,16 @@ impl<T> LocalizedString<T> {
         }
     */ ////
 
-        /// Return the localized value for this string, or the placeholder, if
-        /// the localization is missing, or the key if there is no placeholder.
-        pub fn localized_str(&self) -> &str {
-            "TODO localized_str"
-            /* ////TODO
-            self.resolved
-                .as_ref()
-                .map(|s| s.as_str())
-                .or_else(|| self.placeholder.as_ref().map(String::as_ref))
-                .unwrap_or(self.key)
-            */ ////
-        }
+    /// Return the localized value for this string, or the placeholder, if
+    /// the localization is missing, or the key if there is no placeholder.
+    pub fn localized_str(&self) -> &str {
+        ////"TODO localized_str"
+        self.resolved
+            .as_ref()
+            .map(|s| s.as_str())
+            .or_else(|| self.placeholder.as_ref().map(String::as_ref))
+            .unwrap_or(self.key)
+    }
 }
 
 impl<T: Data> LocalizedString<T> {
@@ -374,20 +373,29 @@ impl<T: Data> LocalizedString<T> {
         if self.args.is_some()
             ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
-            /* ////TODO
-            let args: Option<FluentArgs> = self
+            let args = self ////
+            ////let args: Option<FluentArgs> = self
                 .args
                 .as_ref()
-                .map(|a| a.iter().map(|(k, v)| (*k, (v.0)(data, env))).collect());
+                .map(|a| a.iter().map(|(k, v)| (*k, (v.0)(data, env))).collect())
+                .expect("resolve fail")  ////
+                ;
 
-            ////self.resolved_lang = Some(env.localization_manager().current_locale.clone());
-            let next = env.localization_manager().localize(self.key, args.as_ref());
-            let result = next != self.resolved;
-            self.resolved = next;
-            result
-            */ ////
-            self.resolved = Some(String::from_str("TODO resolve").unwrap()); ////
+            ////  Convert the first arg to text
+            let arg = args[0];  ////  Take the first arg
+            let mut buffer = String::new();  ////
+            write!(&mut buffer, "{}", arg)  ////  TODO: Allow other formats
+                .expect("resolve fail");
+            self.resolved = Some(buffer);  ////
             true ////
+
+            /* ////
+                self.resolved_lang = Some(env.localization_manager().current_locale.clone());
+                let next = env.localization_manager().localize(self.key, args.as_ref());
+                let result = next != self.resolved;
+                self.resolved = next;
+                result
+            */ ////
         } else {
             false
         }
@@ -395,73 +403,73 @@ impl<T: Data> LocalizedString<T> {
 }
 
 /* ////
-impl<T> std::fmt::Debug for ArgSource<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Arg Resolver {:p}", self.0)
-    }
-}
-
-/// Helper to impl display for slices of displayable things.
-struct PrintLocales<'a, T>(&'a [T]);
-
-impl<'a, T: std::fmt::Display> std::fmt::Display for PrintLocales<'a, T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "[")?;
-        let mut prev = false;
-        for l in self.0 {
-            if prev {
-                write!(f, ", ")?;
-            }
-            prev = true;
-            write!(f, "{}", l)?;
+    impl<T> std::fmt::Debug for ArgSource<T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+            write!(f, "Arg Resolver {:p}", self.0)
         }
-        write!(f, "]")
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn resolve() {
-        let en_us: LanguageIdentifier = "en-US".parse().unwrap();
-        let en_ca: LanguageIdentifier = "en-CA".parse().unwrap();
-        let en_gb: LanguageIdentifier = "en-GB".parse().unwrap();
-        let fr_fr: LanguageIdentifier = "fr-FR".parse().unwrap();
-        let pt_pt: LanguageIdentifier = "pt-PT".parse().unwrap();
+    /// Helper to impl display for slices of displayable things.
+    struct PrintLocales<'a, T>(&'a [T]);
 
-        let resmgr = ResourceManager {
-            resources: HashMap::new(),
-            locales: vec![en_us.clone(), en_ca.clone(), en_gb.clone(), fr_fr.clone()],
-            default_locale: en_us.clone(),
-            path_scheme: String::new(),
-        };
-
-        let en_za: LanguageIdentifier = "en-GB".parse().unwrap();
-        let cn_hk: LanguageIdentifier = "cn-HK".parse().unwrap();
-        let fr_ca: LanguageIdentifier = "fr-CA".parse().unwrap();
-
-        assert_eq!(
-            resmgr.resolve_locales(en_ca.clone()),
-            vec![en_ca.clone(), en_us.clone(), en_gb.clone()]
-        );
-        assert_eq!(
-            resmgr.resolve_locales(en_za.clone()),
-            vec![en_gb.clone(), en_us.clone(), en_ca.clone()]
-        );
-        assert_eq!(
-            resmgr.resolve_locales(fr_ca.clone()),
-            vec![fr_fr.clone(), en_us.clone()]
-        );
-        assert_eq!(
-            resmgr.resolve_locales(fr_fr.clone()),
-            vec![fr_fr.clone(), en_us.clone()]
-        );
-        assert_eq!(resmgr.resolve_locales(cn_hk), vec![en_us.clone()]);
-        assert_eq!(resmgr.resolve_locales(pt_pt), vec![en_us.clone()]);
+    impl<'a, T: std::fmt::Display> std::fmt::Display for PrintLocales<'a, T> {
+        fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+            write!(f, "[")?;
+            let mut prev = false;
+            for l in self.0 {
+                if prev {
+                    write!(f, ", ")?;
+                }
+                prev = true;
+                write!(f, "{}", l)?;
+            }
+            write!(f, "]")
+        }
     }
-}
-*/
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        #[test]
+        fn resolve() {
+            let en_us: LanguageIdentifier = "en-US".parse().unwrap();
+            let en_ca: LanguageIdentifier = "en-CA".parse().unwrap();
+            let en_gb: LanguageIdentifier = "en-GB".parse().unwrap();
+            let fr_fr: LanguageIdentifier = "fr-FR".parse().unwrap();
+            let pt_pt: LanguageIdentifier = "pt-PT".parse().unwrap();
+
+            let resmgr = ResourceManager {
+                resources: HashMap::new(),
+                locales: vec![en_us.clone(), en_ca.clone(), en_gb.clone(), fr_fr.clone()],
+                default_locale: en_us.clone(),
+                path_scheme: String::new(),
+            };
+
+            let en_za: LanguageIdentifier = "en-GB".parse().unwrap();
+            let cn_hk: LanguageIdentifier = "cn-HK".parse().unwrap();
+            let fr_ca: LanguageIdentifier = "fr-CA".parse().unwrap();
+
+            assert_eq!(
+                resmgr.resolve_locales(en_ca.clone()),
+                vec![en_ca.clone(), en_us.clone(), en_gb.clone()]
+            );
+            assert_eq!(
+                resmgr.resolve_locales(en_za.clone()),
+                vec![en_gb.clone(), en_us.clone(), en_ca.clone()]
+            );
+            assert_eq!(
+                resmgr.resolve_locales(fr_ca.clone()),
+                vec![fr_fr.clone(), en_us.clone()]
+            );
+            assert_eq!(
+                resmgr.resolve_locales(fr_fr.clone()),
+                vec![fr_fr.clone(), en_us.clone()]
+            );
+            assert_eq!(resmgr.resolve_locales(cn_hk), vec![en_us.clone()]);
+            assert_eq!(resmgr.resolve_locales(pt_pt), vec![en_us.clone()]);
+        }
+    }
+*/ ////
 
 /// Implement formatted output for ArgSource
 impl<T> core::fmt::Debug for ArgSource<T> { ////
