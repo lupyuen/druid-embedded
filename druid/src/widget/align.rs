@@ -23,6 +23,7 @@ use crate::{
 use crate::piet::UnitPoint;
 
 /// A widget that aligns its child.
+#[derive(Clone)] ////
 pub struct Align<T: Data + 'static> { ////
 ////pub struct Align<T: Data> {
     align: UnitPoint,

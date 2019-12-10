@@ -22,6 +22,7 @@ use crate::{
 };
 
 /// A widget that just adds padding around its child.
+#[derive(Clone)] ////
 pub struct Padding<T: Data + 'static> { ////
 ////pub struct Padding<T: Data> {
     left: f64,

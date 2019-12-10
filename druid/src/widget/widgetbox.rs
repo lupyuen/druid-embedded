@@ -3,38 +3,41 @@ use core::marker::PhantomData;
 use crate::kurbo::{Rect, Size};
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget, WindowBox,
-    widget::{Button, Flex, Label},
+    widget::{Align, Button, Flex, Label, Padding},
 };
 
 /// Max number of `Widgets` on embedded platforms
-const MAX_WIDGETS: usize = 5;
+const MAX_WIDGETS: usize = 10;
 
 /// Static list of `Widgets` just for embedded platforms
-static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = 
-    [ WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None ];
+static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = [ 
+    WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
+    WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
+];
 
 /// Specialised Trait for handling static `Widgets` on embedded platforms
-pub trait GlobalState<D: Data + 'static> {
+pub trait GlobalWidgets<D: Data + 'static> {
     /// Fetch the static `Widgets` for the Data type
-    fn get_global_state(&self) -> &'static mut [ WidgetType<D> ];
+    fn get_widgets(&self) -> &'static mut [ WidgetType<D> ];
     /// Add a `Widget` for the Data type
     fn add_widget(&self, widget: WidgetType<D>);
 }
 
 /// Default Trait will not have static `Widgets`
-impl<D: Data + 'static> GlobalState<D> for WidgetBox<D> {
-    default fn get_global_state(&self) -> &'static mut [ WidgetType<D> ] { panic!("no global state") }
-    default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global state") }
+impl<D: Data + 'static> GlobalWidgets<D> for WidgetBox<D> {
+    default fn get_widgets(&self) -> &'static mut [ WidgetType<D> ] { panic!("no global widgets") }
+    default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global widgets") }
 }
 
 /// Specialised Trait will store `Widgets` statically on embedded platforms
-impl GlobalState<u32> for WidgetBox<u32> {
+impl GlobalWidgets<u32> for WidgetBox<u32> {
     /// Fetch the static `Widgets` for the Data type
-    fn get_global_state(&self) -> &'static mut [ WidgetType<u32> ] {
+    fn get_widgets(&self) -> &'static mut [ WidgetType<u32> ] {
         unsafe { &mut WIDGET_STATE_U32 }
     }
     /// Add a `Widget` for the Data type
     fn add_widget(&self, widget: WidgetType<u32>) {
+        assert!(self.0 < MAX_WIDGETS as u32, "too many widgets");
         unsafe { WIDGET_STATE_U32[self.0 as usize] = widget; }        
         //cortex_m::asm::bkpt(); ////
     }    
@@ -51,9 +54,11 @@ pub struct WidgetBox<D: Data + 'static>(
 #[derive(Clone)]
 pub enum WidgetType<D: Data + 'static> {
     None,
+    Align(Align<D>),
     Button(Button<D>),
     Flex(Flex<D>),
     Label(Label<D>),
+    Padding(Padding<D>),
 }
 
 impl<D: Data + 'static> Default for WidgetType<D> {
@@ -84,10 +89,12 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D, 
         env: &Env
     ) {
-        match &mut self.get_global_state()[self.0 as usize] {
-            WidgetType::Button(w) => w.paint(paint_ctx, base_state, data, env),
-            WidgetType::Flex(w)   => w.paint(paint_ctx, base_state, data, env),
-            WidgetType::Label(w)  => w.paint(paint_ctx, base_state, data, env),
+        match &mut self.get_widgets()[self.0 as usize] {
+            WidgetType::Align(w)   => w.paint(paint_ctx, base_state, data, env),
+            WidgetType::Button(w)  => w.paint(paint_ctx, base_state, data, env),
+            WidgetType::Flex(w)    => w.paint(paint_ctx, base_state, data, env),
+            WidgetType::Label(w)   => w.paint(paint_ctx, base_state, data, env),
+            WidgetType::Padding(w) => w.paint(paint_ctx, base_state, data, env),
             WidgetType::None => {}
         };
     }
@@ -99,10 +106,12 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D,
         env: &Env,
     ) -> Size {
-        match &mut self.get_global_state()[self.0 as usize] {
-            WidgetType::Button(w) => w.layout(layout_ctx, bc, data, env),
-            WidgetType::Flex(w)   => w.layout(layout_ctx, bc, data, env),
-            WidgetType::Label(w)  => w.layout(layout_ctx, bc, data, env),
+        match &mut self.get_widgets()[self.0 as usize] {
+            WidgetType::Align(w)   => w.layout(layout_ctx, bc, data, env),
+            WidgetType::Button(w)  => w.layout(layout_ctx, bc, data, env),
+            WidgetType::Flex(w)    => w.layout(layout_ctx, bc, data, env),
+            WidgetType::Label(w)   => w.layout(layout_ctx, bc, data, env),
+            WidgetType::Padding(w) => w.layout(layout_ctx, bc, data, env),
             WidgetType::None => Size::ZERO,
         }
     }
@@ -114,10 +123,12 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &mut D, 
         env: &Env
     ) {
-        match &mut self.get_global_state()[self.0 as usize] {
-            WidgetType::Button(w) => w.event(ctx, event, data, env),
-            WidgetType::Flex(w)   => w.event(ctx, event, data, env),
-            WidgetType::Label(w)  => w.event(ctx, event, data, env),
+        match &mut self.get_widgets()[self.0 as usize] {
+            WidgetType::Align(w)   => w.event(ctx, event, data, env),
+            WidgetType::Button(w)  => w.event(ctx, event, data, env),
+            WidgetType::Flex(w)    => w.event(ctx, event, data, env),
+            WidgetType::Label(w)   => w.event(ctx, event, data, env),
+            WidgetType::Padding(w) => w.event(ctx, event, data, env),
             WidgetType::None => {}
         };
     }
@@ -129,10 +140,12 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
         data: &D, 
         env: &Env
     ) {
-        match &mut self.get_global_state()[self.0 as usize] {
-            WidgetType::Button(w) => w.update(ctx, old_data, data, env),
-            WidgetType::Flex(w)   => w.update(ctx, old_data, data, env),
-            WidgetType::Label(w)  => w.update(ctx, old_data, data, env),
+        match &mut self.get_widgets()[self.0 as usize] {
+            WidgetType::Align(w)   => w.update(ctx, old_data, data, env),
+            WidgetType::Button(w)  => w.update(ctx, old_data, data, env),
+            WidgetType::Flex(w)    => w.update(ctx, old_data, data, env),
+            WidgetType::Label(w)   => w.update(ctx, old_data, data, env),
+            WidgetType::Padding(w) => w.update(ctx, old_data, data, env),
             WidgetType::None => {}
         };
     }
@@ -146,10 +159,12 @@ impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
     }
 
     fn get_id(self) -> u32 {
-        match &mut self.get_global_state()[self.0 as usize] {
-            WidgetType::Button(w) => w.clone().get_id(),
-            WidgetType::Flex(w)   => w.clone().get_id(),
-            WidgetType::Label(w)  => w.clone().get_id(),
+        match &mut self.get_widgets()[self.0 as usize] {
+            WidgetType::Align(w)   => w.clone().get_id(),
+            WidgetType::Button(w)  => w.clone().get_id(),
+            WidgetType::Flex(w)    => w.clone().get_id(),
+            WidgetType::Label(w)   => w.clone().get_id(),
+            WidgetType::Padding(w) => w.clone().get_id(),
             WidgetType::None => panic!("no id")
         }
     }
