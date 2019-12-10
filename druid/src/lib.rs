@@ -527,7 +527,7 @@ impl<T: Data + 'static, W: Widget<T>> WidgetPod<T, W> { ////
             cortex_m::asm::bkpt(); ////
             return;
         }
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
 
         if let Err(e) = paint_ctx.render_ctx.save() { ////
         ////if let Err(e) = paint_ctx.save() {

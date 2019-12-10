@@ -220,7 +220,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
         window_id: WindowId,
         paint_ctx: &mut PaintCtx, 
     ) {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         unsafe { 
             ALL_WINDOWS_U32[window_id.0 as usize].paint(
                 paint_ctx, 
