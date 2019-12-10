@@ -61,7 +61,11 @@ impl<T: Data + 'static, W: Widget<T> + 'static> Window<T, W> { ////
             root: WidgetPod::new(root), ////
             ////root: WidgetPod::new(WidgetBox::new(root)), ////
             ////root: WidgetPod::new(Box::new(root)),
-            size: Size::ZERO,
+            size: Size { //// TODO: Allow auto size
+                width: super::env::WINDOW_WIDTH as f64,
+                height: super::env::WINDOW_HEIGHT as f64,
+            },
+            ////size: Size::ZERO,
             ////title,
             ////menu,
             ////context_menu: None,
