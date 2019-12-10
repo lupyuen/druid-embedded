@@ -34,20 +34,22 @@ pub struct Padding<T: Data + 'static> { ////
 
 impl<T: Data + 'static> Padding<T> { ////
 ////impl<T: Data> Padding<T> {
-    /// Create widget with uniform padding.
-    #[deprecated(since = "0.3.0", note = "Use Padding::new() instead")]
-    pub fn uniform(padding: f64, child: impl Widget<T> + 'static) -> Padding<T> {
-        Padding {
-            left: padding,
-            right: padding,
-            top: padding,
-            bottom: padding,
-            child: WidgetPod::new( ////
-                WidgetBox::<T>::new(child)
-            ),
-            ////child: WidgetPod::new(child).boxed(),
+    /* //// Deprecated
+        /// Create widget with uniform padding.
+        #[deprecated(since = "0.3.0", note = "Use Padding::new() instead")]
+        pub fn uniform(padding: f64, child: impl Widget<T> + 'static) -> Padding<T> {
+            Padding {
+                left: padding,
+                right: padding,
+                top: padding,
+                bottom: padding,
+                child: WidgetPod::new( ////
+                    WidgetBox::<T>::new(child)
+                ),
+                ////child: WidgetPod::new(child).boxed(),
+            }
         }
-    }
+    */ ////
 
     /// Create a new widget with the specified padding. This can either be an instance
     /// of [`kurbo::Insets`], a f64 for uniform padding, a 2-tuple for axis-uniform padding
@@ -78,7 +80,8 @@ impl<T: Data + 'static> Padding<T> { ////
     /// ```
     ///
     /// [`kurbo::Insets`]: https://docs.rs/kurbo/0.5.3/kurbo/struct.Insets.html
-    pub fn new(insets: impl Into<Insets>, child: impl Widget<T> + 'static) -> Padding<T> {
+    pub fn new<W: Widget<T> + Clone>(insets: impl Into<Insets>, child: W) -> Padding<T> { ////
+    ////pub fn new(insets: impl Into<Insets>, child: impl Widget<T> + 'static) -> Padding<T> {
         let insets = insets.into();
         Padding {
             left: insets.x0,
