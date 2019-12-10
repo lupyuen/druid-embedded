@@ -14,30 +14,26 @@
 
 //! A widget that aligns its child (for example, centering it).
 
-use crate::{ ////
-    /* BaseState, BoxConstraints, */ Data, /* Env, Event, EventCtx, LayoutCtx, PaintCtx, Rect, Size, ////
-    UpdateCtx, */ Widget, WidgetPod, ////
-}; ////
-/*
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
+    WidgetBox, ////
 };
-*/
 
 use crate::piet::UnitPoint;
 
 /// A widget that aligns its child.
-pub struct Align<T: Data> {
+pub struct Align<T: Data + 'static> { ////
+////pub struct Align<T: Data> {
     align: UnitPoint,
-    ////TODO child: WidgetPod<T, Box<dyn Widget<T>>>,
+    child: WidgetPod<T, WidgetBox<T>>, ////
+    ////child: WidgetPod<T, Box<dyn Widget<T>>>,
     width_factor: Option<f64>,
     height_factor: Option<f64>,
-    _todo: T, ////
 }
 
-/*
-impl<T: Data> Align<T> {
+impl<T: Data + 'static> Align<T> { ////
+////impl<T: Data> Align<T> {
     /// Create widget with alignment.
     ///
     /// Note that the `align` parameter is specified as a `UnitPoint` in
@@ -46,7 +42,10 @@ impl<T: Data> Align<T> {
     pub fn new(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
             align,
-            child: WidgetPod::new(child).boxed(),
+            child: WidgetPod::new( ////
+                WidgetBox::<T>::new(child)
+            ),
+            ////child: WidgetPod::new(child).boxed(),
             width_factor: None,
             height_factor: None,
         }
@@ -71,7 +70,10 @@ impl<T: Data> Align<T> {
     pub fn horizontal(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
             align,
-            child: WidgetPod::new(child).boxed(),
+            child: WidgetPod::new( ////
+                WidgetBox::<T>::new(child)
+            ),
+            ////child: WidgetPod::new(child).boxed(),
             width_factor: None,
             height_factor: Some(1.0),
         }
@@ -81,14 +83,17 @@ impl<T: Data> Align<T> {
     pub fn vertical(align: UnitPoint, child: impl Widget<T> + 'static) -> Align<T> {
         Align {
             align,
-            child: WidgetPod::new(child).boxed(),
+            child: WidgetPod::new( ////
+                WidgetBox::<T>::new(child)
+            ),
+            ////child: WidgetPod::new(child).boxed(),
             width_factor: Some(1.0),
             height_factor: None,
         }
     }
 }
 
-impl<T: Data> Widget<T> for Align<T> {
+impl<T: Data + 'static> Widget<T> for Align<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         self.child.paint_with_offset(paint_ctx, data, env);
     }
@@ -129,12 +134,13 @@ impl<T: Data> Widget<T> for Align<T> {
         my_size
     }
 
-    fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
+    fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env) { ////
+    ////fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
         self.child.event(ctx, event, data, env)
     }
 
-    fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
+    ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
         self.child.update(ctx, data, env);
     }
 }
-*/

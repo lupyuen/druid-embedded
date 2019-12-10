@@ -138,7 +138,7 @@ impl<T: Data + 'static> Flex<T> { ////
     ////pub fn add_child(&mut self, child: impl Widget<T> + 'static, flex: f64) {
         let params = Params { flex };
         let child = ChildWidget {
-            widget: WidgetPod::new(
+            widget: WidgetPod::new( ////
                 WidgetBox::<T>::new(child)
             ),
             ////widget: WidgetPod::new(child).boxed(),

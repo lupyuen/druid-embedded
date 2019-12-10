@@ -44,8 +44,8 @@ fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
     //  Create a label widget to display the text
     let label = Label::new(text);
     //  Create a button widget to increment the counter
-    let button = Button::<u32>::new( ////
-    ////let button = Button::new(
+    //  let button = Button::<u32>::new( ////
+    let button = Button::new(
         "increment", 
         |_ctx, data, _env| *data += 1
     );
@@ -53,8 +53,7 @@ fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
     //  Create a column for the UI
     let mut col = Column::new();
     //  Add the label and button widgets to the column
-    col.add_child(label, 1.0); ////
-    /*
+    //  col.add_child(label, 1.0); ////
     col.add_child(
         Align::centered(
             Padding::new(5.0, label)
@@ -65,7 +64,6 @@ fn ui_builder() -> impl Widget<u32> {  //  `u32` is the window state
         Padding::new(5.0, button), 
         1.0
     );
-    */
     col
 }
 

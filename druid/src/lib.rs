@@ -72,7 +72,7 @@ pub use mouse::MouseEvent;
 pub use win_handler::{DruidHandler, GlobalWindows}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
-use crate::widget::WidgetType; ////
+use crate::widget::{WidgetType, WidgetBox}; ////
 use win_handler::AppState; ////
 pub use shell::{ start_display, test_display, show_touch }; ////
 

@@ -18,21 +18,22 @@ use crate::kurbo::Insets; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Point, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
+    WidgetBox, ////
 };
 
 /// A widget that just adds padding around its child.
-pub struct Padding<T: Data> {
+pub struct Padding<T: Data + 'static> { ////
+////pub struct Padding<T: Data> {
     left: f64,
     right: f64,
     top: f64,
     bottom: f64,
-
-    ////TODO child: WidgetPod<T, Box<dyn Widget<T>>>,
-    _todo: T, ////
+    child: WidgetPod<T, WidgetBox<T>>, ////
+    ////child: WidgetPod<T, Box<dyn Widget<T>>>,
 }
 
-/* ////
-impl<T: Data> Padding<T> {
+impl<T: Data + 'static> Padding<T> { ////
+////impl<T: Data> Padding<T> {
     /// Create widget with uniform padding.
     #[deprecated(since = "0.3.0", note = "Use Padding::new() instead")]
     pub fn uniform(padding: f64, child: impl Widget<T> + 'static) -> Padding<T> {
@@ -41,7 +42,10 @@ impl<T: Data> Padding<T> {
             right: padding,
             top: padding,
             bottom: padding,
-            child: WidgetPod::new(child).boxed(),
+            child: WidgetPod::new( ////
+                WidgetBox::<T>::new(child)
+            ),
+            ////child: WidgetPod::new(child).boxed(),
         }
     }
 
@@ -81,12 +85,16 @@ impl<T: Data> Padding<T> {
             right: insets.x1,
             top: insets.y0,
             bottom: insets.y1,
-            child: WidgetPod::new(child).boxed(),
+            child: WidgetPod::new( ////
+                WidgetBox::<T>::new(child)
+            ),
+            ////child: WidgetPod::new(child).boxed(),
         }
     }
 }
 
-impl<T: Data> Widget<T> for Padding<T> {
+impl<T: Data + 'static> Widget<T> for Padding<T> { ////
+////impl<T: Data> Widget<T> for Padding<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         self.child.paint_with_offset(paint_ctx, data, env);
     }
@@ -111,12 +119,13 @@ impl<T: Data> Widget<T> for Padding<T> {
         Size::new(size.width + hpad, size.height + vpad)
     }
 
-    fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
+    fn event(&mut self, ctx: &mut EventCtx<T>, event: &Event, data: &mut T, env: &Env) { ////
+    ////fn event(&mut self, ctx: &mut EventCtx, event: &Event, data: &mut T, env: &Env) {
         self.child.event(ctx, event, data, env)
     }
 
-    fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
+    fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
+    ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
         self.child.update(ctx, data, env);
     }
 }
-*/ ////
