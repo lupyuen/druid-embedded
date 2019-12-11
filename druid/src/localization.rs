@@ -334,7 +334,7 @@ impl<T> LocalizedString<T> {
     /// Return the localized value for this string, or the placeholder, if
     /// the localization is missing, or the key if there is no placeholder.
     pub fn localized_str(&self) -> &str {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         self.resolved ////
             .as_ref()
             .expect("not resolved")
@@ -377,7 +377,7 @@ impl<T: Data> LocalizedString<T> {
         //TODO: this recomputes the string if either the language has changed,
         //or *anytime* we have arguments. Ideally we would be using a lens
         //to only recompute when our actual data has changed.
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         if self.args.is_some()
             ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
