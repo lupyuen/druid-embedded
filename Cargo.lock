@@ -121,6 +121,8 @@ name = "druid-shell"
 version = "0.4.0"
 dependencies = [
  "cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-m 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "cortex-m-rt 0.6.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "embedded-graphics 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "mynewt 0.1.0",
  "piet-common 0.0.7",

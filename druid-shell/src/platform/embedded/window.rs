@@ -56,8 +56,12 @@ static mut PIET_CONTEXT: Piet = Piet {};
 
 pub struct DruidContext {}
 impl WinCtx for DruidContext {
-    fn invalidate(&mut self) {}
-    fn text_factory(&mut self) -> &mut Text { panic!("no text factory") }
+    fn invalidate(&mut self) {
+        cortex_m::asm::bkpt(); ////
+    }
+    fn text_factory(&mut self) -> &mut Text { 
+        unsafe { &mut TEXT }
+    }
     fn set_cursor(&mut self, _cursor: &Cursor) { panic!("no set cursor") }
 }
 impl DruidContext {

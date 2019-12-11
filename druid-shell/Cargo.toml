@@ -64,3 +64,5 @@ embedded-graphics = { version = "0.5.2", optional = true }
 embedded-graphics = "0.5.2"
 st7735-lcd        = { version = "0.6.1", features = [ "graphics" ] }
 mynewt            = { path = "../../stm32bluepill-mynewt-sensor/rust/mynewt" } # Import mynewt library
+cortex-m          = "0.6.1" ####
+cortex-m-rt       = "0.6.10" ####

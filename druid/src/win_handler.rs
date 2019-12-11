@@ -455,6 +455,7 @@ impl<T: Data + 'static> SingleWindowState<T> { ////
     /// animation frame is requested.
     fn do_event_inner(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> (bool, bool, bool) {
         // should there be a root base state persisting in the ui state instead?
+        //cortex_m::asm::bkpt(); ////
         let mut cursor = match event {
             Event::MouseMoved(..) => Some(Cursor::Arrow),
             _ => None,
@@ -681,64 +682,80 @@ impl<T: Data + 'static> AppState<T> { ////
     }
 
     fn do_event(&mut self, source_id: WindowId, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
-        false ////TODO1
-        /* ////
-            let event = self.delegate_event(source_id, event);
+        ////let event = self.delegate_event(source_id, event);
 
-            let (is_handled, dirty, anim) = if let Some(event) = event {
-                /* ////
-                // handle system window-level commands
-                if let Event::Command(ref cmd) = event {
-                    match cmd.selector {
-                        sys_cmd::SET_MENU => {
-                            if let Some(mut win) = self.assemble_window_state(source_id) {
-                                win.set_menu(cmd);
-                            }
-                            return true;
+        let (is_handled, dirty, anim) = { ////
+        ////let (is_handled, dirty, anim) = if let Some(event) = event {
+            /* ////
+            // handle system window-level commands
+            if let Event::Command(ref cmd) = event {
+                match cmd.selector {
+                    sys_cmd::SET_MENU => {
+                        if let Some(mut win) = self.assemble_window_state(source_id) {
+                            win.set_menu(cmd);
                         }
-                        sys_cmd::SHOW_CONTEXT_MENU => {
-                            if let Some(mut win) = self.assemble_window_state(source_id) {
-                                win.show_context_menu(cmd);
-                            }
-                            return true;
+                        return true;
+                    }
+                    sys_cmd::SHOW_CONTEXT_MENU => {
+                        if let Some(mut win) = self.assemble_window_state(source_id) {
+                            win.show_context_menu(cmd);
                         }
-                        _ => (),
+                        return true;
                     }
-                }
-                */ ////
-
-                self.assemble_window_state(source_id)
-                    .map(|mut win| win.do_event_inner(event, win_ctx))
-                    .unwrap_or((false, false, false))
-            } else {
-                // if the event was swallowed by the delegate we consider it handled?
-                (true, false, false)
-            };
-
-            let AppState {
-                ref mut windows,
-                ref data,
-                ref env,
-                ..
-            } = self;
-            let Windows { state, windows } = windows;
-
-            // we send `update` to all windows, not just the active one:
-            for (id, window) in windows {
-                if let Some(state) = state.get(id) {
-                    let mut update_ctx = UpdateCtx {
-                        text_factory: win_ctx.text_factory(),
-                        window: &state.handle,
-                        needs_inval: false,
-                        window_id: *id,
-                    };
-                    window.update(&mut update_ctx, data, env);
-                    if update_ctx.needs_inval || (*id == source_id && (anim || dirty)) {
-                        update_ctx.window.invalidate();
-                    }
+                    _ => (),
                 }
             }
-            is_handled
+            */ ////
+
+            self.assemble_window_state(source_id)
+                .map(|mut win| win.do_event_inner(event, win_ctx))
+                .unwrap_or((false, false, false))
+        };
+        /* ////
+        else {
+            // if the event was swallowed by the delegate we consider it handled?
+            (true, false, false)
+        };
+        */ ////
+
+        let window_id = WindowId(1);  ////  Assume Window ID 1 is the first and only window
+        let mut update_ctx = UpdateCtx { ////
+            text_factory: win_ctx.text_factory(),
+            window: &self.get_handle(window_id),
+            needs_inval: false,
+            window_id,
+        };
+        self.window_update(window_id, &mut update_ctx); ////
+        cortex_m::asm::bkpt(); ////
+        if update_ctx.needs_inval { ////
+            update_ctx.window.invalidate();
+        }
+        true
+
+        /* ////
+        let AppState {
+            ref mut windows,
+            ref data,
+            ref env,
+            ..
+        } = self;
+        let Windows { state, windows } = windows;
+        // we send `update` to all windows, not just the active one:
+        for (id, window) in windows {
+            if let Some(state) = state.get(id) {
+                let mut update_ctx = UpdateCtx {
+                    text_factory: win_ctx.text_factory(),
+                    window: &state.handle,
+                    needs_inval: false,
+                    window_id: *id,
+                };
+                window.update(&mut update_ctx, data, env);
+                if update_ctx.needs_inval || (*id == source_id && (anim || dirty)) {
+                    update_ctx.window.invalidate();
+                }
+            }
+        }
+        is_handled
         */ ////
     }
 

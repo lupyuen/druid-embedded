@@ -154,9 +154,10 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
                 if ctx.is_active() {
                     ctx.set_active(false);
                     ctx.invalidate();
-                    if ctx.is_hot() {
+                    ////TODO: if ctx.is_hot() {
                         (self.action)(ctx, data, env);
-                    }
+                    ////}
+                    cortex_m::asm::bkpt(); ////
                 }
             }
             Event::HotChanged(_) => {
@@ -168,7 +169,7 @@ impl<T: Data + 'static> Widget<T> for Button<T> { ////
 
     fn update(&mut self, ctx: &mut UpdateCtx<T>, old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, old_data: Option<&T>, data: &T, env: &Env) {
-            self.label.update(ctx, old_data, data, env)
+        self.label.update(ctx, old_data, data, env)
     }
 
     fn to_type(self) -> WidgetType<T> { ////
