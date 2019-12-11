@@ -90,7 +90,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> Window<T, W> { ////
     pub fn update(&mut self, update_ctx: &mut UpdateCtx<T>, data: &T, env: &Env) {
     ////pub fn update(&mut self, update_ctx: &mut UpdateCtx, data: &T, env: &Env) {
         ////self.update_title(&update_ctx.window, data, env);
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         self.root.update(update_ctx, data, env);
     }
 

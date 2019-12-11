@@ -377,7 +377,6 @@ impl<T: Data> LocalizedString<T> {
         //TODO: this recomputes the string if either the language has changed,
         //or *anytime* we have arguments. Ideally we would be using a lens
         //to only recompute when our actual data has changed.
-        //cortex_m::asm::bkpt(); ////
         if self.args.is_some()
             ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
@@ -390,6 +389,7 @@ impl<T: Data> LocalizedString<T> {
                     .expect("resolve fail");
                 ////  Convert the first arg to text and exit
                 self.resolved = Some(argvalue.to_string());
+                //cortex_m::asm::bkpt(); ////
                 return true;
             }
             ////  No args to resolve

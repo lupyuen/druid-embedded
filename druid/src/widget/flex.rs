@@ -254,7 +254,7 @@ impl<T: Data + 'static + Default> Widget<T> for Flex<T> { ////
 
     fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         for child in &mut self.children {
             child.widget.update(ctx, data, env);
         }
