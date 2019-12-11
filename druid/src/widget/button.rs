@@ -121,10 +121,10 @@ impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
             };
         */ ////
 
+        // TODO paint_ctx.render_ctx.fill(rounded_rect, &bg_color); ////
         paint_ctx.render_ctx.stroke(rounded_rect, &border_color, 2.0); ////
-        ////paint_ctx.stroke(rounded_rect, &border_color, 2.0);
 
-        paint_ctx.render_ctx.fill(rounded_rect, &bg_color); ////
+        ////paint_ctx.stroke(rounded_rect, &border_color, 2.0);
         ////paint_ctx.render_ctx.fill(rounded_rect, &bg_gradient); ////
         ////paint_ctx.fill(rounded_rect, &bg_gradient);
 

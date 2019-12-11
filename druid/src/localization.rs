@@ -389,7 +389,7 @@ impl<T: Data> LocalizedString<T> {
                     .expect("resolve fail");
                 ////  Convert the first arg to text and exit
                 self.resolved = Some(argvalue.to_string());
-                cortex_m::asm::bkpt(); ////
+                //cortex_m::asm::bkpt(); ////
                 return true;
             }
             ////  No args to resolve
