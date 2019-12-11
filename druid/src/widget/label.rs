@@ -119,10 +119,11 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
         &mut self,
         layout_ctx: &mut LayoutCtx,
         bc: &BoxConstraints,
-        _data: &T,
+        data: &T,
         env: &Env,
     ) -> Size {
         bc.debug_check("Label");
+        self.text.resolve(data, env);  ////  TODO: Should auto-resolve
 
         let font_size = crate::env::TEXT_SIZE_NORMAL; ////
         ////let font_size = env.get(theme::TEXT_SIZE_NORMAL);
@@ -136,6 +137,7 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
 
     fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
+        cortex_m::asm::bkpt(); ////
         if self.text.resolve(data, env) {
             ctx.invalidate();
         }

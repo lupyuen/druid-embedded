@@ -1,4 +1,4 @@
-////  Derived from https://github.com/projectfluent/fluent-rs/blob/master/fluent-bundle/src/types.rs
+////  Simplified replacement for FluentValue. Derived from https://github.com/projectfluent/fluent-rs/blob/master/fluent-bundle/src/types.rs
 
 use core::fmt::Write;
 

@@ -334,12 +334,18 @@ impl<T> LocalizedString<T> {
     /// Return the localized value for this string, or the placeholder, if
     /// the localization is missing, or the key if there is no placeholder.
     pub fn localized_str(&self) -> &str {
-        ////"TODO localized_str"
-        self.resolved
+        cortex_m::asm::bkpt(); ////
+        self.resolved ////
             .as_ref()
-            .map(|s| s.as_str())
-            .or_else(|| self.placeholder.as_ref().map(String::as_ref))
-            .unwrap_or(self.key)
+            .expect("not resolved")
+            .as_str()
+        /* ////
+            self.resolved
+                .as_ref()
+                .map(|s| s.as_str())
+                .or_else(|| self.placeholder.as_ref().map(String::as_ref))
+                .unwrap_or(self.key)
+        */ ////
     }
 }
 
@@ -371,21 +377,20 @@ impl<T: Data> LocalizedString<T> {
         //TODO: this recomputes the string if either the language has changed,
         //or *anytime* we have arguments. Ideally we would be using a lens
         //to only recompute when our actual data has changed.
+        cortex_m::asm::bkpt(); ////
         if self.args.is_some()
             ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
             ////  Resolve all args
             let mut args = ArgValues::new();
-            for arg in self.args.as_ref() {
-                for arg in arg {
-                    let (k, v) = arg;
-                    let argvalue = (v.0)(data, env);
-                    args.insert(k, argvalue.clone())
-                        .expect("resolve fail");
-                    ////  Convert the first arg to text and exit
-                    self.resolved = Some(argvalue.to_string());
-                    return true;
-                }
+            for arg in self.args.as_ref().expect("resolve fail") {
+                let (k, v) = arg;
+                let argvalue = (v.0)(data, env);
+                args.insert(k, argvalue.clone())
+                    .expect("resolve fail");
+                ////  Convert the first arg to text and exit
+                self.resolved = Some(argvalue.to_string());
+                return true;
             }
             ////  No args to resolve
             false
