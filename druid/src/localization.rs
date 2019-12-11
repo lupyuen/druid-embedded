@@ -47,6 +47,7 @@ use core::fmt::Write; ////
 use crate::data::Data;
 use crate::env::Env;
 use crate::shell::Application;
+use crate::{ArgValue, ArgValues}; ////
 
 /* ////
     use fluent_bundle::{
@@ -89,10 +90,10 @@ type String = heapless::String::<MaxLocalizedString>; ////
 type MaxLocalizedArg = heapless::consts::U2; //// Max number of localized args
 type Vec<T> = heapless::Vec::<T, MaxLocalizedArg>; ///
 
-type ArgClosure<T> = fn(&T, &Env) -> String; ////
 //////NOTE: instead of a closure, at some point we can use something like a lens for this.
 //////TODO: this is an Arc so that it can be clone, which is a bound on things like `Menu`.
 /////// A closure that generates a localization value.
+type ArgClosure<T> = fn(&T, &Env) -> ArgValue; ////
 ////type ArgClosure<T> = Arc<dyn Fn(&T, &Env) -> FluentValue<'static> + 'static>;
 
 /// Wraps a closure that generates an argument for localization.
@@ -114,198 +115,198 @@ pub struct LocalizedString<T> {
 }
 
 /* ////
-/// A stack of localization resources, used for fallback.
-struct BundleStack(Vec<FluentBundle<Arc<FluentResource>>>);
+    /// A stack of localization resources, used for fallback.
+    struct BundleStack(Vec<FluentBundle<Arc<FluentResource>>>);
 
-impl BundleStack {
-    fn get_message(&self, id: &str) -> Option<FluentMessage> {
-        self.0.iter().flat_map(|b| b.get_message(id)).next()
-    }
-
-    fn format_pattern(
-        &self,
-        id: &str,
-        pattern: &FluentPattern,
-        args: Option<&FluentArgs>,
-        errors: &mut Vec<FluentError>,
-    ) -> String {
-        for bundle in self.0.iter() {
-            if bundle.has_message(id) {
-                return bundle.format_pattern(pattern, args, errors).to_string();
-            }
+    impl BundleStack {
+        fn get_message(&self, id: &str) -> Option<FluentMessage> {
+            self.0.iter().flat_map(|b| b.get_message(id)).next()
         }
-        format!("localization failed for key '{}'", id)
-    }
-}
 
-//NOTE: much of this is adapted from https://github.com/projectfluent/fluent-rs/blob/master/fluent-resmgr/src/resource_manager.rs
-impl ResourceManager {
-    /// Loads a new localization resource from disk, as needed.
-    fn get_resource(&mut self, res_id: &str, locale: &str) -> Arc<FluentResource> {
-        let path = self
-            .path_scheme
-            .replace("{locale}", locale)
-            .replace("{res_id}", res_id);
-        if let Some(res) = self.resources.get(&path) {
-            res.clone()
-        } else {
-            let string = fs::read_to_string(&path).unwrap_or_else(|_| {
-                if (res_id, locale) == ("builtin.ftl", "en-US") {
-                    FALLBACK_STRINGS.to_string()
-                } else {
-                    error!("missing resouce {}/{}", locale, res_id);
-                    String::new()
+        fn format_pattern(
+            &self,
+            id: &str,
+            pattern: &FluentPattern,
+            args: Option<&FluentArgs>,
+            errors: &mut Vec<FluentError>,
+        ) -> String {
+            for bundle in self.0.iter() {
+                if bundle.has_message(id) {
+                    return bundle.format_pattern(pattern, args, errors).to_string();
                 }
-            });
-            let res = match FluentResource::try_new(string) {
-                Ok(res) => Arc::new(res),
-                Err((res, _err)) => Arc::new(res),
-            };
-            self.resources.insert(path, res.clone());
-            res
-        }
-    }
-
-    /// Return the best localization bundle for the provided `LanguageIdentifier`.
-    fn get_bundle(&mut self, locale: &LanguageIdentifier, resource_ids: &[String]) -> BundleStack {
-        let resolved_locales = self.resolve_locales(locale.clone());
-        debug!("resolved: {}", PrintLocales(resolved_locales.as_slice()));
-        let mut stack = Vec::new();
-        for locale in &resolved_locales {
-            let mut bundle = FluentBundle::new(&resolved_locales);
-            for res_id in resource_ids {
-                let res = self.get_resource(&res_id, &locale.to_string());
-                bundle.add_resource(res).unwrap();
             }
-            stack.push(bundle);
+            format!("localization failed for key '{}'", id)
         }
-        BundleStack(stack)
     }
 
-    /// Given a locale, returns the best set of available locales.
-    pub(crate) fn resolve_locales(&self, locale: LanguageIdentifier) -> Vec<LanguageIdentifier> {
-        negotiate_languages(
-            &[locale],
-            &self.locales,
-            Some(&self.default_locale),
-            NegotiationStrategy::Filtering,
-        )
-        .into_iter()
-        .map(|l| l.to_owned())
-        .collect()
+    //NOTE: much of this is adapted from https://github.com/projectfluent/fluent-rs/blob/master/fluent-resmgr/src/resource_manager.rs
+    impl ResourceManager {
+        /// Loads a new localization resource from disk, as needed.
+        fn get_resource(&mut self, res_id: &str, locale: &str) -> Arc<FluentResource> {
+            let path = self
+                .path_scheme
+                .replace("{locale}", locale)
+                .replace("{res_id}", res_id);
+            if let Some(res) = self.resources.get(&path) {
+                res.clone()
+            } else {
+                let string = fs::read_to_string(&path).unwrap_or_else(|_| {
+                    if (res_id, locale) == ("builtin.ftl", "en-US") {
+                        FALLBACK_STRINGS.to_string()
+                    } else {
+                        error!("missing resouce {}/{}", locale, res_id);
+                        String::new()
+                    }
+                });
+                let res = match FluentResource::try_new(string) {
+                    Ok(res) => Arc::new(res),
+                    Err((res, _err)) => Arc::new(res),
+                };
+                self.resources.insert(path, res.clone());
+                res
+            }
+        }
+
+        /// Return the best localization bundle for the provided `LanguageIdentifier`.
+        fn get_bundle(&mut self, locale: &LanguageIdentifier, resource_ids: &[String]) -> BundleStack {
+            let resolved_locales = self.resolve_locales(locale.clone());
+            debug!("resolved: {}", PrintLocales(resolved_locales.as_slice()));
+            let mut stack = Vec::new();
+            for locale in &resolved_locales {
+                let mut bundle = FluentBundle::new(&resolved_locales);
+                for res_id in resource_ids {
+                    let res = self.get_resource(&res_id, &locale.to_string());
+                    bundle.add_resource(res).unwrap();
+                }
+                stack.push(bundle);
+            }
+            BundleStack(stack)
+        }
+
+        /// Given a locale, returns the best set of available locales.
+        pub(crate) fn resolve_locales(&self, locale: LanguageIdentifier) -> Vec<LanguageIdentifier> {
+            negotiate_languages(
+                &[locale],
+                &self.locales,
+                Some(&self.default_locale),
+                NegotiationStrategy::Filtering,
+            )
+            .into_iter()
+            .map(|l| l.to_owned())
+            .collect()
+        }
     }
-}
 
-impl L10nManager {
-    /// Create a new localization manager.
-    ///
-    /// `resources` is a list of file names that contain strings. `base_dir`
-    /// is a path to a directory that includes per-locale subdirectories.
-    ///
-    /// This directory should be of the structure `base_dir/{locale}/{resource}`,
-    /// where '{locale}' is a valid BCP47 language tag, and {resource} is a `.ftl`
-    /// included in `resources`.
-    pub fn new(resources: Vec<String>, base_dir: &str) -> Self {
-        fn get_available_locales(base_dir: &str) -> Result<Vec<LanguageIdentifier>, io::Error> {
-            let mut locales = vec![];
+    impl L10nManager {
+        /// Create a new localization manager.
+        ///
+        /// `resources` is a list of file names that contain strings. `base_dir`
+        /// is a path to a directory that includes per-locale subdirectories.
+        ///
+        /// This directory should be of the structure `base_dir/{locale}/{resource}`,
+        /// where '{locale}' is a valid BCP47 language tag, and {resource} is a `.ftl`
+        /// included in `resources`.
+        pub fn new(resources: Vec<String>, base_dir: &str) -> Self {
+            fn get_available_locales(base_dir: &str) -> Result<Vec<LanguageIdentifier>, io::Error> {
+                let mut locales = vec![];
 
-            let res_dir = fs::read_dir(base_dir)?;
-            for entry in res_dir {
-                if let Ok(entry) = entry {
-                    let path = entry.path();
-                    if path.is_dir() {
-                        if let Some(name) = path.file_name() {
-                            if let Some(name) = name.to_str() {
-                                let langid: LanguageIdentifier =
-                                    name.parse().expect("Parsing failed.");
-                                locales.push(langid);
+                let res_dir = fs::read_dir(base_dir)?;
+                for entry in res_dir {
+                    if let Ok(entry) = entry {
+                        let path = entry.path();
+                        if path.is_dir() {
+                            if let Some(name) = path.file_name() {
+                                if let Some(name) = name.to_str() {
+                                    let langid: LanguageIdentifier =
+                                        name.parse().expect("Parsing failed.");
+                                    locales.push(langid);
+                                }
                             }
                         }
                     }
                 }
+                Ok(locales)
             }
-            Ok(locales)
+
+            let default_locale: LanguageIdentifier =
+                "en-US".parse().expect("failed to parse default locale");
+            let current_locale = Application::get_locale()
+                .parse()
+                .unwrap_or_else(|_| default_locale.clone());
+            let locales = get_available_locales(base_dir).unwrap_or_default();
+            debug!(
+                "available locales {}, current {}",
+                PrintLocales(&locales),
+                current_locale,
+            );
+            let mut path_scheme = base_dir.to_string();
+            path_scheme.push_str("/{locale}/{res_id}");
+
+            let mut res_mgr = ResourceManager {
+                resources: HashMap::new(),
+                path_scheme,
+                default_locale,
+                locales,
+            };
+
+            let current_bundle = res_mgr.get_bundle(&current_locale, &resources);
+
+            L10nManager {
+                res_mgr,
+                current_bundle,
+                resources,
+                current_locale,
+            }
         }
 
-        let default_locale: LanguageIdentifier =
-            "en-US".parse().expect("failed to parse default locale");
-        let current_locale = Application::get_locale()
-            .parse()
-            .unwrap_or_else(|_| default_locale.clone());
-        let locales = get_available_locales(base_dir).unwrap_or_default();
-        debug!(
-            "available locales {}, current {}",
-            PrintLocales(&locales),
-            current_locale,
-        );
-        let mut path_scheme = base_dir.to_string();
-        path_scheme.push_str("/{locale}/{res_id}");
+        /// Fetch a localized string from the current bundle by key.
+        ///
+        /// In general, this should not be used directly; [`LocalizedString`]
+        /// should be used for localization, and you should call
+        /// [`LocalizedString::resolve`] to update the string as required.
+        ///
+        ///[`LocalizedString`]: struct.LocalizedString.html
+        ///[`LocalizedString::resolve`]: struct.LocalizedString.html#method.resolve
+        pub fn localize<'args>(
+            &'args self,
+            key: &str,
+            args: impl Into<Option<&'args FluentArgs<'args>>>,
+        ) -> Option<String> {
+            let args = args.into();
+            let value = match self
+                .current_bundle
+                .get_message(key)
+                .and_then(|msg| msg.value)
+            {
+                Some(v) => v,
+                None => return None,
+            };
+            let mut errs = Vec::new();
+            let result = self
+                .current_bundle
+                .format_pattern(key, value, args, &mut errs);
+            for err in errs {
+                warn!("localization error {:?}", err);
+            }
 
-        let mut res_mgr = ResourceManager {
-            resources: HashMap::new(),
-            path_scheme,
-            default_locale,
-            locales,
-        };
-
-        let current_bundle = res_mgr.get_bundle(&current_locale, &resources);
-
-        L10nManager {
-            res_mgr,
-            current_bundle,
-            resources,
-            current_locale,
+            // fluent inserts bidi controls when interpolating, and they can
+            // cause rendering issues; for now we just strip them.
+            // https://www.w3.org/International/questions/qa-bidi-unicode-controls#basedirection
+            const START_ISOLATE: char = '\u{2068}';
+            const END_ISOLATE: char = '\u{2069}';
+            if args.is_some() && result.chars().any(|c| c == START_ISOLATE) {
+                Some(
+                    result
+                        .chars()
+                        .filter(|c| c != &START_ISOLATE && c != &END_ISOLATE)
+                        .collect(),
+                )
+            } else {
+                Some(result)
+            }
         }
+        //TODO: handle locale change
     }
-
-    /// Fetch a localized string from the current bundle by key.
-    ///
-    /// In general, this should not be used directly; [`LocalizedString`]
-    /// should be used for localization, and you should call
-    /// [`LocalizedString::resolve`] to update the string as required.
-    ///
-    ///[`LocalizedString`]: struct.LocalizedString.html
-    ///[`LocalizedString::resolve`]: struct.LocalizedString.html#method.resolve
-    pub fn localize<'args>(
-        &'args self,
-        key: &str,
-        args: impl Into<Option<&'args FluentArgs<'args>>>,
-    ) -> Option<String> {
-        let args = args.into();
-        let value = match self
-            .current_bundle
-            .get_message(key)
-            .and_then(|msg| msg.value)
-        {
-            Some(v) => v,
-            None => return None,
-        };
-        let mut errs = Vec::new();
-        let result = self
-            .current_bundle
-            .format_pattern(key, value, args, &mut errs);
-        for err in errs {
-            warn!("localization error {:?}", err);
-        }
-
-        // fluent inserts bidi controls when interpolating, and they can
-        // cause rendering issues; for now we just strip them.
-        // https://www.w3.org/International/questions/qa-bidi-unicode-controls#basedirection
-        const START_ISOLATE: char = '\u{2068}';
-        const END_ISOLATE: char = '\u{2069}';
-        if args.is_some() && result.chars().any(|c| c == START_ISOLATE) {
-            Some(
-                result
-                    .chars()
-                    .filter(|c| c != &START_ISOLATE && c != &END_ISOLATE)
-                    .collect(),
-            )
-        } else {
-            Some(result)
-        }
-    }
-    //TODO: handle locale change
-}
 */ ////
 
 impl<T> LocalizedString<T> {
@@ -351,7 +352,7 @@ impl<T: Data> LocalizedString<T> {
     pub fn with_arg(
         mut self,
         key: &'static str,
-        f: fn(&T, &Env) -> String, ////
+        f: fn(&T, &Env) -> ArgValue, ////
         ////f: impl Fn(&T, &Env) -> FluentValue<'static> + 'static,
     ) -> Self {
         self.args
@@ -373,23 +374,27 @@ impl<T: Data> LocalizedString<T> {
         if self.args.is_some()
             ////|| self.resolved_lang.as_ref() != Some(&env.localization_manager().current_locale)
         {
-            let args = self ////
-            ////let args: Option<FluentArgs> = self
-                .args
-                .as_ref()
-                .map(|a| a.iter().map(|(k, v)| (*k, (v.0)(data, env))).collect())
-                .expect("resolve fail")  ////
-                ;
-
-            ////  Convert the first arg to text
-            let arg = args[0];  ////  Take the first arg
-            let mut buffer = String::new();  ////
-            write!(&mut buffer, "{}", arg)  ////  TODO: Allow other formats
-                .expect("resolve fail");
-            self.resolved = Some(buffer);  ////
-            true ////
+            ////  Resolve all args
+            let mut args = ArgValues::new();
+            for arg in self.args.as_ref() {
+                for arg in arg {
+                    let (k, v) = arg;
+                    let argvalue = (v.0)(data, env);
+                    args.insert(k, argvalue.clone())
+                        .expect("resolve fail");
+                    ////  Convert the first arg to text and exit
+                    self.resolved = Some(argvalue.to_string());
+                    return true;
+                }
+            }
+            ////  No args to resolve
+            false
 
             /* ////
+                let args: Option<FluentArgs> = self
+                    .args
+                    .as_ref()
+                    .map(|a| a.iter().map(|(k, v)| (*k, (v.0)(data, env))).collect());
                 self.resolved_lang = Some(env.localization_manager().current_locale.clone());
                 let next = env.localization_manager().localize(self.key, args.as_ref());
                 let result = next != self.resolved;

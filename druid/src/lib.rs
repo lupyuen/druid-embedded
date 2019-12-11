@@ -24,6 +24,7 @@ use druid_shell as shell;
 pub use druid_shell::{kurbo, piet};
 
 mod app;
+mod argvalue; ////
 ////mod app_delegate;
 ////mod command;
 mod data;
@@ -59,6 +60,7 @@ pub use shell::{ ////
 }; ////
 
 pub use app::{AppLauncher, WindowDesc};
+use argvalue::{ArgValue, ArgValues}; ////
 ////pub use app_delegate::{AppDelegate, DelegateCtx};
 ////pub use command::{sys as commands, Command, Selector};
 pub use data::Data;
