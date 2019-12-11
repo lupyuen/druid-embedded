@@ -43,7 +43,7 @@ type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 
 /// A container with either horizontal or vertical layout.
 #[derive(Clone)] ////
-pub struct Flex<T: Data + 'static> { ////
+pub struct Flex<T: Data + 'static + Default> { ////
 ////pub struct Flex<T: Data> {
     id: u32, //// Unique Widget ID
     direction: Axis,
@@ -52,7 +52,7 @@ pub struct Flex<T: Data + 'static> { ////
 }
 
 #[derive(Clone)] ////
-struct ChildWidget<T: Data + 'static> { ////
+struct ChildWidget<T: Data + 'static + Default> { ////
 ////struct ChildWidget<T: Data> {
     widget: WidgetPod<T, WidgetBox<T>>, ////
     ////widget: WidgetPod<T, Box<dyn Widget<T>>>,
@@ -123,7 +123,7 @@ impl Column {
     }
 }
 
-impl<T: Data + 'static> Flex<T> { ////
+impl<T: Data + 'static + Default> Flex<T> { ////
 ////impl<T: Data> Flex<T> {
     /// Add a child widget.
     ///
@@ -150,7 +150,7 @@ impl<T: Data + 'static> Flex<T> { ////
     }
 }
 
-impl<T: Data + 'static> Widget<T> for Flex<T> { ////
+impl<T: Data + 'static + Default> Widget<T> for Flex<T> { ////
 ////impl<T: Data> Widget<T> for Flex<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         for child in &mut self.children {
@@ -279,7 +279,7 @@ impl<T: Data + 'static> Widget<T> for Flex<T> { ////
 }
 
 /// Implement formatted output for ChildWidget
-impl<T: Data> core::fmt::Debug for ChildWidget<T> { ////
+impl<T: Data + Default> core::fmt::Debug for ChildWidget<T> { ////
     fn fmt(&self, _fmt: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
         //  TODO
         Ok(())

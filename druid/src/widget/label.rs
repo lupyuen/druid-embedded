@@ -61,7 +61,7 @@ pub struct DynLabel<T: Data> {
 }
 */ ////
 
-impl<T: Data + 'static> Label<T> { ////
+impl<T: Data + 'static + Default> Label<T> { ////
 ////impl<T: Data> Label<T> {
     /// Discussion question: should this return Label or a wrapped
     /// widget (with WidgetPod)?
@@ -91,7 +91,7 @@ impl<T: Data + 'static> Label<T> { ////
     }
 }
 
-impl<T: Data + 'static> Widget<T> for Label<T> { ////
+impl<T: Data + 'static + Default> Widget<T> for Label<T> { ////
 ////impl<T: Data> Widget<T> for Label<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, _data: &T, env: &Env) {
         let font_size = crate::env::TEXT_SIZE_NORMAL; ////env.get(theme::TEXT_SIZE_NORMAL);
@@ -156,7 +156,7 @@ impl<T: Data + 'static> Widget<T> for Label<T> { ////
     }
 }
 
-impl<T: Data + 'static> LabelText<T> { ////
+impl<T: Data + 'static + Default> LabelText<T> { ////
 ////impl<T: Data> LabelText<T> {
     /// The text that should be displayed. This ensures that localized
     /// strings are up to date.

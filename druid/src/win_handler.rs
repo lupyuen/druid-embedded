@@ -90,7 +90,7 @@ pub fn handle_touch(x: u16, y: u16) { ////
 }
 
 /// Specialised Trait for handling static Windows, Window Handlers and Application Data on embedded platforms
-pub trait GlobalWindows<D: Data + 'static> { ////
+pub trait GlobalWindows<D: Data + 'static + Default> { ////
     /// Add a WindowBox for the Data type
     fn add_window(&self, window_id: WindowId, window: WindowBox<D>);
     /// Add a Window Handler for the Data type
@@ -132,7 +132,7 @@ pub trait GlobalWindows<D: Data + 'static> { ////
 }
 
 /// Default Trait will not have static Windows and Window Handlers
-impl<D: Data + 'static> GlobalWindows<D> for AppState<D> { ////
+impl<D: Data + 'static + Default> GlobalWindows<D> for AppState<D> { ////
     default fn add_window(&self, window_id: WindowId, window: WindowBox<D>)
         { panic!("no global windows") }
     default fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>)
@@ -270,7 +270,7 @@ impl GlobalWindows<u32> for AppState<u32> { ////
 /// This is something of an internal detail and possibly we don't want to surface
 /// it publicly.
 #[derive(Clone, Default)] ////
-pub struct DruidHandler<T: Data + 'static> { ////
+pub struct DruidHandler<T: Data + 'static + Default> { ////
 ////pub struct DruidHandler<T: Data> {
     /// The shared app state.
     ////app_state: Rc<RefCell<AppState<T>>>,
@@ -282,7 +282,7 @@ pub struct DruidHandler<T: Data + 'static> { ////
 
 /// State shared by all windows in the UI.
 #[derive(Clone)] ////
-pub(crate) struct AppState<T: Data + 'static> { ////
+pub(crate) struct AppState<T: Data + 'static + Default> { ////
 ////pub(crate) struct AppState<T: Data> {
     phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
@@ -294,7 +294,7 @@ pub(crate) struct AppState<T: Data + 'static> { ////
 
 /// All active windows.
 #[derive(Clone)] ////
-struct Windows<T: Data + 'static> { ////
+struct Windows<T: Data + 'static + Default> { ////
 ////struct Windows<T: Data> {
     phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////windows: HashMap<WindowId, Window<T>>,  //// Replaced by ALL_WINDOWS
@@ -303,7 +303,7 @@ struct Windows<T: Data + 'static> { ////
 
 /// Per-window state not owned by user code.
 #[derive(Clone, Default)] ////
-pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
+pub(crate) struct WindowState<D: Data + 'static + Default> { ////  D is Data + 'static
 ////pub(crate) struct WindowState {
     window_id: WindowId,  ////
     phantom: PhantomData<D>,  ////  Needed to do compile-time checking for `Data`
@@ -312,7 +312,7 @@ pub(crate) struct WindowState<D: Data + 'static> { ////  D is Data + 'static
 }
 
 /// Everything required for a window to handle an event.
-struct SingleWindowState<T: Data + 'static> { ////
+struct SingleWindowState<T: Data + 'static + Default> { ////
 ////struct SingleWindowState<'a, T: Data> {
     window_id: WindowId,
     phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
@@ -323,7 +323,7 @@ struct SingleWindowState<T: Data + 'static> { ////
     ////env: &'a Env, //// Replaced by Env{}
 }
 
-impl<T: Data + 'static> Windows<T> { ////
+impl<T: Data + 'static + Default> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
     fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
@@ -391,7 +391,7 @@ impl<T: Data + 'static> Windows<T> { ////
     }
 }
 
-impl<T: Data + 'static> SingleWindowState<T> { ////
+impl<T: Data + 'static + Default> SingleWindowState<T> { ////
 ////impl<T: Data + 'static> SingleWindowState<T> {
     fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
@@ -562,7 +562,7 @@ impl<T: Data + 'static> SingleWindowState<T> { ////
     }
 }
 
-impl<T: Data + 'static> AppState<T> { ////
+impl<T: Data + 'static + Default> AppState<T> { ////
 ////impl<T: Data + 'static> AppState<T> {
     pub(crate) fn new(
         ////data: T,
@@ -767,7 +767,7 @@ impl<T: Data + 'static> AppState<T> { ////
 
 }
 
-impl<T: Data + 'static> DruidHandler<T> { ////
+impl<T: Data + 'static + Default> DruidHandler<T> { ////
 ////impl<T: Data + 'static> DruidHandler<T> {
     /// Note: the root widget doesn't go in here, because it gets added to the
     /// app state.
@@ -917,7 +917,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
+impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
 ////impl<T: Data + 'static> WinHandler for DruidHandler<T> {
     /* //// TODO1
     fn connect(&mut self, handle: &WindowHandle<DruidHandler<T>>) { ////
@@ -1006,7 +1006,7 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
     */ ////
 }
 
-impl<T: Data + 'static> Default for Windows<T> { ////
+impl<T: Data + 'static + Default> Default for Windows<T> { ////
 ////impl<T: Data> Default for Windows<T> {
     fn default() -> Self {
         Windows {

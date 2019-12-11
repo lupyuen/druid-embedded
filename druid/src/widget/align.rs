@@ -24,7 +24,7 @@ use crate::piet::UnitPoint;
 
 /// A widget that aligns its child.
 #[derive(Clone)] ////
-pub struct Align<T: Data + 'static> { ////
+pub struct Align<T: Data + 'static + Default> { ////
 ////pub struct Align<T: Data> {
     id: u32, //// Unique Widget ID
     align: UnitPoint,
@@ -34,7 +34,7 @@ pub struct Align<T: Data + 'static> { ////
     height_factor: Option<f64>,
 }
 
-impl<T: Data + 'static> Align<T> { ////
+impl<T: Data + 'static + Default> Align<T> { ////
 ////impl<T: Data> Align<T> {
     /// Create widget with alignment.
     ///
@@ -104,7 +104,7 @@ impl<T: Data + 'static> Align<T> { ////
     }
 }
 
-impl<T: Data + 'static> Widget<T> for Align<T> {
+impl<T: Data + 'static + Default> Widget<T> for Align<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         self.child.paint_with_offset(paint_ctx, data, env);
     }

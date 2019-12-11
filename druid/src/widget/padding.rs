@@ -23,7 +23,7 @@ use crate::{
 
 /// A widget that just adds padding around its child.
 #[derive(Clone)] ////
-pub struct Padding<T: Data + 'static> { ////
+pub struct Padding<T: Data + 'static + Default> { ////
 ////pub struct Padding<T: Data> {
     id: u32, //// Unique Widget ID
     left: f64,
@@ -34,7 +34,7 @@ pub struct Padding<T: Data + 'static> { ////
     ////child: WidgetPod<T, Box<dyn Widget<T>>>,
 }
 
-impl<T: Data + 'static> Padding<T> { ////
+impl<T: Data + 'static + Default> Padding<T> { ////
 ////impl<T: Data> Padding<T> {
     /* //// Deprecated
         /// Create widget with uniform padding.
@@ -99,7 +99,7 @@ impl<T: Data + 'static> Padding<T> { ////
     }
 }
 
-impl<T: Data + 'static> Widget<T> for Padding<T> { ////
+impl<T: Data + 'static + Default> Widget<T> for Padding<T> { ////
 ////impl<T: Data> Widget<T> for Padding<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, _base_state: &BaseState, data: &T, env: &Env) {
         self.child.paint_with_offset(paint_ctx, data, env);

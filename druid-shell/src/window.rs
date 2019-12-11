@@ -74,7 +74,7 @@ impl TimerToken {
 
 /// A handle to a platform window object.
 #[derive(Clone, Default)]
-pub struct WindowHandle<THandler: WinHandler<THandler>> (  ////  THandler is DruidHandler<T: Data + 'static>
+pub struct WindowHandle<THandler: WinHandler<THandler> + Clone + Default> (  ////  THandler is DruidHandler<T: Data + 'static>
     pub platform::WindowHandle<THandler>
 );
 ////pub struct WindowHandle(platform::WindowHandle);
@@ -327,7 +327,7 @@ pub trait WinHandler<THandler> {  ////  THandler is DruidHandler<T: Data + 'stat
     */ ////
 }
 
-impl<THandler: WinHandler<THandler>> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
+impl<THandler: WinHandler<THandler> + Clone + Default> From<platform::WindowHandle<THandler>> for WindowHandle<THandler> { ////  THandler is DruidHandler<T: Data + 'static>
 ////impl From<platform::WindowHandle> for WindowHandle {
     fn from(src: platform::WindowHandle<THandler>) -> WindowHandle<THandler> { ////
     ////fn from(src: platform::WindowHandle) -> WindowHandle {

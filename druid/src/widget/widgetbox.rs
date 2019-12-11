@@ -16,7 +16,7 @@ static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = [
 ];
 
 /// Specialised Trait for handling static `Widgets` on embedded platforms
-pub trait GlobalWidgets<D: Data + 'static> {
+pub trait GlobalWidgets<D: Data + 'static + Default> {
     /// Fetch the static `Widgets` for the Data type
     fn get_widgets(&self) -> &'static mut [ WidgetType<D> ];
     /// Add a `Widget` for the Data type
@@ -24,7 +24,7 @@ pub trait GlobalWidgets<D: Data + 'static> {
 }
 
 /// Default Trait will not have static `Widgets`
-impl<D: Data + 'static> GlobalWidgets<D> for WidgetBox<D> {
+impl<D: Data + 'static + Default> GlobalWidgets<D> for WidgetBox<D> {
     default fn get_widgets(&self) -> &'static mut [ WidgetType<D> ] { panic!("no global widgets") }
     default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global widgets") }
 }
@@ -52,7 +52,7 @@ pub struct WidgetBox<D: Data + 'static>(
 
 /// Enum to store each `Widget`
 #[derive(Clone)]
-pub enum WidgetType<D: Data + 'static> {
+pub enum WidgetType<D: Data + 'static + Default> {
     None,
     Align(Align<D>),
     Button(Button<D>),
@@ -61,12 +61,12 @@ pub enum WidgetType<D: Data + 'static> {
     Padding(Padding<D>),
 }
 
-impl<D: Data + 'static> Default for WidgetType<D> {
+impl<D: Data + 'static + Default> Default for WidgetType<D> {
     fn default() -> Self { WidgetType::None }
 }
 
 /// Generic implementation of `WidgetBox`
-impl<D: Data + 'static> WidgetBox<D> {
+impl<D: Data + 'static + Default> WidgetBox<D> {
     /// Create a new box for the `Widget`
     pub fn new<W: Widget<D> + Clone>(widget: W) -> Self {
         let id = widget.clone().get_id();
@@ -81,7 +81,7 @@ impl<D: Data + 'static> WidgetBox<D> {
 }
 
 /// Implementation of `Widget` trait for `WidgetBox`. We just forward to the inner `Widget`.
-impl<D: Data + 'static> Widget<D> for WidgetBox<D> {
+impl<D: Data + 'static + Default> Widget<D> for WidgetBox<D> {
     fn paint(
         &mut self, 
         paint_ctx: &mut PaintCtx, 
