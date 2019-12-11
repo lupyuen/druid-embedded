@@ -54,11 +54,16 @@ static mut TEXT: crate::piet::PietText = crate::piet::PietText{};
 static mut DRUID_CONTEXT: DruidContext = DruidContext {};
 static mut PIET_CONTEXT: Piet = Piet {};
 
-struct DruidContext {}
+pub struct DruidContext {}
 impl WinCtx for DruidContext {
     fn invalidate(&mut self) {}
     fn text_factory(&mut self) -> &mut Text { panic!("no text factory") }
     fn set_cursor(&mut self, _cursor: &Cursor) { panic!("no set cursor") }
+}
+impl DruidContext {
+    pub fn new() -> Self {
+        DruidContext {}
+    }
 }
 
 /*

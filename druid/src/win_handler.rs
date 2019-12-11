@@ -26,10 +26,12 @@
 
 use core::marker::PhantomData; ////
 use core::clone::Clone; ////
-use crate::kurbo::{Rect, Size, Vec2};
+use crate::kurbo::{Rect, Size, Vec2, 
+    Point}; ////
 use crate::piet::{Piet, RenderContext};
 use crate::shell::{
     Application, Cursor, /* FileDialogOptions, */ MouseEvent, WinCtx, WinHandler, WindowHandle,
+    DruidContext, ////
 };
 
 /* ////
@@ -43,6 +45,7 @@ use crate::{
     PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, */ WindowDesc, WindowId,
     Widget, WindowBox, WindowType, widget::WidgetType, ////
 };
+use crate::shell::MouseButton; ////
 
 ////use crate::command::sys as sys_cmd;
 
@@ -64,6 +67,27 @@ static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
 ];
 /// DATA is the Application Data
 static mut DATA_U32: u32 = 0; ////
+
+pub fn handle_touch(x: u16, y: u16) { ////
+    let mut ctx = DruidContext::new();
+    let handler = unsafe { &mut ALL_HANDLERS_U32[1] };  //  Assume first window has ID 1
+    handler.mouse_down(
+        &MouseEvent {
+            pos: Point::new(x as f64, y as f64),
+            count: 1,
+            button: MouseButton::Left,
+        },
+        &mut ctx,
+    );
+    handler.mouse_up(
+        &MouseEvent {
+            pos: Point::new(x as f64, y as f64),
+            count: 0,
+            button: MouseButton::Left,
+        },
+        &mut ctx,
+    );
+}
 
 /// Specialised Trait for handling static Windows, Window Handlers and Application Data on embedded platforms
 pub trait GlobalWindows<D: Data + 'static> { ////
@@ -748,7 +772,7 @@ impl<T: Data + 'static> DruidHandler<T> { ////
     /// This is principally because in certain cases (such as keydown on Windows)
     /// the OS needs to know if an event was handled.
     fn do_event(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
-        AppState::<T>::new().do_event(self.window_id, event, win_ctx)
+        AppState::<T>::new().do_event(self.window_id, event, win_ctx) ////
         /* ////
             let result = self
                 .app_state
@@ -906,15 +930,14 @@ impl<T: Data + 'static> WinHandler<DruidHandler<T>> for DruidHandler<T> { ////
 
     fn mouse_down(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
         // TODO: double-click detection (or is this done in druid-shell?)
-        ////TODO
-        ////let event = Event::MouseDown(event.clone().into());
-        ////self.do_event(event, ctx);
+        let event = Event::MouseDown(event.clone().into());
+        self.do_event(event, ctx);
     }
 
     fn mouse_up(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
         ////TODO
-        ////let event = Event::MouseUp(event.clone().into());
-        ////self.do_event(event, ctx);
+        let event = Event::MouseUp(event.clone().into());
+        self.do_event(event, ctx);
     }
 
     fn mouse_move(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {

@@ -37,22 +37,20 @@ pub struct MouseEvent {
     ////pub button: MouseButton,
 }
 
-/*
 impl From<druid_shell::MouseEvent> for MouseEvent {
     fn from(src: druid_shell::MouseEvent) -> MouseEvent {
         let druid_shell::MouseEvent {
             pos,
-            mods,
+            ////mods,
             count,
             button,
         } = src;
         MouseEvent {
             pos,
             window_pos: pos,
-            mods,
+            ////mods,
             count,
-            button,
+            ////button,
         }
     }
 }
-*/
