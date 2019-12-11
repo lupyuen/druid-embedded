@@ -726,7 +726,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
             window_id,
         };
         self.window_update(window_id, &mut update_ctx); ////
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         if update_ctx.needs_inval { ////
             update_ctx.window.invalidate();
         }

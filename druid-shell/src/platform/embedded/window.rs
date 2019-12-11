@@ -393,6 +393,7 @@ impl<THandler: WinHandler<THandler> + Clone + Default> WindowHandle<THandler> { 
 
     // Request invalidation of the entire window contents.
     pub fn invalidate(&self) {
+        self.show();
         /* ////
             if let Some(state) = self.state.upgrade() {
                 state.window.queue_draw();

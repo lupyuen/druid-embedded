@@ -157,7 +157,7 @@ impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
                     ////TODO: if ctx.is_hot() {
                         (self.action)(ctx, data, env);
                     ////}
-                    cortex_m::asm::bkpt(); ////
+                    //cortex_m::asm::bkpt(); ////
                 }
             }
             Event::HotChanged(_) => {
