@@ -137,7 +137,7 @@ impl<T: Data + 'static + Default> Widget<T> for Label<T> { ////
 
     fn update(&mut self, ctx: &mut UpdateCtx<T>, _old_data: Option<&T>, data: &T, env: &Env) { ////
     ////fn update(&mut self, ctx: &mut UpdateCtx, _old_data: Option<&T>, data: &T, env: &Env) {
-        cortex_m::asm::bkpt(); ////
+        //cortex_m::asm::bkpt(); ////
         if self.text.resolve(data, env) {
             ctx.invalidate();
         }
