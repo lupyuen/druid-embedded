@@ -63,6 +63,6 @@ embedded-graphics = { version = "0.5.2", optional = true }
 [target.'cfg(all(target_arch = "arm", target_os = "none"))'.dependencies]
 embedded-graphics = "0.5.2" ####
 st7735-lcd        = { features = [ "graphics" ], path = "../../st7735-lcd-batch-rs" } #### TODO: https://github.com/lupyuen/st7735-lcd-batch-rs
-mynewt            = { path = "../../stm32bluepill-mynewt-sensor/rust/mynewt" } # Import mynewt library
+mynewt            = { path = "../../mynewt" } # Import mynewt library
 cortex-m          = "0.6.1" ####
 cortex-m-rt       = "0.6.10" ####
