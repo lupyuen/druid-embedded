@@ -23,5 +23,5 @@ pub mod error;
 pub mod runloop;
 pub mod util;
 pub mod window;
-pub use piet_common::{ start_display, test_display, show_touch }; ////
+pub use piet_common::{ start_display, draw_to_display, show_touch }; ////
 pub use window::DruidContext; ////
