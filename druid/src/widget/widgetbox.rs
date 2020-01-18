@@ -1,6 +1,6 @@
 //! `WidgetBox` contains a `Widget`. Allows for dynamic dispatch with static `Widgets` in `[no_std]`.
 use core::marker::PhantomData;
-use crate::kurbo::{Rect, Size};
+use crate::kurbo::{Size};
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget, WindowBox,
     widget::{Align, Button, Flex, Label, Padding},

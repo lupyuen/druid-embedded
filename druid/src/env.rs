@@ -22,7 +22,8 @@ use core::marker::PhantomData;////
 ////use std::sync::Arc;
 
 use crate::kurbo::{Point, Rect, Size};
-use crate::piet::{Color, LinearGradient};
+use crate::piet::{Color}; ////
+////use crate::piet::{Color, LinearGradient};
 
 ////use crate::localization::L10nManager;
 use crate::Data;
@@ -58,6 +59,7 @@ struct EnvImpl {
 ///
 /// [`ValueType`]: trait.ValueType.html
 pub struct Key<T> {
+    #[allow(dead_code)] ////
     key: &'static str,
     value_type: PhantomData<T>,
 }
@@ -67,7 +69,7 @@ type String = heapless::String::<MaxStringValue>; ////
 
 ////TODO: Sync with piet-embedded-graphics/src/text.rs
 ////pub type FontType<'a> = fonts::Font12x16::<'a, Rgb565>;
-pub const FONT_WIDTH:  u16  = 12;
+//pub const FONT_WIDTH:  u16  = 12;
 pub const FONT_HEIGHT: u16  = 16;
 pub const FONT_NAME:   &str = &"Font12x16";
 pub const TEXT_SIZE_NORMAL: f64 = FONT_HEIGHT as f64;
@@ -78,9 +80,9 @@ pub const WINDOW_HEIGHT: u16 = 240;
 pub const WINDOW_BACKGROUND_COLOR: Color = Color::BLACK;
 pub const LABEL_COLOR:  Color = Color::WHITE;
 pub const BORDER:       Color = Color::WHITE;
-pub const BORDER_LIGHT: Color = Color::WHITE;
-pub const BUTTON_LIGHT: Color = Color::BLACK;
-pub const BUTTON_DARK:  Color = Color::BLACK;
+//pub const BORDER_LIGHT: Color = Color::WHITE;
+//pub const BUTTON_LIGHT: Color = Color::BLACK;
+//pub const BUTTON_DARK:  Color = Color::BLACK;
 
 // we could do some serious deriving here: the set of types that can be stored
 // could be defined per-app
@@ -131,7 +133,7 @@ impl Env {
     /// # Panics
     ///
     /// Panics if the key is not found, or if it is present with the wrong type.
-    pub fn get<'a, V: ValueType<'a>>(&'a self, key: Key<V>) -> V {
+    pub fn get<'a, V: ValueType<'a>>(&'a self, _key: Key<V>) -> V {
         panic!("no env get"); ////TODO
         /* ////
         if let Some(value) = self.0.map.get(key.key) {
@@ -147,7 +149,7 @@ impl Env {
     /// # Panics
     ///
     /// Panics if the value for the key is found, but has the wrong type.
-    pub fn try_get<'a, V: ValueType<'a>>(&'a self, key: Key<V>) -> Option<V> {
+    pub fn try_get<'a, V: ValueType<'a>>(&'a self, _key: Key<V>) -> Option<V> {
         assert!(false, "no env try_get"); ////TODO
         None ////
         /*
@@ -159,7 +161,8 @@ impl Env {
     }
 
     /// Adds a key/value, acting like a builder.
-    pub fn adding<'a, V: ValueType<'a>>(mut self, key: Key<V>, value: impl Into<V::Owned>) -> Env {
+    #[allow(unused_mut)] ////
+    pub fn adding<'a, V: ValueType<'a>>(mut self, _key: Key<V>, _value: impl Into<V::Owned>) -> Env {
         assert!(false, "no env add"); ////TODO
         ////let env = Arc::make_mut(&mut self.0);
         ////env.map.insert(key.into(), value.into().into());
@@ -172,7 +175,7 @@ impl Env {
     ///
     /// Panics if the environment already has a value for the key, but it is
     /// of a different type.
-    pub fn set<'a, V: ValueType<'a>>(&'a mut self, key: Key<V>, value: impl Into<V::Owned>) {
+    pub fn set<'a, V: ValueType<'a>>(&'a mut self, _key: Key<V>, _value: impl Into<V::Owned>) {
         assert!(false, "no env set"); ////TODO
         /* ////
         let env = Arc::make_mut(&mut self.0);
@@ -254,6 +257,7 @@ impl Value {
         }
     }
 
+    #[allow(dead_code)] ////
     fn is_same_type(&self, other: &Value) -> bool {
         use Value::*;
         match (self, other) {
@@ -290,7 +294,7 @@ impl Data for Value {
 }
 
 impl Data for Env {
-    fn same(&self, other: &Env) -> bool {
+    fn same(&self, _other: &Env) -> bool {
         true ////TODO
         ////Arc::ptr_eq(&self.0, &other.0) || self.0.deref().same(other.0.deref())
     }

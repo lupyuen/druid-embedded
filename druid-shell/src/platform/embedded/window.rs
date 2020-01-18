@@ -30,7 +30,8 @@
     use gtk::{AccelGroup, ApplicationWindow};
 */
 use core::marker::PhantomData; ////
-use crate::kurbo::{Point, Size, Vec2};
+use crate::kurbo::{Size}; ////
+////use crate::kurbo::{Point, Size, Vec2};
 use crate::piet::{Piet, RenderContext};
 
 ////use super::dialog::{self, FileDialogType};
@@ -41,16 +42,13 @@ use crate::piet::{Piet, RenderContext};
 ////use crate::common_util::IdleCallback;
 ////use crate::dialog::{FileDialogOptions, FileInfo};
 ////use crate::keyboard;
-use crate::mouse::{Cursor, MouseButton, MouseEvent};
-use crate::window::{Text, TimerToken, WinCtx, WinHandler};
+use crate::mouse::{Cursor}; ////
+////use crate::mouse::{Cursor, MouseButton, MouseEvent};
+use crate::window::{Text, WinCtx, WinHandler}; ////
+////use crate::window::{Text, TimerToken, WinCtx, WinHandler};
 use crate::Error;
 
-////  TODO: Change to generic display
-type Display = st7735_lcd::ST7735<mynewt::SPI, mynewt::GPIO, mynewt::GPIO>;
-//  type Display = embedded_graphics::mock_display::MockDisplay<Rgb565>;
-static mut DISPLAY: Display = mynewt::fill_zero!(Display);
 static mut TEXT: crate::piet::PietText = crate::piet::PietText{};
-
 static mut DRUID_CONTEXT: DruidContext = DruidContext {};
 static mut PIET_CONTEXT: Piet = Piet {};
 

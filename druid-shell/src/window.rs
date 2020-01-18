@@ -22,7 +22,8 @@ use core::marker::PhantomData; ////
 ////use crate::dialog::{FileDialogOptions, FileInfo};
 use crate::error::Error;
 ////use crate::keyboard::{KeyEvent, KeyModifiers};
-use crate::kurbo::{Point, Size, Vec2};
+use crate::kurbo::{Size}; ////
+////use crate::kurbo::{Point, Size, Vec2};
 ////use crate::menu::Menu;
 use crate::mouse::{Cursor, MouseEvent};
 use crate::platform::window as platform;
@@ -40,6 +41,7 @@ impl TimerToken {
     /// A token that does not correspond to any timer.
     pub const INVALID: TimerToken = TimerToken(0);
 
+    #[allow(dead_code)] ////
     pub(crate) const fn new(id: usize) -> TimerToken {
         TimerToken(id)
     }

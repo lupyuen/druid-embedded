@@ -42,11 +42,8 @@
     use log::{debug, error, warn};
 */ ////
 
-use core::str::FromStr; ////
-use core::fmt::Write; ////
 use crate::data::Data;
 use crate::env::Env;
-use crate::shell::Application;
 use crate::{ArgValue, ArgValues}; ////
 
 /* ////

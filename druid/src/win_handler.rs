@@ -26,11 +26,10 @@
 
 use core::marker::PhantomData; ////
 use core::clone::Clone; ////
-use crate::kurbo::{Rect, Size, Vec2, 
-    Point}; ////
+use crate::kurbo::{Rect, Size, Point}; ////
 use crate::piet::{Piet, RenderContext};
 use crate::shell::{
-    Application, Cursor, /* FileDialogOptions, */ MouseEvent, WinCtx, WinHandler, WindowHandle,
+    /* Application, */ Cursor, /* FileDialogOptions, */ MouseEvent, WinCtx, WinHandler, WindowHandle,
     DruidContext, ////
 };
 
@@ -39,11 +38,11 @@ use crate::shell::{
     use crate::menu::ContextMenu;
     use crate::theme;
 */ ////
-use crate::window::Window;
+////use crate::window::Window;
 use crate::{
     BaseState, /* Command, */ Data, Env, Event, EventCtx, /* KeyEvent, KeyModifiers, */ LayoutCtx, /* MenuDesc, */ ////
-    PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, */ WindowDesc, WindowId,
-    Widget, WindowBox, WindowType, widget::WidgetType, ////
+    PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, WindowDesc, */ WindowId,
+    WindowBox, WindowType, ////
 };
 use crate::shell::MouseButton; ////
 
@@ -133,38 +132,38 @@ pub trait GlobalWindows<D: Data + 'static + Default> { ////
 
 /// Default Trait will not have static Windows and Window Handlers
 impl<D: Data + 'static + Default> GlobalWindows<D> for AppState<D> { ////
-    default fn add_window(&self, window_id: WindowId, window: WindowBox<D>)
+    default fn add_window(&self, _window_id: WindowId, _window: WindowBox<D>)
         { panic!("no global windows") }
-    default fn add_handler(&self, window_id: WindowId, handler: DruidHandler<D>)
+    default fn add_handler(&self, _window_id: WindowId, _handler: DruidHandler<D>)
         { panic!("no global windows") }
-    default fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<D>>
+    default fn get_handle(&self, _window_id: WindowId) -> WindowHandle<DruidHandler<D>>
         { panic!("no global windows") }
-    default fn set_data(&self, data: D)
+    default fn set_data(&self, _data: D)
         { panic!("no global windows") }
     default fn window_event(
         &mut self, 
-        window_id: WindowId,
-        ctx: &mut EventCtx<D>, 
-        event: &Event, 
+        _window_id: WindowId,
+        _ctx: &mut EventCtx<D>, 
+        _event: &Event, 
     ) { panic!("no global windows") }
     default fn window_update(
         &mut self, 
-        window_id: WindowId,
-        ctx: &mut UpdateCtx<D>, 
+        _window_id: WindowId,
+        _ctx: &mut UpdateCtx<D>, 
     ) { panic!("no global windows") }
     default fn window_layout(
         &mut self,
-        window_id: WindowId,
-        layout_ctx: &mut LayoutCtx,
+        _window_id: WindowId,
+        _layout_ctx: &mut LayoutCtx,
     ) { panic!("no global windows") }
     default fn window_paint(
         &mut self, 
-        window_id: WindowId,
-        paint_ctx: &mut PaintCtx, 
+        _window_id: WindowId,
+        _paint_ctx: &mut PaintCtx, 
     ) { panic!("no global windows") }
     default fn window_has_active(
         &mut self,
-        window_id: WindowId,
+        _window_id: WindowId,
     ) -> bool { panic!("no global windows") }
 }
 
@@ -325,7 +324,8 @@ struct SingleWindowState<T: Data + 'static + Default> { ////
 
 impl<T: Data + 'static + Default> Windows<T> { ////
 ////impl<T: Data> Windows<T> {
-    fn connect(&mut self, id: WindowId, handle: WindowHandle<DruidHandler<T>>) { ////
+    #[allow(dead_code)] ////
+    fn connect(&mut self, _id: WindowId, _handle: WindowHandle<DruidHandler<T>>) { ////
     ////fn connect(&mut self, id: WindowId, handle: WindowHandle) {
         ////AppState::<T>::new().add_handler(id, handle.0); //// TODO1
         /* ////
@@ -337,13 +337,15 @@ impl<T: Data + 'static + Default> Windows<T> { ////
         */ ////
     }
 
+    #[allow(dead_code)] ////
     fn add(&mut self, id: WindowId, window: WindowBox<T>) { ////
     ////fn add(&mut self, id: WindowId, window: Window<T>) {
         AppState::<T>::new().add_window(id, window); ////
         ////self.windows.insert(id, window);
     }
 
-    fn remove(&mut self, id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
+    #[allow(dead_code)] ////
+    fn remove(&mut self, _id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
     ////fn remove(&mut self, id: WindowId) -> Option<WindowHandle> {
         ////self.windows.remove(&id);
         ////self.state.remove(&id).map(|state| state.handle)
@@ -352,12 +354,13 @@ impl<T: Data + 'static + Default> Windows<T> { ////
     }
 
     //TODO: rename me?
+    #[allow(dead_code)] ////
     fn get<'a>( ////
         &'a mut self,
         window_id: WindowId,
         ////command_queue: &'a mut VecDeque<(WindowId, Command)>,
-        data: &'a mut T,
-        env: &'a Env,
+        _data: &'a mut T,
+        _env: &'a Env,
     ) -> Option<SingleWindowState<T>> { ////
     ////) -> Option<SingleWindowState<'a, T>> {        
         ////let state = self.state.get_mut(&window_id);
@@ -393,7 +396,7 @@ impl<T: Data + 'static + Default> Windows<T> { ////
 
 impl<T: Data + 'static + Default> SingleWindowState<T> { ////
 ////impl<T: Data + 'static> SingleWindowState<T> {
-    fn paint(&mut self, piet: &mut Piet, ctx: &mut dyn WinCtx) -> bool {
+    fn paint(&mut self, piet: &mut Piet, _ctx: &mut dyn WinCtx) -> bool {
         ////let request_anim = self.do_anim_frame(ctx);
         self.do_layout(piet);
         piet.clear(crate::env::WINDOW_BACKGROUND_COLOR); ////
@@ -456,7 +459,7 @@ impl<T: Data + 'static + Default> SingleWindowState<T> { ////
     fn do_event_inner(&mut self, event: Event, win_ctx: &mut dyn WinCtx) -> (bool, bool, bool) {
         // should there be a root base state persisting in the ui state instead?
         //cortex_m::asm::bkpt(); ////
-        let mut cursor = match event {
+        let _cursor = match event {
             Event::MouseMoved(..) => Some(Cursor::Arrow),
             _ => None,
         };
@@ -639,7 +642,8 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     }
     */
     
-    fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
+    #[allow(dead_code)] ////
+    fn remove_window(&mut self, _id: WindowId) -> Option<WindowHandle<DruidHandler<T>>> { ////
     ////fn remove_window(&mut self, id: WindowId) -> Option<WindowHandle> {
         None //// TODO
         /* ////
@@ -651,7 +655,8 @@ impl<T: Data + 'static + Default> AppState<T> { ////
         */ ////
     }
 
-    fn show_window(&mut self, id: WindowId) {
+    #[allow(dead_code)] ////
+    fn show_window(&mut self, _id: WindowId) {
         ////if let Some(state) = self.windows.state.get(&id) {
             ////TODO1 state.handle.bring_to_front_and_focus();
         ////}
@@ -684,7 +689,7 @@ impl<T: Data + 'static + Default> AppState<T> { ////
     fn do_event(&mut self, source_id: WindowId, event: Event, win_ctx: &mut dyn WinCtx) -> bool {
         ////let event = self.delegate_event(source_id, event);
 
-        let (is_handled, dirty, anim) = { ////
+        let (_is_handled, _dirty, _anim) = { ////
         ////let (is_handled, dirty, anim) = if let Some(event) = event {
             /* ////
             // handle system window-level commands
@@ -957,7 +962,7 @@ impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T
         self.do_event(event, ctx);
     }
 
-    fn mouse_move(&mut self, event: &MouseEvent, ctx: &mut dyn WinCtx) {
+    fn mouse_move(&mut self, _event: &MouseEvent, _ctx: &mut dyn WinCtx) {
         ////TODO
         ////let event = Event::MouseMoved(event.clone().into());
         ////self.do_event(event, ctx);

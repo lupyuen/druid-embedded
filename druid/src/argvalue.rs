@@ -65,7 +65,7 @@ impl ArgValue {
                     .expect("arg fail");
                 buffer
             }
-            ArgValue::Error(s) => "Error".into(),
+            ArgValue::Error(_s) => "Error".into(),
             ArgValue::None => "???".into(),
         }
     }

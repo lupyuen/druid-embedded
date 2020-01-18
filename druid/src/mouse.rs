@@ -43,7 +43,7 @@ impl From<druid_shell::MouseEvent> for MouseEvent {
             pos,
             ////mods,
             count,
-            button,
+            button: _,
         } = src;
         MouseEvent {
             pos,

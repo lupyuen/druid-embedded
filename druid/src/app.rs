@@ -24,8 +24,8 @@ use core::marker::PhantomData; ////
 use crate::kurbo::Size;
 use crate::shell::{Application, Error as PlatformError, /* RunLoop, */ WindowBuilder, WindowHandle};
 use crate::win_handler::{AppState, GlobalWindows};
-use crate::window::{Window, WindowId}; ////
-use crate::{/* theme, AppDelegate, */ Data, DruidHandler, Env, LocalizedString, /* MenuDesc, */ Widget, WindowBox}; ////
+use crate::window::{WindowId}; ////
+use crate::{/* theme, AppDelegate, */ Data, DruidHandler, /* Env, LocalizedString, MenuDesc, */ Widget}; ////
 
 /////// A function that modifies the initial environment.
 ////type EnvSetupFn = dyn FnOnce(&mut Env);
@@ -118,6 +118,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> AppLauncher<T, W> { //
     ///
     /// Returns an error if a window cannot be instantiated. This is usually
     /// a fatal error.
+    #[allow(unused_mut)] ////
     pub fn launch(mut self, data: T) -> Result<(), PlatformError> {
         Application::init();
         /* ////
@@ -212,7 +213,7 @@ impl<T: Data + 'static + Default, W: Widget<T> + 'static> WindowDesc<T, W> { ///
             .map(|m| m.build_window_menu(&state.borrow().data, &state.borrow().env));
         */ ////
 
-        let mut handler: DruidHandler<T> = DruidHandler::new_shared(self.id); ////
+        let handler: DruidHandler<T> = DruidHandler::new_shared(self.id); ////
         ////let handler = DruidHandler::new_shared(state.clone(), self.id);
 
         let mut builder: WindowBuilder<DruidHandler<T>> = WindowBuilder::new();

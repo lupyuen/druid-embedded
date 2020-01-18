@@ -48,8 +48,7 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use core::marker::PhantomData; ////
-use kurbo::{Affine, Point, Rect, Shape, Size, Vec2}; ////
+use kurbo::{Affine, Point, Rect, Shape, Size}; ////
 use piet::{Piet, RenderContext}; ////
 
 // these are the types from shell that we expose; others we only use internally.
@@ -75,7 +74,6 @@ pub use win_handler::{DruidHandler, GlobalWindows, handle_touch}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 use crate::widget::{WidgetType, WidgetBox}; ////
-use win_handler::AppState; ////
 pub use shell::{start_display, draw_to_display, show_touch}; ////
 
 /// A container for one widget in the hierarchy.
@@ -531,7 +529,7 @@ impl<T: Data + 'static + Default, W: Widget<T>> WidgetPod<T, W> { ////
         }
         //cortex_m::asm::bkpt(); ////
 
-        if let Err(e) = paint_ctx.render_ctx.save() { ////
+        if let Err(_e) = paint_ctx.render_ctx.save() { ////
         ////if let Err(e) = paint_ctx.save() {
             assert!(false, "save context fail"); ////
             ////error!("saving render context failed: {:?}", e);
@@ -548,7 +546,7 @@ impl<T: Data + 'static + Default, W: Widget<T>> WidgetPod<T, W> { ////
             self.inner.paint(ctx, &self.state, data, &env)
         });
 
-        if let Err(e) = paint_ctx.render_ctx.restore() { ////
+        if let Err(_e) = paint_ctx.render_ctx.restore() { ////
         ////if let Err(e) = paint_ctx.restore() {
             assert!(false, "restore context fail"); ////
             ////error!("restoring render context failed: {:?}", e);
@@ -864,7 +862,7 @@ impl BoxConstraints {
     /// Check to see if these constraints are legit.
     ///
     /// Logs a warning if BoxConstraints are invalid.
-    pub fn debug_check(&self, name: &str) {
+    pub fn debug_check(&self, _name: &str) {
         if !(0.0 <= self.min.width
             && self.min.width <= self.max.width
             && 0.0 <= self.min.height

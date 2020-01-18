@@ -14,7 +14,6 @@
 
 //! A widget that arranges its children in a one-dimensional array.
 
-use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Rect, Size}; ////
 
 use crate::{

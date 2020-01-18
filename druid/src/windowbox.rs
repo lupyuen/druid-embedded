@@ -1,9 +1,8 @@
 //! `WindowBox` contains a `Window`. Allows for dynamic dispatch with static `Windows` in `[no_std]`.
 
-use crate::kurbo::{Rect, Size};
 use crate::{
-    BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Window, Widget,
-    widget::{Align, Button, Flex, Label, Padding},
+    Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Window,
+    widget::{Align, Flex, Padding},
 };
 
 /// Boxed version of a `Window`

@@ -19,11 +19,10 @@
 use core::marker::PhantomData; ////
 use crate::kurbo::{Point, Rect, Size};
 
-use crate::shell::WindowHandle;
+////use crate::shell::WindowHandle;
 use crate::{
-    BoxConstraints, /* Command, */ Data, Env, Event, EventCtx, LayoutCtx, LocalizedString, /* MenuDesc, */ ////
+    BoxConstraints, /* Command, */ Data, Env, Event, EventCtx, LayoutCtx, /* LocalizedString, MenuDesc, */ ////
     PaintCtx, UpdateCtx, Widget, WidgetPod,
-    widget::WidgetBox, WindowBox, WindowType, ////
 };
 
 /// A unique identifier for a window.

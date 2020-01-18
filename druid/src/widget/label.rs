@@ -81,7 +81,7 @@ impl<T: Data + 'static + Default> Label<T> { ////
         }
     }
 
-    fn get_layout(&self, t: &mut PietText, env: &Env) -> PietTextLayout {
+    fn get_layout(&self, t: &mut PietText, _env: &Env) -> PietTextLayout {
         let font_name = crate::env::FONT_NAME; ////env.get(theme::FONT_NAME);
         let font_size = crate::env::TEXT_SIZE_NORMAL; ////env.get(theme::TEXT_SIZE_NORMAL);
         let text = self.text.display_text();

@@ -20,10 +20,11 @@ use crate::{
 };
 
 use crate::kurbo::RoundedRect;
-use crate::piet::{LinearGradient, UnitPoint};
+use crate::piet::{UnitPoint}; ////
+////use crate::piet::{LinearGradient, UnitPoint};
 
 ////use crate::theme;
-use crate::widget::{Align, Label, LabelText, /* SizedBox, */ WidgetType}; ////
+use crate::widget::{/* Align, */ Label, LabelText, /* SizedBox, */ WidgetType}; ////
 use crate::{Point, RenderContext, WindowBox}; ////
 
 /// A button with a text label.
@@ -90,12 +91,12 @@ impl<T: Data + 'static + Default> Button<T> { ////
 impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
 ////impl<T: Data> Widget<T> for Button<T> {
     fn paint(&mut self, paint_ctx: &mut PaintCtx, base_state: &BaseState, data: &T, env: &Env) {
-        let is_active = base_state.is_active();
-        let is_hot = base_state.is_hot();
+        ////let is_active = base_state.is_active();
+        ////let is_hot = base_state.is_hot();
 
         let rounded_rect =
             RoundedRect::from_origin_size(Point::ORIGIN, base_state.size().to_vec2(), 4.);
-        let bg_color = crate::env::BUTTON_DARK; ////
+        //let bg_color = crate::env::BUTTON_DARK; ////
         /* ////
             let bg_gradient = if is_active {
                 LinearGradient::new(
