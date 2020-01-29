@@ -24,11 +24,11 @@ use druid_shell as shell;
 pub use druid_shell::{kurbo, piet};
 
 mod app;
-mod argvalue; ////
+pub mod argvalue; ////
 ////mod app_delegate;
 ////mod command;
 mod data;
-mod env;
+pub mod env; ////
 mod event;
 ////mod lens;
 mod localization;
