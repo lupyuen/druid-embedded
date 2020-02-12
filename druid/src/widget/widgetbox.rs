@@ -10,6 +10,7 @@ use crate::{
 const MAX_WIDGETS: usize = 10;
 
 /// Static list of `Widgets` just for embedded platforms
+/// TODO: Generate via Data trait
 static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = [ 
     WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
     WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
@@ -30,6 +31,7 @@ impl<D: Data + 'static + Default> GlobalWidgets<D> for WidgetBox<D> {
 }
 
 /// Specialised Trait will store `Widgets` statically on embedded platforms
+/// TODO: Generate via Data trait
 impl GlobalWidgets<u32> for WidgetBox<u32> {
     /// Fetch the static `Widgets` for the Data type
     fn get_widgets(&self) -> &'static mut [ WidgetType<u32> ] {
