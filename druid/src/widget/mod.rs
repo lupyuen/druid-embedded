@@ -25,7 +25,7 @@ fn get_widget_id() -> u32 { ////
 }
 
 mod widgetbox; ////
-pub use crate::widget::widgetbox::{WidgetBox, WidgetType}; ////
+pub use crate::widget::widgetbox::{WidgetBox, WidgetType, MAX_WIDGETS}; ////
 
 mod align;
 pub use crate::widget::align::Align;

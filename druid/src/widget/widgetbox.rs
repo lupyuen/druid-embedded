@@ -7,7 +7,7 @@ use crate::{
 };
 
 /// Max number of `Widgets` on embedded platforms
-const MAX_WIDGETS: usize = 10;
+pub const MAX_WIDGETS: usize = 10;
 
 /// Static list of `Widgets` just for embedded platforms
 /// TODO: Generate via Data trait

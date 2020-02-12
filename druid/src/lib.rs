@@ -70,10 +70,10 @@ pub use event::{Event, /* WheelEvent */}; ////
 pub use localization::LocalizedString;
 ////pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
-pub use win_handler::{DruidHandler, GlobalWindows, handle_touch}; ////
+pub use win_handler::{DruidHandler, GlobalWindows, handle_touch, MAX_WINDOWS}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
-use crate::widget::{WidgetType, WidgetBox}; ////
+pub use crate::widget::{WidgetType, WidgetBox, MAX_WIDGETS}; ////
 pub use shell::{start_display, draw_to_display, show_touch}; ////
 
 /// A container for one widget in the hierarchy.

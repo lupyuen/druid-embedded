@@ -51,7 +51,7 @@ use crate::shell::MouseButton; ////
 //  Static storage for Windows, Window Handlers and Application Data, used for embedded platforms only
  
 /// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
-const MAX_WINDOWS: usize = 3; ////
+pub const MAX_WINDOWS: usize = 3; ////
 /// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
 /// TODO: Generate via Data trait
 static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ ////
