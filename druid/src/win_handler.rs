@@ -53,20 +53,24 @@ use crate::shell::MouseButton; ////
 /// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
 const MAX_WINDOWS: usize = 3; ////
 /// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
+/// TODO: Generate via Data trait
 static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ ////
     WindowBox::<u32>( WindowType::None ), 
     WindowBox::<u32>( WindowType::None ), 
     WindowBox::<u32>( WindowType::None ), 
 ];
 /// ALL_HANDLERS[i] is the Window Handler for the Window with window ID i. i=0 is not used.
+/// TODO: Generate via Data trait
 static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
     DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
     DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
     DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
 ];
 /// DATA is the Application Data
+/// TODO: Generate via Data trait
 static mut DATA_U32: u32 = 0; ////
 
+/// TODO: Generate via Data trait
 pub fn handle_touch(x: u16, y: u16) { ////
     let mut ctx = DruidContext::new();
     let handler = unsafe { &mut ALL_HANDLERS_U32[1] };  //  Assume first window has ID 1
@@ -168,6 +172,7 @@ impl<D: Data + 'static + Default> GlobalWindows<D> for AppState<D> { ////
 }
 
 /// Specialised Trait will store Windows and Window Handlers statically on embedded platforms
+/// TODO: Generate via Data trait
 impl GlobalWindows<u32> for AppState<u32> { ////
     fn add_window(&self, window_id: WindowId, window: WindowBox<u32>) {
         unsafe { ALL_WINDOWS_U32[window_id.0 as usize] = window; }
