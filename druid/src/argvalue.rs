@@ -14,6 +14,7 @@ type String = heapless::String::<MaxLocalizedString>; ////
 pub enum ArgValue {
     String(String),
     U32(u32),
+    I32(i32),
     Error(String),
     None,
 }
@@ -65,6 +66,12 @@ impl ArgValue {
                     .expect("arg fail");
                 buffer
             }
+            ArgValue::I32(v) => {
+                let mut buffer = String::new();
+                write!(&mut buffer, "{}", v)
+                    .expect("arg fail");
+                buffer
+            }
             ArgValue::Error(_s) => "Error".into(),
             ArgValue::None => "???".into(),
         }
@@ -99,6 +106,12 @@ impl From<&str> for ArgValue {
 impl From<u32> for ArgValue {
     fn from(v: u32) -> Self {
         ArgValue::U32(v)
+    }
+}
+
+impl From<i32> for ArgValue {
+    fn from(v: i32) -> Self {
+        ArgValue::I32(v)
     }
 }
 
