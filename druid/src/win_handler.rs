@@ -280,8 +280,8 @@ pub struct DruidHandler<T: Data + 'static + Default> { ////
     ////app_state: Rc<RefCell<AppState<T>>>,
 
     /// The id for the current window.
-    window_id: WindowId,
-    phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
+    pub window_id: WindowId, ////
+    pub phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
 }
 
 /// State shared by all windows in the UI.
