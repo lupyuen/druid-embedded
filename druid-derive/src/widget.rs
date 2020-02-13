@@ -1,9 +1,10 @@
 //! Extended implementation for #[derive(Data)] to support static Widgets and Windows on embedded platforms
 
 /// Given an Application State type name (e.g. `State`) and struct, derive the static Widgets and Windows
-pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) {
+pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> proc_macro2::TokenStream {
     println!("state_type: {:#?}", state_type); ////
     println!("state_struct: {:#?}", state_struct); ////
+    proc_macro2::TokenStream::new()
 }
 
 /*
