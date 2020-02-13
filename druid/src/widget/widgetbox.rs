@@ -48,7 +48,7 @@ impl GlobalWidgets<u32> for WidgetBox<u32> {
 /// Boxed version of a `Widget`
 #[derive(Clone, Default)]
 pub struct WidgetBox<D: Data + 'static>(
-    u32,  //  Widget ID
+    pub u32,  //  Widget ID
     PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
