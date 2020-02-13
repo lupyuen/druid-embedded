@@ -41,6 +41,8 @@ fn derive_struct(
 
     let ty = &input.ident;
     let fields = Fields::parse_ast(&s.fields)?;
+    println!("ty: {:#?}", ty.clone()); ////
+    println!("fields: {:#?}", s.fields.clone()); ////
 
     let diff = if fields.len() > 0 {
         let same_fns = fields
