@@ -78,6 +78,8 @@ pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 pub use crate::widget::{GlobalWidgets, WidgetType, WidgetBox, MAX_WIDGETS}; ////
 pub use shell::{start_display, draw_to_display, show_touch}; ////
+pub use crate::shell::platform::window::WindowHandle as PlatformWindowHandle; ////
+pub use crate::shell::platform::window::WindowState as PlatformWindowState; ////
 
 /// A container for one widget in the hierarchy.
 ///
