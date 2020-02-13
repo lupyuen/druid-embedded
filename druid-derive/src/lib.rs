@@ -19,6 +19,7 @@ extern crate proc_macro;
 mod attr;
 mod data;
 mod lens;
+mod widget; //// To support static Widgets and Windows
 
 use proc_macro::TokenStream;
 use syn::parse_macro_input;

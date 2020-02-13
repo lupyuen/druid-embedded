@@ -41,8 +41,7 @@ fn derive_struct(
 
     let ty = &input.ident;
     let fields = Fields::parse_ast(&s.fields)?;
-    println!("ty: {:#?}", ty.clone()); ////
-    println!("fields: {:#?}", s.fields.clone()); ////
+    crate::widget::derive_widget(ty.clone(), s.clone()); //// Derive static Widgets and Windows
 
     let diff = if fields.len() > 0 {
         let same_fns = fields
