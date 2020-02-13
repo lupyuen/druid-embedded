@@ -48,13 +48,16 @@ use std::time::Instant;
 use log::{error, warn};
 */
 
-use kurbo::{Affine, Point, Rect, Shape, Size}; ////
+pub use kurbo::{Affine, Point, Rect, Shape, Size}; ////
 use piet::{Piet, RenderContext}; ////
 
 // these are the types from shell that we expose; others we only use internally.
 pub use shell::{ ////
+    DruidContext,
     /* Application, Clipboard, ClipboardFormat, Cursor, FileDialogOptions, FileDialogType, FileInfo,
-    FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, MouseButton, RawMods, SysMods, */
+    FileSpec, FormatId, HotKey, KeyCode, KeyEvent, KeyModifiers, */
+    MouseButton,
+    /* RawMods, SysMods, */
     Text, /* TimerToken, */ WinCtx, WindowHandle,
 }; ////
 
@@ -70,10 +73,10 @@ pub use event::{Event, /* WheelEvent */}; ////
 pub use localization::LocalizedString;
 ////pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
-pub use win_handler::{DruidHandler, GlobalWindows, handle_touch, MAX_WINDOWS}; ////
+pub use win_handler::{AppState, DruidHandler, GlobalWindows, handle_touch, MAX_WINDOWS}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
-pub use crate::widget::{WidgetType, WidgetBox, MAX_WIDGETS}; ////
+pub use crate::widget::{GlobalWidgets, WidgetType, WidgetBox, MAX_WIDGETS}; ////
 pub use shell::{start_display, draw_to_display, show_touch}; ////
 
 /// A container for one widget in the hierarchy.

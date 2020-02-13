@@ -286,7 +286,7 @@ pub struct DruidHandler<T: Data + 'static + Default> { ////
 
 /// State shared by all windows in the UI.
 #[derive(Clone)] ////
-pub(crate) struct AppState<T: Data + 'static + Default> { ////
+pub struct AppState<T: Data + 'static + Default> { ////
 ////pub(crate) struct AppState<T: Data> {
     phantom: PhantomData<T>,  ////  Needed to do compile-time checking for `Data`
     ////delegate: Option<Box<dyn AppDelegate<T>>>,
