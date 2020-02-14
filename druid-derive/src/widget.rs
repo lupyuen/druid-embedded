@@ -4,14 +4,35 @@ use quote::{quote, format_ident};
 
 /// Given an Application State type name (e.g. `State`) and struct, derive the static Widgets and Windows
 pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> Result<proc_macro2::TokenStream, syn::Error> {
-    //println!("state_type: {:#?}", state_type); ////
-    //println!("state_struct: {:#?}", state_struct); ////
+    //  println!("state_type: {:#?}", state_type); ////
+    //  println!("state_struct: {:#?}", state_struct); ////
     let data_state = format_ident!("DATA_{}", state_type);
     let all_widgets_state = format_ident!("ALL_WIDGETS_{}", state_type);
     let all_windows_state = format_ident!("ALL_WINDOWS_{}", state_type);
     let all_handlers_state = format_ident!("ALL_HANDLERS_{}", state_type);
 
-    let mut init = quote! { count: 0, };
+    let mut init = quote! {};
+    if let syn::Fields::Named(fields) = state_struct.fields {
+        for field in &fields.named {
+            let field_name = &field.ident;
+            let field_type = &field.ty;
+            let field_type_str = quote! { #field_type }.to_string();
+            //  println!("field_name: {:#?}", field_name);
+            //  println!("field_type: {:#?}", field_type);
+            let field_value = match field_type_str.as_str() {
+                "i32" => quote! { 0 as i32 },
+                "u32" => quote! { 0 as u32 },
+                "f32" => quote! { 0.0 as f32 },
+                "f64" => quote! { 0.0 as f64 },
+                "String" => quote! { "".to_string() },
+                _ => { assert!(false, "unknown field type"); quote! {} }
+            };
+            init.extend(
+                quote! { #field_name: #field_value, }
+            );  //  e.g. `count: 0 as i32,`
+        }    
+    }
+    //  `init` should look like `{ count: 0 as i32, s: "".to_string() }`
 
     let res = quote! {
         use druid_shell::WinHandler;
