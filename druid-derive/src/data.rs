@@ -41,7 +41,6 @@ fn derive_struct(
 
     let ty = &input.ident;
     let fields = Fields::parse_ast(&s.fields)?;
-    crate::widget::derive_widget(ty.clone(), s.clone()); //// Derive static Widgets and Windows
 
     let diff = if fields.len() > 0 {
         let same_fns = fields
@@ -54,13 +53,15 @@ fn derive_struct(
         quote!(true)
     };
 
-    let res = quote! {
+    let mut res = quote! {  //// Allow extend
         impl<#generics_bounds> druid::Data for #ty #generics {
             fn same(&self, other: &Self) -> bool {
                 #diff
             }
         }
     };
+    let widget = crate::widget::derive_widget(ty.clone(), s.clone()) ?; //// Derive static Widgets and Windows
+    res.extend(widget);  //// Append static Widgets and Windows
 
     Ok(res)
 }
