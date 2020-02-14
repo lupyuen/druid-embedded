@@ -11,6 +11,8 @@ pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> R
     let all_windows_state = format_ident!("ALL_WINDOWS_{}", state_type);
     let all_handlers_state = format_ident!("ALL_HANDLERS_{}", state_type);
 
+    let mut init = quote! { count: 0, };
+
     let res = quote! {
         use druid_shell::WinHandler;
 
@@ -37,7 +39,7 @@ pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> R
         }
         
         /// DATA is the Application Data
-        static mut #data_state: #state_type = #state_type { count: 0 };  //  TODO: Generated based on `#state_type`
+        static mut #data_state: #state_type = #state_type { #init };  //  TODO: Generated based on `#state_type`
         
         /// Static list of Widgets for embedded platforms
         static mut #all_widgets_state: [ druid::WidgetType<#state_type>; druid::MAX_WIDGETS ] = [ 
