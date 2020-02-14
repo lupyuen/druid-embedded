@@ -6,11 +6,13 @@ use quote::{quote, format_ident};
 pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> Result<proc_macro2::TokenStream, syn::Error> {
     //  println!("state_type: {:#?}", state_type); ////
     //  println!("state_struct: {:#?}", state_struct); ////
+    //  Compose the identifiers.
     let data_state = format_ident!("DATA_{}", state_type);
     let all_widgets_state = format_ident!("ALL_WIDGETS_{}", state_type);
     let all_windows_state = format_ident!("ALL_WINDOWS_{}", state_type);
     let all_handlers_state = format_ident!("ALL_HANDLERS_{}", state_type);
 
+    //  Compose the init values for the state e.g. `count: 0 as i32, s: "".to_string()`
     let mut init = quote! {};
     if let syn::Fields::Named(fields) = state_struct.fields {
         for field in &fields.named {
@@ -32,8 +34,8 @@ pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> R
             );  //  e.g. `count: 0 as i32,`
         }    
     }
-    //  `init` should look like `{ count: 0 as i32, s: "".to_string() }`
 
+    //  Compose the traits for static Widgets and Windows.
     let res = quote! {
         use druid_shell::WinHandler;
 
