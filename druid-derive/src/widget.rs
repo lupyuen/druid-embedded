@@ -7,10 +7,11 @@ pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> R
     //  println!("state_type: {:#?}", state_type); ////
     //  println!("state_struct: {:#?}", state_struct); ////
     //  Compose the identifiers.
-    let data_state = format_ident!("DATA_{}", state_type);
-    let all_widgets_state = format_ident!("ALL_WIDGETS_{}", state_type);
-    let all_windows_state = format_ident!("ALL_WINDOWS_{}", state_type);
-    let all_handlers_state = format_ident!("ALL_HANDLERS_{}", state_type);
+    let state_type_upper = state_type.to_string().to_uppercase();
+    let data_state = format_ident!("DATA_{}", state_type_upper);
+    let all_widgets_state = format_ident!("ALL_WIDGETS_{}", state_type_upper);
+    let all_windows_state = format_ident!("ALL_WINDOWS_{}", state_type_upper);
+    let all_handlers_state = format_ident!("ALL_HANDLERS_{}", state_type_upper);
 
     //  Compose the init values for the state e.g. `count: 0 as i32, s: "".to_string()`
     let mut init = quote! {};
