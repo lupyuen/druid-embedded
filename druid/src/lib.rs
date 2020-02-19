@@ -77,7 +77,7 @@ pub use win_handler::{AppState, DruidHandler, GlobalWindows, handle_touch, MAX_W
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
 pub use crate::widget::{GlobalWidgets, WidgetType, WidgetBox, MAX_WIDGETS}; ////
-pub use shell::{start_display, draw_to_display, show_touch}; ////
+pub use shell::{start_display, draw_to_display, set_display_pixels, show_touch}; ////
 pub use crate::shell::platform::window::WindowHandle as PlatformWindowHandle; ////
 pub use crate::shell::platform::window::WindowState as PlatformWindowState; ////
 
