@@ -64,5 +64,5 @@ pub use error::Error;
 ////pub use menu::Menu;
 pub use mouse::{Cursor, MouseButton, MouseEvent};
 ////pub use runloop::RunLoop;
-pub use window::{Text, TimerToken, WinCtx, WinHandler, WindowBuilder, WindowHandle};
+pub use window::{Text, TimerToken, WinCtx, WinHandler, WindowIdType, WindowBuilder, WindowHandle};
 pub use platform::{DruidContext, start_display, draw_to_display, set_display_pixels, show_touch}; ////

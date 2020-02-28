@@ -26,11 +26,10 @@
 
 use core::marker::PhantomData; ////
 use core::clone::Clone; ////
-use crate::kurbo::{Rect, Size, Point}; ////
+use crate::kurbo::{Rect, Size}; ////
 use crate::piet::{Piet, RenderContext};
 use crate::shell::{
     /* Application, */ Cursor, /* FileDialogOptions, */ MouseEvent, WinCtx, WinHandler, WindowHandle,
-    DruidContext, ////
 };
 
 /* ////
@@ -42,9 +41,8 @@ use crate::shell::{
 use crate::{
     BaseState, /* Command, */ Data, Env, Event, EventCtx, /* KeyEvent, KeyModifiers, */ LayoutCtx, /* MenuDesc, */ ////
     PaintCtx, /* TimerToken, */ UpdateCtx, /* WheelEvent, WindowDesc, */ WindowId,
-    WindowBox, WindowType, ////
+    WindowIdType, WindowBox, ////
 };
-use crate::shell::MouseButton; ////
 
 ////use crate::command::sys as sys_cmd;
 
@@ -52,45 +50,6 @@ use crate::shell::MouseButton; ////
  
 /// Max number of Windows supported. i=0 is not used, so MAX_WINDOWS should be 1 more than max number of Windows.
 pub const MAX_WINDOWS: usize = 3; ////
-/// ALL_WINDOWS[i] is the WindowBox for the Window with window ID i. i=0 is not used.
-/// TODO: Generate via Data trait
-static mut ALL_WINDOWS_U32: [ WindowBox<u32>; MAX_WINDOWS ] = [ ////
-    WindowBox::<u32>( WindowType::None ), 
-    WindowBox::<u32>( WindowType::None ), 
-    WindowBox::<u32>( WindowType::None ), 
-];
-/// ALL_HANDLERS[i] is the Window Handler for the Window with window ID i. i=0 is not used.
-/// TODO: Generate via Data trait
-static mut ALL_HANDLERS_U32: [ DruidHandler<u32>; MAX_WINDOWS ] = [ ////
-    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
-    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
-    DruidHandler::<u32> { window_id: WindowId(0), phantom: PhantomData },
-];
-/// DATA is the Application Data
-/// TODO: Generate via Data trait
-static mut DATA_U32: u32 = 0; ////
-
-/// TODO: Generate via Data trait
-pub fn handle_touch(x: u16, y: u16) { ////
-    let mut ctx = DruidContext::new();
-    let handler = unsafe { &mut ALL_HANDLERS_U32[1] };  //  Assume first window has ID 1
-    handler.mouse_down(
-        &MouseEvent {
-            pos: Point::new(x as f64, y as f64),
-            count: 1,
-            button: MouseButton::Left,
-        },
-        &mut ctx,
-    );
-    handler.mouse_up(
-        &MouseEvent {
-            pos: Point::new(x as f64, y as f64),
-            count: 0,
-            button: MouseButton::Left,
-        },
-        &mut ctx,
-    );
-}
 
 /// Specialised Trait for handling static Windows, Window Handlers and Application Data on embedded platforms
 pub trait GlobalWindows<D: Data + 'static + Default> { ////
@@ -169,102 +128,6 @@ impl<D: Data + 'static + Default> GlobalWindows<D> for AppState<D> { ////
         &mut self,
         _window_id: WindowId,
     ) -> bool { panic!("no global windows") }
-}
-
-/// Specialised Trait will store Windows and Window Handlers statically on embedded platforms
-/// TODO: Generate via Data trait
-impl GlobalWindows<u32> for AppState<u32> { ////
-    fn add_window(&self, window_id: WindowId, window: WindowBox<u32>) {
-        unsafe { ALL_WINDOWS_U32[window_id.0 as usize] = window; }
-        //cortex_m::asm::bkpt(); ////
-    }
-    fn add_handler(&self, window_id: WindowId, handler: DruidHandler<u32>) {
-        unsafe { ALL_HANDLERS_U32[window_id.0 as usize] = handler; }
-        //cortex_m::asm::bkpt(); ////
-    }
-    fn get_handle(&self, window_id: WindowId) -> WindowHandle<DruidHandler<u32>> {
-        let handler = unsafe { ALL_HANDLERS_U32[window_id.0 as usize].clone() };
-        //cortex_m::asm::bkpt(); ////
-        WindowHandle(
-            crate::shell::platform::window::WindowHandle {
-                window_id: window_id.0,
-                state: crate::shell::platform::window::WindowState {
-                    window_id: window_id.0,
-                    handler,                
-                }            
-            }
-        )
-    }
-    fn set_data(&self, data: u32) {
-        unsafe { DATA_U32 = data; }
-        //cortex_m::asm::bkpt(); ////
-    }
-    fn window_event(
-        &mut self, 
-        window_id: WindowId,
-        ctx: &mut EventCtx<u32>, 
-        event: &Event, 
-    ) {
-        //cortex_m::asm::bkpt(); ////
-        unsafe { 
-            ALL_WINDOWS_U32[window_id.0 as usize].event(
-                ctx, 
-                event, 
-                &mut DATA_U32,  //  Data
-                &Env {}  //  Env
-            );
-        }
-    }
-    fn window_update(
-        &mut self, 
-        window_id: WindowId,
-        ctx: &mut UpdateCtx<u32>, 
-    ) {
-        //cortex_m::asm::bkpt(); ////
-        unsafe { 
-            ALL_WINDOWS_U32[window_id.0 as usize].update(
-                ctx,
-                &mut DATA_U32,  //  Data
-                &Env {}  //  Env
-            ); 
-        }
-    }
-    fn window_layout(
-        &mut self,
-        window_id: WindowId,
-        layout_ctx: &mut LayoutCtx,
-    ) {
-        //cortex_m::asm::bkpt(); ////
-        unsafe { 
-            ALL_WINDOWS_U32[window_id.0 as usize].layout(
-                layout_ctx, 
-                &mut DATA_U32,  //  Data
-                &Env {}  //  Env
-            ); 
-        }
-    }
-    fn window_paint(
-        &mut self, 
-        window_id: WindowId,
-        paint_ctx: &mut PaintCtx, 
-    ) {
-        //cortex_m::asm::bkpt(); ////
-        unsafe { 
-            ALL_WINDOWS_U32[window_id.0 as usize].paint(
-                paint_ctx, 
-                &mut DATA_U32,  //  Data
-                &Env {}  //  Env
-            ); 
-        }
-    }
-    fn window_has_active(
-        &mut self,
-        window_id: WindowId,
-    ) -> bool {
-        unsafe { 
-            ALL_WINDOWS_U32[window_id.0 as usize].has_active() 
-        }
-    }
 }
 
 /// The struct implements the druid-shell `WinHandler` trait.
@@ -997,11 +860,11 @@ impl<T: Data + 'static + Default> WinHandler<DruidHandler<T>> for DruidHandler<T
         */ ////
     }
 
-    fn get_window_id(&self) -> u32 { ////
+    fn get_window_id(&self) -> WindowIdType { ////
         self.window_id.0
     }
 
-    fn add_handler(&self, window_id: u32, handler: DruidHandler<T>) { ////
+    fn add_handler(&self, window_id: WindowIdType, handler: DruidHandler<T>) { ////
         AppState::<T>::new().add_handler(WindowId(window_id), handler);
     }
 

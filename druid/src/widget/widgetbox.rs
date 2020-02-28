@@ -6,15 +6,22 @@ use crate::{
     widget::{Align, Button, Flex, Label, Padding},
 };
 
+/// Widgets are identified by an 8-bit ID
+pub type WidgetId = u8;
+
 /// Max number of `Widgets` on embedded platforms
 pub const MAX_WIDGETS: usize = 10;
 
-/// Static list of `Widgets` just for embedded platforms
-/// TODO: Generate via Data trait
-static mut WIDGET_STATE_U32: [ WidgetType<u32>; MAX_WIDGETS ] = [ 
-    WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
-    WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None, WidgetType::None,
-];
+/// Unique Widget ID
+static mut WIDGET_ID: WidgetId = 0;
+
+/// Assign a unique Widget ID
+pub fn get_widget_id() -> WidgetId {
+    let id = unsafe { WIDGET_ID };
+    assert!((id as usize) < MAX_WIDGETS, "too many widgets");
+    unsafe { WIDGET_ID += 1; }
+    id
+}
 
 /// Specialised Trait for handling static `Widgets` on embedded platforms
 pub trait GlobalWidgets<D: Data + 'static + Default> {
@@ -30,25 +37,10 @@ impl<D: Data + 'static + Default> GlobalWidgets<D> for WidgetBox<D> {
     default fn add_widget(&self, _widget: WidgetType<D>) { panic!("no global widgets") }
 }
 
-/// Specialised Trait will store `Widgets` statically on embedded platforms
-/// TODO: Generate via Data trait
-impl GlobalWidgets<u32> for WidgetBox<u32> {
-    /// Fetch the static `Widgets` for the Data type
-    fn get_widgets(&self) -> &'static mut [ WidgetType<u32> ] {
-        unsafe { &mut WIDGET_STATE_U32 }
-    }
-    /// Add a `Widget` for the Data type
-    fn add_widget(&self, widget: WidgetType<u32>) {
-        assert!(self.0 < MAX_WIDGETS as u32, "too many widgets");
-        unsafe { WIDGET_STATE_U32[self.0 as usize] = widget; }        
-        //cortex_m::asm::bkpt(); ////
-    }    
-}
-
 /// Boxed version of a `Widget`
 #[derive(Clone, Default)]
 pub struct WidgetBox<D: Data + 'static>(
-    pub u32,  //  Widget ID
+    pub WidgetId,    //  Widget ID
     PhantomData<D>,  //  Needed to do compile-time checking for `Data`
 );
 
@@ -160,7 +152,7 @@ impl<D: Data + 'static + Default> Widget<D> for WidgetBox<D> {
         WindowBox::new()
     }
 
-    fn get_id(self) -> u32 {
+    fn get_id(self) -> WidgetId {
         match &mut self.get_widgets()[self.0 as usize] {
             WidgetType::Align(w)   => w.clone().get_id(),
             WidgetType::Button(w)  => w.clone().get_id(),

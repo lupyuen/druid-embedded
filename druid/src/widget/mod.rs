@@ -14,18 +14,8 @@
 
 //! Common widgets.
 
-/// Unique Widget ID
-static mut WIDGET_ID: u32 = 0; ////
-
-/// Assign a unique Widget ID
-fn get_widget_id() -> u32 { ////
-    let id = unsafe { WIDGET_ID };
-    unsafe { WIDGET_ID += 1; }
-    id
-}
-
 mod widgetbox; ////
-pub use crate::widget::widgetbox::{GlobalWidgets, WidgetBox, WidgetType, MAX_WIDGETS}; ////
+pub use crate::widget::widgetbox::{GlobalWidgets, WidgetBox, WidgetId, WidgetType, MAX_WIDGETS, get_widget_id}; ////
 
 mod align;
 pub use crate::widget::align::Align;

@@ -28,6 +28,9 @@ use crate::kurbo::{Size}; ////
 use crate::mouse::{Cursor, MouseEvent};
 use crate::platform::window as platform;
 
+/// Windows are identified by an 8-bit ID
+pub type WindowIdType = u8;
+
 // It's possible we'll want to make this type alias at a lower level,
 // see https://github.com/linebender/piet/pull/37 for more discussion.
 /// The platform text factory, reexported from piet.
@@ -318,10 +321,10 @@ pub trait WinHandler<THandler> {  ////  THandler is DruidHandler<T: Data + 'stat
     fn destroy(&mut self, ctx: &mut dyn WinCtx) {}
 
     /// Return the Window ID for this WinHandler
-    fn get_window_id(&self) -> u32; ////
+    fn get_window_id(&self) -> WindowIdType; ////
 
     /// Add a Window Handler for the Data type
-    fn add_handler(&self, window_id: u32, handler: THandler); ////
+    fn add_handler(&self, window_id: WindowIdType, handler: THandler); ////
 
     /* ////
         /// Get a reference to the handler state. Used mostly by idle handlers.

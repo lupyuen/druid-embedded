@@ -17,7 +17,7 @@
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
-    WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
+    WidgetId, WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
 };
 
 use crate::piet::UnitPoint;
@@ -26,7 +26,7 @@ use crate::piet::UnitPoint;
 #[derive(Clone)] ////
 pub struct Align<T: Data + 'static + Default> { ////
 ////pub struct Align<T: Data> {
-    id: u32, //// Unique Widget ID
+    id: WidgetId, //// Unique Widget ID
     align: UnitPoint,
     child: WidgetPod<T, WidgetBox<T>>, ////
     ////child: WidgetPod<T, Box<dyn Widget<T>>>,
@@ -167,7 +167,7 @@ impl<T: Data + 'static + Default> Widget<T> for Align<T> {
         window_box
     }
 
-    fn get_id(self) -> u32 { ////
+    fn get_id(self) -> WidgetId { ////
         self.id
     }
 }

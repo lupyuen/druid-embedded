@@ -73,11 +73,11 @@ pub use event::{Event, /* WheelEvent */}; ////
 pub use localization::LocalizedString;
 ////pub use menu::{sys as platform_menus, ContextMenu, MenuDesc, MenuItem};
 pub use mouse::MouseEvent;
-pub use win_handler::{AppState, DruidHandler, GlobalWindows, handle_touch, MAX_WINDOWS}; ////
+pub use win_handler::{AppState, DruidHandler, GlobalWindows, MAX_WINDOWS}; ////
 pub use window::{Window, WindowId}; ////
 pub use windowbox::{WindowBox, WindowType}; ////
-pub use crate::widget::{GlobalWidgets, WidgetType, WidgetBox, MAX_WIDGETS}; ////
-pub use shell::{start_display, draw_to_display, set_display_pixels, show_touch}; ////
+pub use crate::widget::{GlobalWidgets, WidgetBox, WidgetId, WidgetType, MAX_WIDGETS}; ////
+pub use shell::{WindowIdType, start_display, draw_to_display, set_display_pixels, show_touch}; ////
 pub use crate::shell::platform::window::WindowHandle as PlatformWindowHandle; ////
 pub use crate::shell::platform::window::WindowState as PlatformWindowState; ////
 
@@ -267,7 +267,7 @@ pub trait Widget<T: Data + 'static + Default> { ////
     fn new_window(self) -> WindowBox<T>; ////
 
     /// Return the unique ID for this `Widget`
-    fn get_id(self) -> u32; ////
+    fn get_id(self) -> WidgetId; ////
 }
 
 /*

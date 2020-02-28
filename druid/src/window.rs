@@ -22,16 +22,16 @@ use crate::kurbo::{Point, Rect, Size};
 ////use crate::shell::WindowHandle;
 use crate::{
     BoxConstraints, /* Command, */ Data, Env, Event, EventCtx, LayoutCtx, /* LocalizedString, MenuDesc, */ ////
-    PaintCtx, UpdateCtx, Widget, WidgetPod,
+    PaintCtx, UpdateCtx, Widget, WidgetPod, WindowIdType, MAX_WINDOWS
 };
 
 /// A unique identifier for a window.
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash, PartialOrd, Ord)] ////
 ////#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
-pub struct WindowId(pub u32); ////
+pub struct WindowId(pub WindowIdType); ////
 ////pub struct WindowId(u32);
 
-static mut WINDOW_ID_COUNTER: u32 = 1; ////
+static mut WINDOW_ID_COUNTER: WindowIdType = 1; ////
 ////static WINDOW_ID_COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// Per-window state not owned by user code.
@@ -133,6 +133,7 @@ impl WindowId {
     /// Do note that if we create 4 billion windows there may be a collision.
     pub fn next() -> WindowId {
         let id = unsafe { WINDOW_ID_COUNTER }; ////
+        assert!((id as usize) < MAX_WINDOWS, "too many windows");
         unsafe { WINDOW_ID_COUNTER += 1 }; ////    
         ////let id = WINDOW_ID_COUNTER.fetch_add(1, Ordering::Relaxed);
         WindowId(id)

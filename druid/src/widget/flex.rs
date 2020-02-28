@@ -19,7 +19,7 @@ use crate::kurbo::{Point, Rect, Size}; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, UpdateCtx, Widget,
     WidgetPod,
-    Window, WindowType, WindowBox, widget::{WidgetBox, WidgetType}, ////
+    Window, WindowType, WindowBox, widget::{WidgetBox, WidgetId, WidgetType}, ////
 };
 
 /// A builder for a row widget that can contain flex children.
@@ -44,7 +44,7 @@ type Vec<T> = heapless::Vec::<T, MaxWidgets>;
 #[derive(Clone)] ////
 pub struct Flex<T: Data + 'static + Default> { ////
 ////pub struct Flex<T: Data> {
-    id: u32, //// Unique Widget ID
+    id: WidgetId, //// Unique Widget ID
     direction: Axis,
     children: Vec<ChildWidget<T>>, ////
     ////children: Vec<ChildWidget<T>>,
@@ -272,7 +272,7 @@ impl<T: Data + 'static + Default> Widget<T> for Flex<T> { ////
         window_box
     }
 
-    fn get_id(self) -> u32 { ////
+    fn get_id(self) -> WidgetId { ////
         self.id
     }
 }

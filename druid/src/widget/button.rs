@@ -16,7 +16,7 @@
 
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
-    Widget,
+    WidgetId, Widget,
 };
 
 use crate::kurbo::RoundedRect;
@@ -31,7 +31,7 @@ use crate::{Point, RenderContext, WindowBox}; ////
 #[derive(Clone)] ////
 pub struct Button<T: Data + 'static + Default> { ////
 ////pub struct Button<T> {
-    id: u32, //// Unique Widget ID
+    id: WidgetId, //// Unique Widget ID
     label: Label<T>,
     /////// A closure that will be invoked when the button is clicked.
     action: fn(&mut EventCtx<T>, &mut T, &Env), ////
@@ -181,7 +181,7 @@ impl<T: Data + 'static + Default> Widget<T> for Button<T> { ////
         WindowBox::new()
     }
 
-    fn get_id(self) -> u32 { ////
+    fn get_id(self) -> WidgetId { ////
         self.id
     }
 }

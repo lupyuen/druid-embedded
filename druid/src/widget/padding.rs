@@ -18,14 +18,14 @@ use crate::kurbo::Insets; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Point, Rect, Size,
     UpdateCtx, Widget, WidgetPod,
-    WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
+    WidgetId, WidgetType, WidgetBox, Window, WindowType, WindowBox, ////
 };
 
 /// A widget that just adds padding around its child.
 #[derive(Clone)] ////
 pub struct Padding<T: Data + 'static + Default> { ////
 ////pub struct Padding<T: Data> {
-    id: u32, //// Unique Widget ID
+    id: WidgetId, //// Unique Widget ID
     left: f64,
     right: f64,
     top: f64,
@@ -147,7 +147,7 @@ impl<T: Data + 'static + Default> Widget<T> for Padding<T> { ////
         window_box
     }
 
-    fn get_id(self) -> u32 { ////
+    fn get_id(self) -> WidgetId { ////
         self.id
     }
 }

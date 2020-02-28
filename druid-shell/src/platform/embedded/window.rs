@@ -44,7 +44,7 @@ use crate::piet::{Piet, RenderContext};
 ////use crate::keyboard;
 use crate::mouse::{Cursor}; ////
 ////use crate::mouse::{Cursor, MouseButton, MouseEvent};
-use crate::window::{Text, WinCtx, WinHandler}; ////
+use crate::window::{Text, WinCtx, WinHandler, WindowIdType}; ////
 ////use crate::window::{Text, TimerToken, WinCtx, WinHandler};
 use crate::Error;
 
@@ -102,7 +102,7 @@ impl DruidContext {
 
 #[derive(Clone, Copy, Default)]
 pub struct WindowHandle<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
-    pub window_id: u32, ////
+    pub window_id: WindowIdType, ////
     pub state: WindowState<THandler>, ////
     ////pub(crate) state: Weak<WindowState>,  
 }
@@ -110,7 +110,7 @@ pub struct WindowHandle<THandler: WinHandler<THandler>> {  ////  THandler is Dru
 /// Builder abstraction for creating new windows
 pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
 ////pub struct WindowBuilder {
-    window_id: u32, ////
+    window_id: WindowIdType, ////
     handler: THandler, ////
     ////handler: Option<Box<dyn WinHandler>>,  
     ////title: String,
@@ -129,7 +129,7 @@ pub struct WindowBuilder<THandler: WinHandler<THandler>> {  ////  THandler is Dr
 
 #[derive(Clone, Copy, Default)]
 pub struct WindowState<THandler: WinHandler<THandler>> {  ////  THandler is DruidHandler<T: Data + 'static>
-    pub window_id: u32, ////
+    pub window_id: WindowIdType, ////
     pub handler: THandler, ////
     ////pub(crate) handler: RefCell<Box<dyn WinHandler>>,  
     ////idle_queue: Arc<Mutex<Vec<Box<dyn IdleCallback>>>>,

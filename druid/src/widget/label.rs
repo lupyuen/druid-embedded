@@ -20,7 +20,7 @@ use core::str::FromStr; ////
 use crate::{
     BaseState, BoxConstraints, Data, Env, Event, EventCtx, LayoutCtx, PaintCtx, Size, UpdateCtx,
     Widget, 
-    WidgetType, WindowBox, ////
+    WidgetId, WidgetType, WindowBox, ////
 };
 
 use crate::kurbo::Rect;
@@ -45,7 +45,7 @@ pub enum LabelText<T> {
 /// A label that displays some text.
 #[derive(Clone)] ////
 pub struct Label<T> {
-    id: u32, //// Unique Widget ID
+    id: WidgetId, //// Unique Widget ID
     text: LabelText<T>,
     align: UnitPoint,
 }
@@ -151,7 +151,7 @@ impl<T: Data + 'static + Default> Widget<T> for Label<T> { ////
         WindowBox::new()
     }
 
-    fn get_id(self) -> u32 { ////
+    fn get_id(self) -> WidgetId { ////
         self.id
     }
 }

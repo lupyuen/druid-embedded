@@ -93,7 +93,7 @@ pub fn derive_widget(state_type: syn::Ident, state_struct: syn::DataStruct) -> R
             }
             /// Add a Widget for the Data type
             fn add_widget(&self, widget: druid::WidgetType<#state_type>) {
-                assert!(self.0 < druid::MAX_WIDGETS as u32, "too many widgets");
+                assert!((self.0 as usize) < druid::MAX_WIDGETS, "too many widgets");
                 unsafe { #all_widgets_state[self.0 as usize] = widget; }        
             }    
         }
@@ -246,7 +246,7 @@ impl druid::GlobalWidgets<State> for druid::WidgetBox<State> {
     }
     /// Add a Widget for the Data type
     fn add_widget(&self, widget: druid::WidgetType<State>) {
-        assert!(self.0 < druid::MAX_WIDGETS as u32, "too many widgets");
+        assert!((self.0 as usize)< druid::MAX_WIDGETS, "too many widgets");
         unsafe { ALL_WIDGETS_STATE[self.0 as usize] = widget; }        
     }    
 }
