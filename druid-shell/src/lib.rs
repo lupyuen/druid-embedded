@@ -19,7 +19,6 @@
 //! implementation.
 
 #![no_std] ////
-#![feature(const_transmute)] ////
 #![deny(intra_doc_link_resolution_failure)]
 #![allow(clippy::new_without_default)]
 
